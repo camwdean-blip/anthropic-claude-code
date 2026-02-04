@@ -14,8 +14,8 @@ fake-useragent==1.4.0
 selenium==4.15.2
 webdriver-manager==4.0.1
 
-# PDF Generation
-weasyprint==60.1
+# PDF Generation (commented out - requires system dependencies: brew install pango gobject-introspection)
+# weasyprint==60.1
 Jinja2==3.1.2
 
 # Data Processing
