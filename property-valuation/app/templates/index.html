@@ -1,0 +1,223 @@
+{% extends "base.html" %}
+
+{% block title %}Property Valuation - New Valuation{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-10">
+        <div class="card shadow">
+            <div class="card-header bg-primary text-white">
+                <h4 class="mb-0">
+                    <i class="bi bi-house-add me-2"></i>Property Valuation Calculator
+                </h4>
+            </div>
+            <div class="card-body">
+                <form method="POST" action="{{ url_for('main.valuate') }}" id="valuationForm">
+                    {{ form.hidden_tag() }}
+
+                    <!-- Property Address Section -->
+                    <div class="section-header">
+                        <h5><i class="bi bi-geo-alt me-2"></i>Property Address</h5>
+                    </div>
+                    <div class="row mb-4">
+                        <div class="col-md-12 mb-3">
+                            <label for="street_address" class="form-label">Street Address <span class="text-danger">*</span></label>
+                            {{ form.street_address(class="form-control" + (" is-invalid" if form.street_address.errors else "")) }}
+                            {% if form.street_address.errors %}
+                                <div class="invalid-feedback">{{ form.street_address.errors[0] }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-5 mb-3">
+                            <label for="city" class="form-label">City <span class="text-danger">*</span></label>
+                            {{ form.city(class="form-control" + (" is-invalid" if form.city.errors else "")) }}
+                            {% if form.city.errors %}
+                                <div class="invalid-feedback">{{ form.city.errors[0] }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="state" class="form-label">State <span class="text-danger">*</span></label>
+                            {{ form.state(class="form-select" + (" is-invalid" if form.state.errors else "")) }}
+                            {% if form.state.errors %}
+                                <div class="invalid-feedback">{{ form.state.errors[0] }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label for="zip_code" class="form-label">ZIP Code <span class="text-danger">*</span></label>
+                            {{ form.zip_code(class="form-control" + (" is-invalid" if form.zip_code.errors else "")) }}
+                            {% if form.zip_code.errors %}
+                                <div class="invalid-feedback">{{ form.zip_code.errors[0] }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-12 mb-3">
+                            <label for="neighborhood" class="form-label">Neighborhood</label>
+                            {{ form.neighborhood(class="form-control") }}
+                            <small class="form-text text-muted">Optional - helps provide context for valuation</small>
+                        </div>
+                    </div>
+
+                    <!-- Property Details Section -->
+                    <div class="section-header">
+                        <h5><i class="bi bi-building me-2"></i>Property Details</h5>
+                    </div>
+                    <div class="row mb-4">
+                        <div class="col-md-4 mb-3">
+                            <label for="square_footage" class="form-label">Square Footage <span class="text-danger">*</span></label>
+                            {{ form.square_footage(class="form-control" + (" is-invalid" if form.square_footage.errors else ""), type="number") }}
+                            {% if form.square_footage.errors %}
+                                <div class="invalid-feedback">{{ form.square_footage.errors[0] }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="lot_size" class="form-label">Lot Size (sq ft)</label>
+                            {{ form.lot_size(class="form-control", type="number") }}
+                            <small class="form-text text-muted">Optional</small>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="year_built" class="form-label">Year Built</label>
+                            {{ form.year_built(class="form-control", type="number") }}
+                            <small class="form-text text-muted">Optional</small>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label for="bedrooms" class="form-label">Bedrooms <span class="text-danger">*</span></label>
+                            {{ form.bedrooms(class="form-control" + (" is-invalid" if form.bedrooms.errors else ""), type="number") }}
+                            {% if form.bedrooms.errors %}
+                                <div class="invalid-feedback">{{ form.bedrooms.errors[0] }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label for="bathrooms" class="form-label">Bathrooms <span class="text-danger">*</span></label>
+                            {{ form.bathrooms(class="form-control" + (" is-invalid" if form.bathrooms.errors else ""), type="number", step="0.5") }}
+                            {% if form.bathrooms.errors %}
+                                <div class="invalid-feedback">{{ form.bathrooms.errors[0] }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label for="property_type" class="form-label">Property Type <span class="text-danger">*</span></label>
+                            {{ form.property_type(class="form-select" + (" is-invalid" if form.property_type.errors else "")) }}
+                            {% if form.property_type.errors %}
+                                <div class="invalid-feedback">{{ form.property_type.errors[0] }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label for="condition" class="form-label">Condition <span class="text-danger">*</span></label>
+                            {{ form.condition(class="form-select" + (" is-invalid" if form.condition.errors else "")) }}
+                            {% if form.condition.errors %}
+                                <div class="invalid-feedback">{{ form.condition.errors[0] }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Market Data Section -->
+                    <div class="section-header">
+                        <h5><i class="bi bi-graph-up-arrow me-2"></i>Market Data (Manual Entry)</h5>
+                    </div>
+                    <div class="row mb-4">
+                        <div class="col-md-12 mb-2">
+                            <div class="alert alert-info">
+                                <i class="bi bi-info-circle me-2"></i>
+                                Enter the average price per square foot for this property type in this neighborhood.
+                                This data helps calculate market trends and comparable values.
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="price_per_sqft_6mo" class="form-label">
+                                Price/SqFt 6 Months Ago <span class="text-danger">*</span>
+                            </label>
+                            <div class="input-group">
+                                <span class="input-group-text">$</span>
+                                {{ form.price_per_sqft_6mo(class="form-control" + (" is-invalid" if form.price_per_sqft_6mo.errors else ""), type="number", step="0.01") }}
+                            </div>
+                            {% if form.price_per_sqft_6mo.errors %}
+                                <div class="text-danger small">{{ form.price_per_sqft_6mo.errors[0] }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="price_per_sqft_12mo" class="form-label">
+                                Price/SqFt 12 Months Ago <span class="text-danger">*</span>
+                            </label>
+                            <div class="input-group">
+                                <span class="input-group-text">$</span>
+                                {{ form.price_per_sqft_12mo(class="form-control" + (" is-invalid" if form.price_per_sqft_12mo.errors else ""), type="number", step="0.01") }}
+                            </div>
+                            {% if form.price_per_sqft_12mo.errors %}
+                                <div class="text-danger small">{{ form.price_per_sqft_12mo.errors[0] }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- External Estimates Section (Optional) -->
+                    <div class="section-header">
+                        <h5>
+                            <i class="bi bi-cloud-download me-2"></i>External Estimates
+                            <small class="text-muted">(Optional - Auto-fetched if left blank)</small>
+                        </h5>
+                    </div>
+                    <div class="row mb-4">
+                        <div class="col-md-12 mb-2">
+                            <div class="alert alert-secondary">
+                                <i class="bi bi-lightbulb me-2"></i>
+                                Leave these blank to automatically fetch estimates from Zillow and Redfin,
+                                or enter values manually if you have them.
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="zillow_estimate_manual" class="form-label">Zillow Estimate</label>
+                            <div class="input-group">
+                                <span class="input-group-text">$</span>
+                                {{ form.zillow_estimate_manual(class="form-control", type="number", step="1000") }}
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="redfin_estimate_manual" class="form-label">Redfin Estimate</label>
+                            <div class="input-group">
+                                <span class="input-group-text">$</span>
+                                {{ form.redfin_estimate_manual(class="form-control", type="number", step="1000") }}
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="last_purchase_price_manual" class="form-label">Last Purchase Price</label>
+                            <div class="input-group">
+                                <span class="input-group-text">$</span>
+                                {{ form.last_purchase_price_manual(class="form-control", type="number", step="1000") }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Notes Section -->
+                    <div class="section-header">
+                        <h5><i class="bi bi-journal-text me-2"></i>Additional Notes</h5>
+                    </div>
+                    <div class="row mb-4">
+                        <div class="col-md-12 mb-3">
+                            {{ form.notes(class="form-control") }}
+                            <small class="form-text text-muted">
+                                Add any relevant details about location intangibles, recent renovations, etc.
+                            </small>
+                        </div>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                        <button type="reset" class="btn btn-outline-secondary me-md-2">
+                            <i class="bi bi-x-circle me-1"></i>Reset
+                        </button>
+                        <button type="submit" class="btn btn-primary btn-lg" id="submitBtn">
+                            <i class="bi bi-calculator me-1"></i>Calculate Valuation
+                            <span class="spinner-border spinner-border-sm d-none ms-2" id="submitSpinner"></span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.getElementById('valuationForm').addEventListener('submit', function() {
+        document.getElementById('submitBtn').disabled = true;
+        document.getElementById('submitSpinner').classList.remove('d-none');
+    });
+</script>
+{% endblock %}

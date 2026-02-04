@@ -1,0 +1,196 @@
+{% extends "base.html" %}
+
+{% block title %}Valuation History{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="card shadow">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h4 class="mb-0">
+                    <i class="bi bi-clock-history me-2"></i>Valuation History
+                </h4>
+                <a href="{{ url_for('main.index') }}" class="btn btn-primary">
+                    <i class="bi bi-plus-circle me-1"></i>New Valuation
+                </a>
+            </div>
+            <div class="card-body">
+                {% if valuations.items %}
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Address</th>
+                                    <th>Type</th>
+                                    <th>Sq Ft</th>
+                                    <th>Bed/Bath</th>
+                                    <th class="text-end">Estimated Value</th>
+                                    <th class="text-end">$/SqFt</th>
+                                    <th class="text-center">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for v in valuations.items %}
+                                <tr>
+                                    <td>
+                                        <small class="text-muted">
+                                            {{ v.created_at.strftime('%m/%d/%Y') }}
+                                        </small>
+                                    </td>
+                                    <td>
+                                        <a href="{{ url_for('main.view_valuation', valuation_id=v.id) }}"
+                                           class="text-decoration-none">
+                                            {{ v.street_address }}
+                                        </a>
+                                        <br>
+                                        <small class="text-muted">
+                                            {{ v.city }}, {{ v.state }} {{ v.zip_code }}
+                                        </small>
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-secondary">
+                                            {{ v.property_type | replace('_', ' ') | title }}
+                                        </span>
+                                    </td>
+                                    <td>{{ "{:,.0f}".format(v.square_footage) }}</td>
+                                    <td>{{ v.bedrooms }}bd / {{ v.bathrooms }}ba</td>
+                                    <td class="text-end">
+                                        <strong class="text-primary">
+                                            ${{ "{:,.0f}".format(v.calculated_value) }}
+                                        </strong>
+                                    </td>
+                                    <td class="text-end">
+                                        ${{ "{:,.2f}".format(v.price_per_sqft_calculated) }}
+                                    </td>
+                                    <td class="text-center">
+                                        <div class="btn-group btn-group-sm">
+                                            <a href="{{ url_for('main.view_valuation', valuation_id=v.id) }}"
+                                               class="btn btn-outline-primary" title="View Details">
+                                                <i class="bi bi-eye"></i>
+                                            </a>
+                                            <a href="{{ url_for('main.generate_pdf', valuation_id=v.id) }}"
+                                               class="btn btn-outline-secondary" title="Download PDF">
+                                                <i class="bi bi-file-pdf"></i>
+                                            </a>
+                                            <button type="button" class="btn btn-outline-danger"
+                                                    title="Delete"
+                                                    onclick="confirmDelete({{ v.id }}, '{{ v.street_address }}')">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Pagination -->
+                    {% if valuations.pages > 1 %}
+                    <nav aria-label="Valuation history pagination">
+                        <ul class="pagination justify-content-center">
+                            {% if valuations.has_prev %}
+                            <li class="page-item">
+                                <a class="page-link" href="{{ url_for('main.history', page=valuations.prev_num) }}">
+                                    <i class="bi bi-chevron-left"></i> Previous
+                                </a>
+                            </li>
+                            {% else %}
+                            <li class="page-item disabled">
+                                <span class="page-link"><i class="bi bi-chevron-left"></i> Previous</span>
+                            </li>
+                            {% endif %}
+
+                            {% for page_num in valuations.iter_pages(left_edge=1, right_edge=1, left_current=2, right_current=2) %}
+                                {% if page_num %}
+                                    {% if page_num == valuations.page %}
+                                    <li class="page-item active">
+                                        <span class="page-link">{{ page_num }}</span>
+                                    </li>
+                                    {% else %}
+                                    <li class="page-item">
+                                        <a class="page-link" href="{{ url_for('main.history', page=page_num) }}">
+                                            {{ page_num }}
+                                        </a>
+                                    </li>
+                                    {% endif %}
+                                {% else %}
+                                <li class="page-item disabled">
+                                    <span class="page-link">...</span>
+                                </li>
+                                {% endif %}
+                            {% endfor %}
+
+                            {% if valuations.has_next %}
+                            <li class="page-item">
+                                <a class="page-link" href="{{ url_for('main.history', page=valuations.next_num) }}">
+                                    Next <i class="bi bi-chevron-right"></i>
+                                </a>
+                            </li>
+                            {% else %}
+                            <li class="page-item disabled">
+                                <span class="page-link">Next <i class="bi bi-chevron-right"></i></span>
+                            </li>
+                            {% endif %}
+                        </ul>
+                    </nav>
+                    {% endif %}
+
+                    <div class="text-center text-muted">
+                        <small>
+                            Showing {{ valuations.items | length }} of {{ valuations.total }} valuations
+                        </small>
+                    </div>
+                {% else %}
+                    <div class="text-center py-5">
+                        <i class="bi bi-inbox display-1 text-muted"></i>
+                        <h4 class="mt-3 text-muted">No Valuations Yet</h4>
+                        <p class="text-muted">Start by creating your first property valuation.</p>
+                        <a href="{{ url_for('main.index') }}" class="btn btn-primary mt-2">
+                            <i class="bi bi-plus-circle me-1"></i>Create Valuation
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title">
+                    <i class="bi bi-exclamation-triangle me-2"></i>Confirm Delete
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete the valuation for:</p>
+                <p class="fw-bold" id="deleteAddress"></p>
+                <p class="text-muted small">This action cannot be undone.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <form id="deleteForm" method="POST" style="display: inline;">
+                    <button type="submit" class="btn btn-danger">
+                        <i class="bi bi-trash me-1"></i>Delete
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    function confirmDelete(valuationId, address) {
+        document.getElementById('deleteAddress').textContent = address;
+        document.getElementById('deleteForm').action = '/valuation/' + valuationId + '/delete';
+        new bootstrap.Modal(document.getElementById('deleteModal')).show();
+    }
+</script>
+{% endblock %}

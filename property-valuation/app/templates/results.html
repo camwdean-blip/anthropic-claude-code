@@ -1,0 +1,284 @@
+{% extends "base.html" %}
+
+{% block title %}Valuation Results - {{ valuation.full_address }}{% endblock %}
+
+{% block content %}
+<div class="row">
+    <!-- Main Results Card -->
+    <div class="col-lg-8">
+        <!-- Estimated Value Card -->
+        <div class="card shadow mb-4 border-primary">
+            <div class="card-header bg-primary text-white">
+                <h4 class="mb-0">
+                    <i class="bi bi-house-check me-2"></i>Estimated Property Value
+                </h4>
+            </div>
+            <div class="card-body text-center py-5">
+                <h1 class="display-3 text-primary mb-3">
+                    ${{ "{:,.0f}".format(valuation.calculated_value) }}
+                </h1>
+                <p class="lead text-muted mb-4">
+                    Value Range: ${{ "{:,.0f}".format(valuation.value_low) }} - ${{ "{:,.0f}".format(valuation.value_high) }}
+                </p>
+                <div class="row justify-content-center">
+                    <div class="col-md-4">
+                        <div class="stat-box">
+                            <span class="stat-value">${{ "{:,.2f}".format(valuation.price_per_sqft_calculated) }}</span>
+                            <span class="stat-label">Price per Sq Ft</span>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="stat-box">
+                            <span class="stat-value">{{ "{:,.0f}".format(valuation.square_footage) }}</span>
+                            <span class="stat-label">Square Feet</span>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="stat-box">
+                            <span class="stat-value">{{ valuation.bedrooms }}bd / {{ valuation.bathrooms }}ba</span>
+                            <span class="stat-label">Bed / Bath</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Property Details Card -->
+        <div class="card shadow mb-4">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="bi bi-building me-2"></i>Property Details</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <table class="table table-borderless">
+                            <tr>
+                                <td class="text-muted">Address:</td>
+                                <td><strong>{{ valuation.full_address }}</strong></td>
+                            </tr>
+                            <tr>
+                                <td class="text-muted">Neighborhood:</td>
+                                <td>{{ valuation.neighborhood or 'Not specified' }}</td>
+                            </tr>
+                            <tr>
+                                <td class="text-muted">Property Type:</td>
+                                <td>{{ valuation.property_type | replace('_', ' ') | title }}</td>
+                            </tr>
+                            <tr>
+                                <td class="text-muted">Condition:</td>
+                                <td>
+                                    <span class="badge
+                                        {% if valuation.condition == 'excellent' %}bg-success
+                                        {% elif valuation.condition == 'good' %}bg-primary
+                                        {% elif valuation.condition == 'average' %}bg-info
+                                        {% elif valuation.condition == 'fair' %}bg-warning
+                                        {% else %}bg-danger{% endif %}">
+                                        {{ valuation.condition | title }}
+                                    </span>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="col-md-6">
+                        <table class="table table-borderless">
+                            <tr>
+                                <td class="text-muted">Square Footage:</td>
+                                <td>{{ "{:,.0f}".format(valuation.square_footage) }} sq ft</td>
+                            </tr>
+                            <tr>
+                                <td class="text-muted">Lot Size:</td>
+                                <td>{{ "{:,.0f}".format(valuation.lot_size) if valuation.lot_size else 'N/A' }} sq ft</td>
+                            </tr>
+                            <tr>
+                                <td class="text-muted">Year Built:</td>
+                                <td>{{ valuation.year_built or 'N/A' }}</td>
+                            </tr>
+                            <tr>
+                                <td class="text-muted">Valuation Date:</td>
+                                <td>{{ valuation.created_at.strftime('%B %d, %Y') }}</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- External Estimates Comparison -->
+        <div class="card shadow mb-4">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="bi bi-bar-chart me-2"></i>External Estimates Comparison</h5>
+            </div>
+            <div class="card-body">
+                <div class="row text-center">
+                    <div class="col-md-4">
+                        <div class="estimate-box zillow">
+                            <img src="https://www.zillow.com/favicon.ico" alt="Zillow" class="estimate-logo mb-2">
+                            <h6>Zillow Estimate</h6>
+                            {% if valuation.zillow_estimate %}
+                                <h4 class="text-primary">${{ "{:,.0f}".format(valuation.zillow_estimate) }}</h4>
+                                {% if valuation.zillow_rent_estimate %}
+                                    <small class="text-muted">Rent: ${{ "{:,.0f}".format(valuation.zillow_rent_estimate) }}/mo</small>
+                                {% endif %}
+                            {% else %}
+                                <p class="text-muted">Not available</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="estimate-box redfin">
+                            <img src="https://www.redfin.com/favicon.ico" alt="Redfin" class="estimate-logo mb-2">
+                            <h6>Redfin Estimate</h6>
+                            {% if valuation.redfin_estimate %}
+                                <h4 class="text-danger">${{ "{:,.0f}".format(valuation.redfin_estimate) }}</h4>
+                            {% else %}
+                                <p class="text-muted">Not available</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="estimate-box last-sale">
+                            <i class="bi bi-clock-history estimate-icon mb-2"></i>
+                            <h6>Last Purchase Price</h6>
+                            {% if valuation.last_purchase_price %}
+                                <h4 class="text-success">${{ "{:,.0f}".format(valuation.last_purchase_price) }}</h4>
+                                {% if valuation.last_purchase_date %}
+                                    <small class="text-muted">{{ valuation.last_purchase_date }}</small>
+                                {% endif %}
+                            {% else %}
+                                <p class="text-muted">Not available</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Market Trends Card -->
+        <div class="card shadow mb-4">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="bi bi-graph-up me-2"></i>Market Trends</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4 text-center">
+                        <h6 class="text-muted">Price/SqFt 12 Months Ago</h6>
+                        <h4>${{ "{:,.2f}".format(valuation.price_per_sqft_12mo) }}</h4>
+                    </div>
+                    <div class="col-md-4 text-center">
+                        <h6 class="text-muted">Price/SqFt 6 Months Ago</h6>
+                        <h4>${{ "{:,.2f}".format(valuation.price_per_sqft_6mo) }}</h4>
+                    </div>
+                    <div class="col-md-4 text-center">
+                        <h6 class="text-muted">Current Price/SqFt</h6>
+                        <h4 class="text-primary">${{ "{:,.2f}".format(valuation.current_price_per_sqft) }}</h4>
+                    </div>
+                </div>
+                <hr>
+                <div class="row">
+                    <div class="col-md-6 text-center">
+                        <h6 class="text-muted">6-Month Appreciation</h6>
+                        {% set app_6mo = ((valuation.current_price_per_sqft - valuation.price_per_sqft_6mo) / valuation.price_per_sqft_6mo * 100) if valuation.price_per_sqft_6mo else 0 %}
+                        <h4 class="{{ 'text-success' if app_6mo > 0 else 'text-danger' }}">
+                            {{ "{:+.1f}".format(app_6mo) }}%
+                            <i class="bi {{ 'bi-arrow-up' if app_6mo > 0 else 'bi-arrow-down' }}"></i>
+                        </h4>
+                    </div>
+                    <div class="col-md-6 text-center">
+                        <h6 class="text-muted">12-Month Appreciation</h6>
+                        {% set app_12mo = ((valuation.current_price_per_sqft - valuation.price_per_sqft_12mo) / valuation.price_per_sqft_12mo * 100) if valuation.price_per_sqft_12mo else 0 %}
+                        <h4 class="{{ 'text-success' if app_12mo > 0 else 'text-danger' }}">
+                            {{ "{:+.1f}".format(app_12mo) }}%
+                            <i class="bi {{ 'bi-arrow-up' if app_12mo > 0 else 'bi-arrow-down' }}"></i>
+                        </h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sidebar -->
+    <div class="col-lg-4">
+        <!-- Actions Card -->
+        <div class="card shadow mb-4">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="bi bi-gear me-2"></i>Actions</h5>
+            </div>
+            <div class="card-body">
+                <div class="d-grid gap-2">
+                    <a href="{{ url_for('main.generate_pdf', valuation_id=valuation.id) }}" class="btn btn-primary">
+                        <i class="bi bi-file-pdf me-2"></i>Download PDF Report
+                    </a>
+                    <a href="{{ url_for('main.index') }}" class="btn btn-outline-primary">
+                        <i class="bi bi-plus-circle me-2"></i>New Valuation
+                    </a>
+                    <a href="{{ url_for('main.history') }}" class="btn btn-outline-secondary">
+                        <i class="bi bi-clock-history me-2"></i>View History
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Valuation Breakdown Card -->
+        <div class="card shadow mb-4">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="bi bi-list-check me-2"></i>Valuation Breakdown</h5>
+            </div>
+            <div class="card-body">
+                <table class="table table-sm">
+                    <tr>
+                        <td>Comparable Value:</td>
+                        <td class="text-end">${{ "{:,.0f}".format(valuation.comparable_value) if valuation.comparable_value else 'N/A' }}</td>
+                    </tr>
+                    <tr>
+                        <td>Trend Adjusted:</td>
+                        <td class="text-end">${{ "{:,.0f}".format(valuation.trend_adjusted_value) if valuation.trend_adjusted_value else 'N/A' }}</td>
+                    </tr>
+                    <tr>
+                        <td>Condition Adjustment:</td>
+                        <td class="text-end {{ 'text-success' if valuation.condition_adjustment and valuation.condition_adjustment > 0 else 'text-danger' if valuation.condition_adjustment and valuation.condition_adjustment < 0 else '' }}">
+                            {{ "{:+,.0f}".format(valuation.condition_adjustment) if valuation.condition_adjustment else '$0' }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Age Adjustment:</td>
+                        <td class="text-end {{ 'text-success' if valuation.age_adjustment and valuation.age_adjustment > 0 else 'text-danger' if valuation.age_adjustment and valuation.age_adjustment < 0 else '' }}">
+                            {{ "{:+,.0f}".format(valuation.age_adjustment) if valuation.age_adjustment else '$0' }}
+                        </td>
+                    </tr>
+                    <tr class="table-primary">
+                        <td><strong>Final Value:</strong></td>
+                        <td class="text-end"><strong>${{ "{:,.0f}".format(valuation.calculated_value) }}</strong></td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        <!-- Notes Card -->
+        {% if valuation.notes %}
+        <div class="card shadow mb-4">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="bi bi-journal-text me-2"></i>Notes</h5>
+            </div>
+            <div class="card-body">
+                <p class="mb-0">{{ valuation.notes }}</p>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Disclaimer Card -->
+        <div class="card shadow mb-4 border-warning">
+            <div class="card-header bg-warning">
+                <h5 class="mb-0"><i class="bi bi-exclamation-triangle me-2"></i>Disclaimer</h5>
+            </div>
+            <div class="card-body">
+                <small class="text-muted">
+                    This valuation is for informational purposes only and should not be
+                    considered a formal appraisal. Actual market value may vary based on
+                    factors not captured in this analysis. Consult a licensed appraiser
+                    for official property valuations.
+                </small>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
