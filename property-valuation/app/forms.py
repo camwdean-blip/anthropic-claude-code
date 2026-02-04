@@ -30,21 +30,22 @@ class PropertyValuationForm(FlaskForm):
             DataRequired(message="City is required"),
             Length(min=2, max=100)
         ],
-        render_kw={"placeholder": "San Francisco"}
+        render_kw={"placeholder": "Boston"}
     )
 
     state = SelectField(
         'State',
         validators=[DataRequired(message="State is required")],
+        default='MA',
         choices=[
-            ('', 'Select State'),
+            ('MA', 'Massachusetts'),
             ('AL', 'Alabama'), ('AK', 'Alaska'), ('AZ', 'Arizona'),
             ('AR', 'Arkansas'), ('CA', 'California'), ('CO', 'Colorado'),
             ('CT', 'Connecticut'), ('DE', 'Delaware'), ('FL', 'Florida'),
             ('GA', 'Georgia'), ('HI', 'Hawaii'), ('ID', 'Idaho'),
             ('IL', 'Illinois'), ('IN', 'Indiana'), ('IA', 'Iowa'),
             ('KS', 'Kansas'), ('KY', 'Kentucky'), ('LA', 'Louisiana'),
-            ('ME', 'Maine'), ('MD', 'Maryland'), ('MA', 'Massachusetts'),
+            ('ME', 'Maine'), ('MD', 'Maryland'),
             ('MI', 'Michigan'), ('MN', 'Minnesota'), ('MS', 'Mississippi'),
             ('MO', 'Missouri'), ('MT', 'Montana'), ('NE', 'Nebraska'),
             ('NV', 'Nevada'), ('NH', 'New Hampshire'), ('NJ', 'New Jersey'),
@@ -64,7 +65,7 @@ class PropertyValuationForm(FlaskForm):
             DataRequired(message="ZIP code is required"),
             Regexp(r'^\d{5}(-\d{4})?$', message="Invalid ZIP code format")
         ],
-        render_kw={"placeholder": "94102"}
+        render_kw={"placeholder": "02108"}
     )
 
     neighborhood = StringField(

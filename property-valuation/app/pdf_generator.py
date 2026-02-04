@@ -578,25 +578,30 @@ def generate_valuation_report(
             html = HTML(string=html_content)
             html.write_pdf(pdf_path)
             logger.info(f"PDF generated successfully: {pdf_path}")
+            return pdf_path
         except Exception as e:
             logger.error(f"WeasyPrint PDF generation failed: {e}")
             # Fall back to text report
-            _generate_text_report(valuation, pdf_path, context)
+            return _generate_text_report(valuation, output_dir, context)
     else:
-        # Fall back to simple text report saved as .pdf (not ideal but functional)
-        _generate_text_report(valuation, pdf_path, context)
-
-    return pdf_path
+        # Fall back to simple text report
+        return _generate_text_report(valuation, output_dir, context)
 
 
-def _generate_text_report(valuation, output_path: Path, context: dict):
+def _generate_text_report(valuation, output_dir: Path, context: dict):
     """
     Generate a simple text-based report as fallback.
 
     This is used when WeasyPrint is not available.
     """
-    # Change extension to .txt for text report
-    text_path = output_path.with_suffix('.txt')
+    # Generate filename with .txt extension
+    safe_address = "".join(
+        c if c.isalnum() or c in (' ', '-', '_') else '_'
+        for c in valuation.street_address
+    ).strip()[:50]
+
+    filename = f"valuation_{valuation.id}_{safe_address}_{datetime.now().strftime('%Y%m%d_%H%M%S')}.txt"
+    text_path = output_dir / filename
 
     report_lines = [
         "=" * 70,
@@ -661,8 +666,4 @@ def _generate_text_report(valuation, output_path: Path, context: dict):
 
     logger.info(f"Text report generated: {text_path}")
 
-    # Copy to PDF path for consistency (it's really a text file)
-    import shutil
-    shutil.copy(text_path, output_path)
-
-    return output_path
+    return text_path

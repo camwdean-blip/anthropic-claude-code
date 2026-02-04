@@ -1,8 +1,7 @@
 """
 Web scraper for Zillow and Redfin property data.
 
-Note: Web scraping may be against the Terms of Service of these websites.
-Use responsibly and consider using official APIs when available.
+Uses API endpoints where possible for more reliable data retrieval.
 """
 import re
 import time
@@ -10,22 +9,10 @@ import json
 import logging
 from typing import Optional
 from dataclasses import dataclass
-from urllib.parse import quote_plus
+from urllib.parse import quote_plus, quote
 
 import requests
 from bs4 import BeautifulSoup
-
-try:
-    from selenium import webdriver
-    from selenium.webdriver.chrome.service import Service
-    from selenium.webdriver.chrome.options import Options
-    from selenium.webdriver.common.by import By
-    from selenium.webdriver.support.ui import WebDriverWait
-    from selenium.webdriver.support import expected_conditions as EC
-    from webdriver_manager.chrome import ChromeDriverManager
-    SELENIUM_AVAILABLE = True
-except ImportError:
-    SELENIUM_AVAILABLE = False
 
 from config import Config
 
@@ -54,104 +41,31 @@ class PropertyData:
     raw_data: Optional[dict] = None
 
 
-class BaseScraper:
-    """Base class for property scrapers."""
+class ZillowScraper:
+    """Scraper for Zillow property data using their search API."""
 
     def __init__(self):
         self.session = requests.Session()
         self.session.headers.update({
-            'User-Agent': Config.USER_AGENT,
-            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
-            'Accept-Language': 'en-US,en;q=0.5',
+            'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8',
+            'Accept-Language': 'en-US,en;q=0.9',
             'Accept-Encoding': 'gzip, deflate, br',
-            'Connection': 'keep-alive',
-            'Upgrade-Insecure-Requests': '1',
+            'Cache-Control': 'no-cache',
+            'Pragma': 'no-cache',
         })
-        self.timeout = Config.SCRAPING_TIMEOUT
-        self.retry_attempts = Config.SCRAPING_RETRY_ATTEMPTS
-        self.delay = Config.SCRAPING_DELAY
 
-    def _get_with_retry(self, url: str) -> Optional[requests.Response]:
-        """Make HTTP request with retry logic."""
-        for attempt in range(self.retry_attempts):
-            try:
-                time.sleep(self.delay)  # Rate limiting
-                response = self.session.get(url, timeout=self.timeout)
-                if response.status_code == 200:
-                    return response
-                elif response.status_code == 403:
-                    logger.warning(f"Access forbidden (403) on attempt {attempt + 1}")
-                elif response.status_code == 429:
-                    logger.warning(f"Rate limited (429), waiting longer...")
-                    time.sleep(self.delay * 3)
-                else:
-                    logger.warning(f"HTTP {response.status_code} on attempt {attempt + 1}")
-            except requests.RequestException as e:
-                logger.error(f"Request failed on attempt {attempt + 1}: {e}")
-
-        return None
-
-    def _parse_price(self, price_str: str) -> Optional[float]:
+    def _parse_price(self, price_str) -> Optional[float]:
         """Parse price string to float."""
-        if not price_str:
+        if price_str is None:
             return None
-        # Remove currency symbols, commas, and whitespace
+        if isinstance(price_str, (int, float)):
+            return float(price_str)
         cleaned = re.sub(r'[^\d.]', '', str(price_str))
         try:
             return float(cleaned)
         except (ValueError, TypeError):
             return None
-
-    def _parse_int(self, value: str) -> Optional[int]:
-        """Parse string to integer."""
-        if not value:
-            return None
-        cleaned = re.sub(r'[^\d]', '', str(value))
-        try:
-            return int(cleaned)
-        except (ValueError, TypeError):
-            return None
-
-
-class ZillowScraper(BaseScraper):
-    """Scraper for Zillow property data."""
-
-    BASE_URL = "https://www.zillow.com"
-
-    def __init__(self):
-        super().__init__()
-        self.session.headers.update({
-            'Referer': 'https://www.zillow.com/',
-        })
-
-    def _build_search_url(self, address: str) -> str:
-        """Build Zillow search URL from address."""
-        encoded_address = quote_plus(address)
-        return f"{self.BASE_URL}/homes/{encoded_address}_rb/"
-
-    def _extract_json_data(self, soup: BeautifulSoup) -> Optional[dict]:
-        """Extract JSON data embedded in Zillow page."""
-        # Look for the __NEXT_DATA__ script tag
-        script_tag = soup.find('script', {'id': '__NEXT_DATA__'})
-        if script_tag:
-            try:
-                data = json.loads(script_tag.string)
-                return data
-            except json.JSONDecodeError:
-                pass
-
-        # Alternative: Look for preloaded state
-        scripts = soup.find_all('script')
-        for script in scripts:
-            if script.string and 'window.__PRELOADED_STATE__' in script.string:
-                try:
-                    match = re.search(r'window\.__PRELOADED_STATE__\s*=\s*({.+?});', script.string, re.DOTALL)
-                    if match:
-                        return json.loads(match.group(1))
-                except (json.JSONDecodeError, AttributeError):
-                    pass
-
-        return None
 
     def scrape(self, address: str) -> PropertyData:
         """
@@ -166,25 +80,44 @@ class ZillowScraper(BaseScraper):
         result = PropertyData(source='zillow', address=address)
 
         try:
-            url = self._build_search_url(address)
-            logger.info(f"Scraping Zillow: {url}")
+            # Try the Zillow search/property page
+            encoded_address = quote(address.replace(',', '').replace(' ', '-'))
 
-            response = self._get_with_retry(url)
-            if not response:
-                result.error = "Failed to fetch Zillow page after retries"
-                return result
+            # Method 1: Try direct property URL pattern
+            urls_to_try = [
+                f"https://www.zillow.com/homes/{quote_plus(address)}_rb/",
+                f"https://www.zillow.com/homedetails/{encoded_address}",
+            ]
 
-            soup = BeautifulSoup(response.text, 'lxml')
+            for url in urls_to_try:
+                logger.info(f"Trying Zillow URL: {url}")
+                try:
+                    response = self.session.get(url, timeout=15, allow_redirects=True)
 
-            # Try to extract JSON data first (most reliable)
-            json_data = self._extract_json_data(soup)
-            if json_data:
-                result.raw_data = json_data
-                self._parse_json_data(result, json_data)
-                return result
+                    if response.status_code == 200:
+                        # Look for JSON data in the page
+                        data = self._extract_data_from_page(response.text)
+                        if data:
+                            result.estimate = data.get('zestimate')
+                            result.rent_estimate = data.get('rentZestimate')
+                            result.bedrooms = data.get('bedrooms')
+                            result.bathrooms = data.get('bathrooms')
+                            result.square_footage = data.get('livingArea')
+                            result.lot_size = data.get('lotSize')
+                            result.year_built = data.get('yearBuilt')
+                            result.last_sold_price = data.get('lastSoldPrice')
+                            result.raw_data = data
 
-            # Fallback to HTML parsing
-            self._parse_html_data(result, soup)
+                            if result.estimate:
+                                logger.info(f"Zillow estimate found: ${result.estimate:,.0f}")
+                                return result
+
+                except requests.RequestException as e:
+                    logger.warning(f"Request failed for {url}: {e}")
+                    continue
+
+            # If we get here, scraping failed
+            result.error = "Could not retrieve Zillow estimate. Try entering manually."
 
         except Exception as e:
             logger.error(f"Zillow scraping error: {e}")
@@ -192,154 +125,99 @@ class ZillowScraper(BaseScraper):
 
         return result
 
-    def _parse_json_data(self, result: PropertyData, data: dict):
-        """Parse JSON data from Zillow page."""
+    def _extract_data_from_page(self, html: str) -> Optional[dict]:
+        """Extract property data from Zillow page HTML."""
         try:
-            # Navigate through the JSON structure (varies by page type)
-            props = data.get('props', {}).get('pageProps', {})
+            soup = BeautifulSoup(html, 'lxml')
 
-            # Try different paths for property data
-            property_data = (
-                props.get('initialReduxState', {}).get('gdp', {}).get('building', {}) or
-                props.get('property', {}) or
-                props.get('initialData', {}).get('property', {}) or
-                {}
-            )
+            # Look for __NEXT_DATA__ script tag (Next.js data)
+            script = soup.find('script', {'id': '__NEXT_DATA__'})
+            if script and script.string:
+                try:
+                    data = json.loads(script.string)
+                    # Navigate to property data
+                    props = data.get('props', {}).get('pageProps', {})
 
-            if property_data:
-                result.estimate = self._parse_price(property_data.get('zestimate'))
-                result.rent_estimate = self._parse_price(property_data.get('rentZestimate'))
-                result.bedrooms = self._parse_int(property_data.get('bedrooms'))
-                result.bathrooms = property_data.get('bathrooms')
-                result.square_footage = self._parse_int(property_data.get('livingArea'))
-                result.lot_size = self._parse_int(property_data.get('lotSize'))
-                result.year_built = self._parse_int(property_data.get('yearBuilt'))
-                result.property_type = property_data.get('homeType')
+                    # Try different paths
+                    property_data = (
+                        props.get('initialReduxState', {}).get('gdp', {}).get('building') or
+                        props.get('componentProps', {}).get('gdpClientCache', {}) or
+                        props.get('property') or
+                        {}
+                    )
 
-                # Price history
-                price_history = property_data.get('priceHistory', [])
-                if price_history:
-                    result.price_history = price_history
-                    # Find last sale
-                    for event in price_history:
-                        if event.get('event') in ['Sold', 'SOLD']:
-                            result.last_sold_price = self._parse_price(event.get('price'))
-                            result.last_sold_date = event.get('date')
-                            break
+                    # If gdpClientCache, need to extract the first property
+                    if isinstance(property_data, dict) and not property_data.get('zestimate'):
+                        for key, value in property_data.items():
+                            if isinstance(value, dict) and 'property' in value:
+                                property_data = value.get('property', {})
+                                break
 
-        except Exception as e:
-            logger.error(f"Error parsing Zillow JSON: {e}")
+                    if property_data:
+                        return {
+                            'zestimate': self._parse_price(property_data.get('zestimate')),
+                            'rentZestimate': self._parse_price(property_data.get('rentZestimate')),
+                            'bedrooms': property_data.get('bedrooms'),
+                            'bathrooms': property_data.get('bathrooms'),
+                            'livingArea': property_data.get('livingArea'),
+                            'lotSize': property_data.get('lotSize'),
+                            'yearBuilt': property_data.get('yearBuilt'),
+                            'lastSoldPrice': self._parse_price(property_data.get('lastSoldPrice')),
+                        }
+                except json.JSONDecodeError:
+                    pass
 
-    def _parse_html_data(self, result: PropertyData, soup: BeautifulSoup):
-        """Fallback HTML parsing for Zillow data."""
-        try:
-            # Try to find Zestimate
-            zestimate_elem = soup.find('span', {'data-testid': 'zestimate-text'})
+            # Fallback: Look for preloaded state
+            for script in soup.find_all('script'):
+                if script.string and 'gdpClientCache' in script.string:
+                    match = re.search(r'"zestimate"\s*:\s*(\d+)', script.string)
+                    if match:
+                        return {'zestimate': float(match.group(1))}
+
+            # Fallback: Parse HTML directly
+            zestimate_elem = soup.select_one('[data-testid="zestimate-text"]')
             if zestimate_elem:
-                result.estimate = self._parse_price(zestimate_elem.get_text())
-
-            # Try to find price
-            price_elem = soup.find('span', {'data-testid': 'price'})
-            if price_elem and not result.estimate:
-                result.estimate = self._parse_price(price_elem.get_text())
-
-            # Property details
-            beds_elem = soup.find('span', {'data-testid': 'bed-bath-item'})
-            if beds_elem:
-                beds_text = beds_elem.get_text()
-                beds_match = re.search(r'(\d+)\s*bd', beds_text, re.I)
-                if beds_match:
-                    result.bedrooms = int(beds_match.group(1))
-
-                baths_match = re.search(r'(\d+\.?\d*)\s*ba', beds_text, re.I)
-                if baths_match:
-                    result.bathrooms = float(baths_match.group(1))
-
-            sqft_elem = soup.find('span', text=re.compile(r'sqft', re.I))
-            if sqft_elem:
-                sqft_text = sqft_elem.find_parent().get_text() if sqft_elem.find_parent() else sqft_elem.get_text()
-                sqft_match = re.search(r'([\d,]+)\s*sqft', sqft_text, re.I)
-                if sqft_match:
-                    result.square_footage = self._parse_int(sqft_match.group(1))
+                return {'zestimate': self._parse_price(zestimate_elem.get_text())}
 
         except Exception as e:
-            logger.error(f"Error parsing Zillow HTML: {e}")
+            logger.error(f"Error extracting Zillow data: {e}")
+
+        return None
 
 
-class RedfinScraper(BaseScraper):
-    """Scraper for Redfin property data."""
+class RedfinScraper:
+    """Scraper for Redfin property data using their API."""
 
-    BASE_URL = "https://www.redfin.com"
-    SEARCH_API = "https://www.redfin.com/stingray/do/location-autocomplete"
+    SEARCH_URL = "https://www.redfin.com/stingray/do/location-autocomplete"
+    INITIAL_INFO_URL = "https://www.redfin.com/stingray/api/home/details/initialInfo"
 
     def __init__(self):
-        super().__init__()
+        self.session = requests.Session()
         self.session.headers.update({
+            'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+            'Accept': 'application/json, text/javascript, */*; q=0.01',
+            'Accept-Language': 'en-US,en;q=0.9',
             'Referer': 'https://www.redfin.com/',
         })
 
-    def _search_property(self, address: str) -> Optional[str]:
-        """Search for property and get URL."""
+    def _parse_price(self, price_str) -> Optional[float]:
+        """Parse price string to float."""
+        if price_str is None:
+            return None
+        if isinstance(price_str, (int, float)):
+            return float(price_str)
+        cleaned = re.sub(r'[^\d.]', '', str(price_str))
         try:
-            params = {
-                'location': address,
-                'v': '2',
-            }
-            response = self.session.get(
-                self.SEARCH_API,
-                params=params,
-                timeout=self.timeout
-            )
+            return float(cleaned)
+        except (ValueError, TypeError):
+            return None
 
-            if response.status_code == 200:
-                # Redfin returns JSON with extra characters
-                text = response.text
-                if text.startswith('{}&&'):
-                    text = text[4:]
-
-                data = json.loads(text)
-                results = data.get('payload', {}).get('exactMatch', {})
-                if results:
-                    url = results.get('url')
-                    if url:
-                        return self.BASE_URL + url
-
-                # Try sections
-                sections = data.get('payload', {}).get('sections', [])
-                for section in sections:
-                    rows = section.get('rows', [])
-                    if rows:
-                        url = rows[0].get('url')
-                        if url:
-                            return self.BASE_URL + url
-
-        except Exception as e:
-            logger.error(f"Redfin search error: {e}")
-
-        return None
-
-    def _extract_json_data(self, soup: BeautifulSoup) -> Optional[dict]:
-        """Extract JSON data embedded in Redfin page."""
-        scripts = soup.find_all('script')
-        for script in scripts:
-            if script.string and 'window.__PRELOADED_STATE__' in script.string:
-                try:
-                    match = re.search(r'window\.__PRELOADED_STATE__\s*=\s*({.+?});?\s*(?:</script>|window\.)', script.string, re.DOTALL)
-                    if match:
-                        return json.loads(match.group(1))
-                except (json.JSONDecodeError, AttributeError):
-                    pass
-
-            # Alternative pattern
-            if script.string and 'reactServerState' in script.string:
-                try:
-                    match = re.search(r'"reactServerState"\s*:\s*({.+?})\s*,\s*"', script.string, re.DOTALL)
-                    if match:
-                        return json.loads(match.group(1))
-                except (json.JSONDecodeError, AttributeError):
-                    pass
-
-        return None
+    def _clean_json_response(self, text: str) -> str:
+        """Clean Redfin's JSON response (removes prefix)."""
+        # Redfin prepends responses with {}&&
+        if text.startswith('{}&&'):
+            return text[4:]
+        return text
 
     def scrape(self, address: str) -> PropertyData:
         """
@@ -354,32 +232,80 @@ class RedfinScraper(BaseScraper):
         result = PropertyData(source='redfin', address=address)
 
         try:
-            # First, search for the property to get its URL
-            property_url = self._search_property(address)
+            # Step 1: Search for the property to get its URL/ID
+            search_params = {
+                'location': address,
+                'v': '2',
+            }
+
+            logger.info(f"Searching Redfin for: {address}")
+            search_response = self.session.get(
+                self.SEARCH_URL,
+                params=search_params,
+                timeout=15
+            )
+
+            if search_response.status_code != 200:
+                result.error = f"Redfin search failed: HTTP {search_response.status_code}"
+                return result
+
+            search_text = self._clean_json_response(search_response.text)
+
+            try:
+                search_data = json.loads(search_text)
+            except json.JSONDecodeError:
+                result.error = "Could not parse Redfin search response"
+                return result
+
+            # Extract property URL from search results
+            property_url = None
+            payload = search_data.get('payload', {})
+
+            # Try exactMatch first
+            exact_match = payload.get('exactMatch', {})
+            if exact_match and exact_match.get('url'):
+                property_url = exact_match.get('url')
+            else:
+                # Try sections
+                sections = payload.get('sections', [])
+                for section in sections:
+                    rows = section.get('rows', [])
+                    for row in rows:
+                        if row.get('url'):
+                            property_url = row.get('url')
+                            break
+                    if property_url:
+                        break
+
             if not property_url:
-                # Try direct URL construction
-                address_slug = re.sub(r'[^\w\s-]', '', address.lower())
-                address_slug = re.sub(r'[\s]+', '-', address_slug)
-                property_url = f"{self.BASE_URL}/home/{address_slug}"
-
-            logger.info(f"Scraping Redfin: {property_url}")
-
-            response = self._get_with_retry(property_url)
-            if not response:
-                result.error = "Failed to fetch Redfin page after retries"
+                result.error = "Property not found on Redfin"
                 return result
 
-            soup = BeautifulSoup(response.text, 'lxml')
+            # Step 2: Get property details page
+            full_url = f"https://www.redfin.com{property_url}"
+            logger.info(f"Fetching Redfin property: {full_url}")
 
-            # Try to extract JSON data first
-            json_data = self._extract_json_data(soup)
-            if json_data:
-                result.raw_data = json_data
-                self._parse_json_data(result, json_data)
-                return result
+            property_response = self.session.get(full_url, timeout=15)
 
-            # Fallback to HTML parsing
-            self._parse_html_data(result, soup)
+            if property_response.status_code == 200:
+                data = self._extract_data_from_page(property_response.text)
+                if data:
+                    result.estimate = data.get('avm')
+                    result.rent_estimate = data.get('rentAvm')
+                    result.bedrooms = data.get('beds')
+                    result.bathrooms = data.get('baths')
+                    result.square_footage = data.get('sqFt')
+                    result.lot_size = data.get('lotSize')
+                    result.year_built = data.get('yearBuilt')
+                    result.last_sold_price = data.get('lastSoldPrice')
+                    result.last_sold_date = data.get('lastSoldDate')
+                    result.raw_data = data
+
+                    if result.estimate:
+                        logger.info(f"Redfin estimate found: ${result.estimate:,.0f}")
+                    return result
+
+            result.error = "Could not retrieve Redfin estimate. Try entering manually."
 
         except Exception as e:
             logger.error(f"Redfin scraping error: {e}")
@@ -387,184 +313,62 @@ class RedfinScraper(BaseScraper):
 
         return result
 
-    def _parse_json_data(self, result: PropertyData, data: dict):
-        """Parse JSON data from Redfin page."""
+    def _extract_data_from_page(self, html: str) -> Optional[dict]:
+        """Extract property data from Redfin page HTML."""
         try:
-            # Navigate through Redfin's JSON structure
-            home_data = (
-                data.get('home', {}) or
-                data.get('initialReduxState', {}).get('home', {}) or
-                {}
-            )
+            soup = BeautifulSoup(html, 'lxml')
 
-            if home_data:
-                result.estimate = self._parse_price(home_data.get('avm', {}).get('value'))
-                result.rent_estimate = self._parse_price(home_data.get('rentAvm', {}).get('value'))
-                result.bedrooms = home_data.get('beds')
-                result.bathrooms = home_data.get('baths')
-                result.square_footage = self._parse_int(home_data.get('sqFt'))
-                result.lot_size = self._parse_int(home_data.get('lotSize'))
-                result.year_built = self._parse_int(home_data.get('yearBuilt'))
-                result.property_type = home_data.get('propertyType')
+            # Look for preloaded data in scripts
+            for script in soup.find_all('script'):
+                if not script.string:
+                    continue
 
-                # Last sale
-                last_sale = home_data.get('lastSale', {})
-                if last_sale:
-                    result.last_sold_price = self._parse_price(last_sale.get('price'))
-                    result.last_sold_date = last_sale.get('date')
+                # Look for initialData or reactServerState
+                if 'root.__reactServerState' in script.string or 'window.__PRELOADED_STATE__' in script.string:
+                    # Try to extract AVM value
+                    avm_match = re.search(r'"avm"\s*:\s*\{\s*"value"\s*:\s*(\d+)', script.string)
+                    price_match = re.search(r'"price"\s*:\s*(\d+)', script.string)
+                    beds_match = re.search(r'"beds"\s*:\s*(\d+)', script.string)
+                    baths_match = re.search(r'"baths"\s*:\s*([\d.]+)', script.string)
+                    sqft_match = re.search(r'"sqFt"\s*:\s*\{\s*"value"\s*:\s*(\d+)', script.string)
+                    year_match = re.search(r'"yearBuilt"\s*:\s*\{\s*"value"\s*:\s*(\d+)', script.string)
 
-        except Exception as e:
-            logger.error(f"Error parsing Redfin JSON: {e}")
+                    data = {}
+                    if avm_match:
+                        data['avm'] = float(avm_match.group(1))
+                    if price_match and not data.get('avm'):
+                        data['avm'] = float(price_match.group(1))
+                    if beds_match:
+                        data['beds'] = int(beds_match.group(1))
+                    if baths_match:
+                        data['baths'] = float(baths_match.group(1))
+                    if sqft_match:
+                        data['sqFt'] = int(sqft_match.group(1))
+                    if year_match:
+                        data['yearBuilt'] = int(year_match.group(1))
 
-    def _parse_html_data(self, result: PropertyData, soup: BeautifulSoup):
-        """Fallback HTML parsing for Redfin data."""
-        try:
-            # Redfin estimate
-            estimate_elem = soup.find('div', {'class': re.compile(r'avm', re.I)})
+                    if data:
+                        return data
+
+            # Fallback: Parse HTML elements
+            estimate_elem = soup.select_one('.avm-price, .estimated-value')
             if estimate_elem:
-                price_elem = estimate_elem.find('span', {'class': re.compile(r'value', re.I)})
-                if price_elem:
-                    result.estimate = self._parse_price(price_elem.get_text())
-
-            # Try price from listing
-            price_elem = soup.find('div', {'data-rf-test-id': 'abp-price'})
-            if price_elem and not result.estimate:
-                result.estimate = self._parse_price(price_elem.get_text())
-
-            # Stats row (beds, baths, sqft)
-            stats = soup.find_all('div', {'class': re.compile(r'stat', re.I)})
-            for stat in stats:
-                text = stat.get_text().lower()
-                if 'bed' in text:
-                    match = re.search(r'(\d+)', text)
-                    if match:
-                        result.bedrooms = int(match.group(1))
-                elif 'bath' in text:
-                    match = re.search(r'(\d+\.?\d*)', text)
-                    if match:
-                        result.bathrooms = float(match.group(1))
-                elif 'sq ft' in text or 'sqft' in text:
-                    match = re.search(r'([\d,]+)', text)
-                    if match:
-                        result.square_footage = self._parse_int(match.group(1))
+                return {'avm': self._parse_price(estimate_elem.get_text())}
 
         except Exception as e:
-            logger.error(f"Error parsing Redfin HTML: {e}")
+            logger.error(f"Error extracting Redfin data: {e}")
 
-
-class SeleniumScraper:
-    """
-    Selenium-based scraper for JavaScript-heavy pages.
-    Falls back to this when basic requests fail.
-    """
-
-    def __init__(self):
-        if not SELENIUM_AVAILABLE:
-            raise ImportError("Selenium is not installed")
-
-        self.options = Options()
-        self.options.add_argument('--headless')
-        self.options.add_argument('--no-sandbox')
-        self.options.add_argument('--disable-dev-shm-usage')
-        self.options.add_argument('--disable-gpu')
-        self.options.add_argument(f'--user-agent={Config.USER_AGENT}')
-
-    def _get_driver(self):
-        """Get a configured Chrome WebDriver."""
-        service = Service(ChromeDriverManager().install())
-        return webdriver.Chrome(service=service, options=self.options)
-
-    def scrape_zillow(self, address: str) -> PropertyData:
-        """Scrape Zillow using Selenium."""
-        result = PropertyData(source='zillow', address=address)
-        driver = None
-
-        try:
-            driver = self._get_driver()
-            encoded_address = quote_plus(address)
-            url = f"https://www.zillow.com/homes/{encoded_address}_rb/"
-
-            logger.info(f"Selenium scraping Zillow: {url}")
-            driver.get(url)
-
-            # Wait for content to load
-            WebDriverWait(driver, 10).until(
-                EC.presence_of_element_located((By.TAG_NAME, "body"))
-            )
-            time.sleep(3)  # Additional wait for JS
-
-            # Get page source and parse
-            soup = BeautifulSoup(driver.page_source, 'lxml')
-            scraper = ZillowScraper()
-            json_data = scraper._extract_json_data(soup)
-
-            if json_data:
-                result.raw_data = json_data
-                scraper._parse_json_data(result, json_data)
-            else:
-                scraper._parse_html_data(result, soup)
-
-        except Exception as e:
-            logger.error(f"Selenium Zillow error: {e}")
-            result.error = str(e)
-        finally:
-            if driver:
-                driver.quit()
-
-        return result
-
-    def scrape_redfin(self, address: str) -> PropertyData:
-        """Scrape Redfin using Selenium."""
-        result = PropertyData(source='redfin', address=address)
-        driver = None
-
-        try:
-            driver = self._get_driver()
-            address_slug = re.sub(r'[^\w\s-]', '', address.lower())
-            address_slug = re.sub(r'[\s]+', '-', address_slug)
-            url = f"https://www.redfin.com/home/{address_slug}"
-
-            logger.info(f"Selenium scraping Redfin: {url}")
-            driver.get(url)
-
-            # Wait for content to load
-            WebDriverWait(driver, 10).until(
-                EC.presence_of_element_located((By.TAG_NAME, "body"))
-            )
-            time.sleep(3)
-
-            # Get page source and parse
-            soup = BeautifulSoup(driver.page_source, 'lxml')
-            scraper = RedfinScraper()
-            json_data = scraper._extract_json_data(soup)
-
-            if json_data:
-                result.raw_data = json_data
-                scraper._parse_json_data(result, json_data)
-            else:
-                scraper._parse_html_data(result, soup)
-
-        except Exception as e:
-            logger.error(f"Selenium Redfin error: {e}")
-            result.error = str(e)
-        finally:
-            if driver:
-                driver.quit()
-
-        return result
+        return None
 
 
 class PropertyScraper:
     """
     Main interface for scraping property data from multiple sources.
-    Handles fallback logic and aggregation.
     """
 
-    def __init__(self, use_selenium_fallback: bool = True):
+    def __init__(self):
         self.zillow_scraper = ZillowScraper()
         self.redfin_scraper = RedfinScraper()
-        self.use_selenium = use_selenium_fallback and SELENIUM_AVAILABLE
-        self.selenium_scraper = SeleniumScraper() if self.use_selenium else None
 
     def scrape_all(self, address: str) -> dict:
         """
@@ -583,24 +387,18 @@ class PropertyScraper:
         }
 
         # Scrape Zillow
+        logger.info("Starting Zillow scrape...")
         zillow_data = self.zillow_scraper.scrape(address)
-        if zillow_data.error and self.selenium_scraper:
-            logger.info("Falling back to Selenium for Zillow")
-            zillow_data = self.selenium_scraper.scrape_zillow(address)
-
         if zillow_data.error:
             results['errors'].append(f"Zillow: {zillow_data.error}")
         results['zillow'] = zillow_data
 
         # Small delay between sources
-        time.sleep(Config.SCRAPING_DELAY)
+        time.sleep(1)
 
         # Scrape Redfin
+        logger.info("Starting Redfin scrape...")
         redfin_data = self.redfin_scraper.scrape(address)
-        if redfin_data.error and self.selenium_scraper:
-            logger.info("Falling back to Selenium for Redfin")
-            redfin_data = self.selenium_scraper.scrape_redfin(address)
-
         if redfin_data.error:
             results['errors'].append(f"Redfin: {redfin_data.error}")
         results['redfin'] = redfin_data

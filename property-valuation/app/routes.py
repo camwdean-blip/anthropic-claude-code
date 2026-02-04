@@ -233,29 +233,39 @@ def delete_valuation(valuation_id):
 
 @main_bp.route('/valuation/<int:valuation_id>/pdf')
 def generate_pdf(valuation_id):
-    """Generate and download PDF report."""
+    """Generate and download PDF or text report."""
     valuation = PropertyValuation.query.get_or_404(valuation_id)
 
     try:
-        # Generate PDF
+        # Generate report (PDF if WeasyPrint available, otherwise text)
         reports_dir = current_app.config['REPORTS_DIR']
-        pdf_path = generate_valuation_report(valuation, reports_dir)
+        report_path = generate_valuation_report(valuation, reports_dir)
 
-        # Update record with PDF path
-        valuation.report_path = str(pdf_path)
+        # Update record with report path
+        valuation.report_path = str(report_path)
         db.session.commit()
 
-        # Send file
-        return send_file(
-            pdf_path,
-            mimetype='application/pdf',
-            as_attachment=True,
-            download_name=f"valuation_{valuation.id}_{datetime.now().strftime('%Y%m%d')}.pdf"
-        )
+        # Determine file type based on extension
+        is_pdf = str(report_path).endswith('.pdf')
+
+        if is_pdf:
+            return send_file(
+                report_path,
+                mimetype='application/pdf',
+                as_attachment=True,
+                download_name=f"valuation_{valuation.id}_{datetime.now().strftime('%Y%m%d')}.pdf"
+            )
+        else:
+            return send_file(
+                report_path,
+                mimetype='text/plain',
+                as_attachment=True,
+                download_name=f"valuation_{valuation.id}_{datetime.now().strftime('%Y%m%d')}.txt"
+            )
 
     except Exception as e:
-        logger.error(f"PDF generation error: {e}")
-        flash(f"Failed to generate PDF: {str(e)}", 'error')
+        logger.error(f"Report generation error: {e}")
+        flash(f"Failed to generate report: {str(e)}", 'error')
         return redirect(url_for('main.results', valuation_id=valuation_id))
 
 
