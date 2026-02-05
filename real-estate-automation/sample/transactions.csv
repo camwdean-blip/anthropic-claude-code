@@ -1,0 +1,3 @@
+property_address,city,state,zip,sale_price,buyer_name,buyer_email,seller_name,seller_email,attorney_name,attorney_email,closing_date,commission_rate,agent_name,agent_license,brokerage_name,brokerage_address,mls_number
+123 Main Street,Springfield,IL,62701,350000,John Smith,john.smith@example.com,Jane Doe,jane.doe@example.com,Robert Adams,radams@lawfirm.com,2026-03-15,3.0,Sarah Johnson,IL-4712839,Premier Realty Group,456 Commerce Ave Springfield IL 62701,MLS-2026-001
+789 Oak Avenue,Springfield,IL,62704,275000,Michael Brown,mbrown@example.com,Emily Davis,edavis@example.com,Robert Adams,radams@lawfirm.com,2026-03-22,2.5,Sarah Johnson,IL-4712839,Premier Realty Group,456 Commerce Ave Springfield IL 62701,MLS-2026-002
