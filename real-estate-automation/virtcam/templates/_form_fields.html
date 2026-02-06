@@ -1,0 +1,272 @@
+{# Reusable form fields for New + Edit transaction #}
+
+<!-- Property Information -->
+<div class="form-card mb-3">
+    <div class="section-title"><i class="bi bi-building me-1"></i> Property Information</div>
+    <div class="row g-3">
+        <div class="col-md-6">
+            <label class="form-label">Street Address <span class="text-danger">*</span></label>
+            <input type="text" name="address" class="form-control" value="{{ txn.address if txn else '' }}" required>
+        </div>
+        <div class="col-md-2">
+            <label class="form-label">Unit</label>
+            <input type="text" name="unit" class="form-control" value="{{ txn.unit if txn else '' }}">
+        </div>
+        <div class="col-md-4">
+            <label class="form-label">Neighborhood</label>
+            <input type="text" name="neighborhood" class="form-control" value="{{ txn.neighborhood if txn else '' }}">
+        </div>
+        <div class="col-md-4">
+            <label class="form-label">City</label>
+            <input type="text" name="city" class="form-control" value="{{ txn.city if txn else '' }}">
+        </div>
+        <div class="col-md-2">
+            <label class="form-label">State</label>
+            <input type="text" name="state" class="form-control" value="{{ txn.state if txn else 'MA' }}" maxlength="2">
+        </div>
+        <div class="col-md-2">
+            <label class="form-label">ZIP</label>
+            <input type="text" name="zip_code" class="form-control" value="{{ txn.zip_code if txn else '' }}">
+        </div>
+        <div class="col-md-4">
+            <label class="form-label">MLS #</label>
+            <input type="text" name="mls_number" class="form-control" value="{{ txn.mls_number if txn else '' }}">
+        </div>
+    </div>
+</div>
+
+<!-- Deal Details -->
+<div class="form-card mb-3">
+    <div class="section-title"><i class="bi bi-clipboard-data me-1"></i> Deal Details</div>
+    <div class="row g-3">
+        <div class="col-md-3">
+            <label class="form-label">Deal Type <span class="text-danger">*</span></label>
+            <select name="deal_type" class="form-select" required>
+                <option value="buyer" {{ 'selected' if txn and txn.deal_type == 'buyer' else '' }}>Buyer</option>
+                <option value="seller" {{ 'selected' if txn and txn.deal_type == 'seller' else '' }}>Seller</option>
+            </select>
+        </div>
+        <div class="col-md-3">
+            <label class="form-label">Sale Price <span class="text-danger">*</span></label>
+            <div class="input-group">
+                <span class="input-group-text">$</span>
+                <input type="number" name="price" class="form-control" step="1000" value="{{ txn.price|int if txn else '' }}" required>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <label class="form-label">Commission %</label>
+            <div class="input-group">
+                <input type="number" name="commission_percentage" class="form-control" step="0.1" value="{{ txn.commission_percentage if txn else '' }}">
+                <span class="input-group-text">%</span>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <label class="form-label">Bonus</label>
+            <div class="input-group">
+                <span class="input-group-text">$</span>
+                <input type="number" name="bonus" class="form-control" step="100" value="{{ txn.bonus|int if txn and txn.bonus else '' }}">
+            </div>
+        </div>
+        <div class="col-md-3">
+            <label class="form-label">Agent</label>
+            <input type="text" name="agent" class="form-control" value="{{ txn.agent if txn else '' }}">
+        </div>
+        <div class="col-md-3">
+            <label class="form-label">Deal Count</label>
+            <input type="number" name="deal_count" class="form-control" value="{{ txn.deal_count if txn else '' }}">
+        </div>
+    </div>
+</div>
+
+<!-- Key Dates -->
+<div class="form-card mb-3">
+    <div class="section-title"><i class="bi bi-calendar-event me-1"></i> Key Dates</div>
+    <div class="row g-3">
+        <div class="col-md-4">
+            <label class="form-label">Offer Accepted</label>
+            <input type="date" name="offer_accepted_date" class="form-control" value="{{ txn.offer_accepted_date.isoformat() if txn and txn.offer_accepted_date else '' }}">
+        </div>
+        <div class="col-md-4">
+            <label class="form-label">Purchase & Sale</label>
+            <input type="date" name="purchase_and_sale_date" class="form-control" value="{{ txn.purchase_and_sale_date.isoformat() if txn and txn.purchase_and_sale_date else '' }}">
+        </div>
+        <div class="col-md-4">
+            <label class="form-label">Mortgage Contingency</label>
+            <input type="date" name="mortgage_contingency_date" class="form-control" value="{{ txn.mortgage_contingency_date.isoformat() if txn and txn.mortgage_contingency_date else '' }}">
+        </div>
+        <div class="col-md-4">
+            <label class="form-label">Commission Deadline</label>
+            <input type="date" name="commission_deadline" class="form-control" value="{{ txn.commission_deadline.isoformat() if txn and txn.commission_deadline else '' }}">
+        </div>
+        <div class="col-md-4">
+            <label class="form-label">Closing Date</label>
+            <input type="date" name="closing_date" class="form-control" value="{{ txn.closing_date.isoformat() if txn and txn.closing_date else '' }}">
+        </div>
+        <div class="col-md-4">
+            <label class="form-label">Inspection Date/Time</label>
+            <input type="text" name="inspection_date" class="form-control" placeholder="e.g. 1:30pm Friday 3/15" value="{{ txn.inspection_date if txn else '' }}">
+        </div>
+    </div>
+</div>
+
+<!-- Buyer -->
+<div class="form-card mb-3">
+    <div class="section-title"><i class="bi bi-person me-1"></i> Buyer</div>
+    <div class="row g-3">
+        <div class="col-md-6">
+            <label class="form-label">Buyer Name</label>
+            <input type="text" name="buyer_name" class="form-control" value="{{ txn.buyer_name if txn else '' }}">
+        </div>
+        <div class="col-md-6">
+            <label class="form-label">Buyer Email</label>
+            <input type="email" name="buyer_email" class="form-control" value="{{ txn.buyer_email if txn else '' }}">
+        </div>
+    </div>
+</div>
+
+<!-- Seller -->
+<div class="form-card mb-3">
+    <div class="section-title"><i class="bi bi-person-fill me-1"></i> Seller</div>
+    <div class="row g-3">
+        <div class="col-md-6">
+            <label class="form-label">Seller Name</label>
+            <input type="text" name="seller_name" class="form-control" value="{{ txn.seller_name if txn else '' }}">
+        </div>
+        <div class="col-md-6">
+            <label class="form-label">Seller Email</label>
+            <input type="email" name="seller_email" class="form-control" value="{{ txn.seller_email if txn else '' }}">
+        </div>
+    </div>
+</div>
+
+<!-- Buyer Attorney -->
+<div class="form-card mb-3">
+    <div class="section-title"><i class="bi bi-briefcase me-1"></i> Buyer's Attorney</div>
+    <div class="row g-3">
+        <div class="col-md-4">
+            <label class="form-label">Name</label>
+            <input type="text" name="buyer_attorney_name" class="form-control" value="{{ txn.buyer_attorney_name if txn else '' }}">
+        </div>
+        <div class="col-md-4">
+            <label class="form-label">Firm</label>
+            <input type="text" name="buyer_attorney_firm" class="form-control" value="{{ txn.buyer_attorney_firm if txn else '' }}">
+        </div>
+        <div class="col-md-4">
+            <label class="form-label">Email</label>
+            <input type="email" name="buyer_attorney_email" class="form-control" value="{{ txn.buyer_attorney_email if txn else '' }}">
+        </div>
+        <div class="col-md-6">
+            <label class="form-label">Address</label>
+            <input type="text" name="buyer_attorney_address" class="form-control" value="{{ txn.buyer_attorney_address if txn else '' }}">
+        </div>
+        <div class="col-md-3">
+            <label class="form-label">Phone</label>
+            <input type="text" name="buyer_attorney_phone" class="form-control" value="{{ txn.buyer_attorney_phone if txn else '' }}">
+        </div>
+    </div>
+</div>
+
+<!-- Seller Attorney -->
+<div class="form-card mb-3">
+    <div class="section-title"><i class="bi bi-briefcase-fill me-1"></i> Seller's Attorney</div>
+    <div class="row g-3">
+        <div class="col-md-4">
+            <label class="form-label">Name</label>
+            <input type="text" name="seller_attorney_name" class="form-control" value="{{ txn.seller_attorney_name if txn else '' }}">
+        </div>
+        <div class="col-md-4">
+            <label class="form-label">Firm</label>
+            <input type="text" name="seller_attorney_firm" class="form-control" value="{{ txn.seller_attorney_firm if txn else '' }}">
+        </div>
+        <div class="col-md-4">
+            <label class="form-label">Email</label>
+            <input type="email" name="seller_attorney_email" class="form-control" value="{{ txn.seller_attorney_email if txn else '' }}">
+        </div>
+        <div class="col-md-6">
+            <label class="form-label">Address</label>
+            <input type="text" name="seller_attorney_address" class="form-control" value="{{ txn.seller_attorney_address if txn else '' }}">
+        </div>
+        <div class="col-md-3">
+            <label class="form-label">Phone</label>
+            <input type="text" name="seller_attorney_phone" class="form-control" value="{{ txn.seller_attorney_phone if txn else '' }}">
+        </div>
+    </div>
+</div>
+
+<!-- Toggles -->
+<div class="form-card mb-3">
+    <div class="section-title"><i class="bi bi-toggles me-1"></i> Flags & Options</div>
+    <div class="row g-3">
+        <div class="col-md-4">
+            <div class="form-check form-switch">
+                <input class="form-check-input" type="checkbox" name="lead_paint_signed" {{ 'checked' if txn and txn.lead_paint_signed else '' }}>
+                <label class="form-check-label">Lead paint disclosure already signed</label>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="form-check form-switch">
+                <input class="form-check-input" type="checkbox" name="inspection_contingency_waived" {{ 'checked' if txn and txn.inspection_contingency_waived else '' }}>
+                <label class="form-check-label">Inspection contingency waived</label>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="form-check form-switch">
+                <input class="form-check-input" type="checkbox" name="dual_agency" {{ 'checked' if txn and txn.dual_agency else '' }}>
+                <label class="form-check-label">Dual agency</label>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% if show_milestones %}
+<!-- Milestones (Edit mode only) -->
+<div class="form-card mb-3">
+    <div class="section-title"><i class="bi bi-check2-square me-1"></i> Milestones</div>
+    <div class="row g-3">
+        <div class="col-md-4">
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="deposit_confirmed" {{ 'checked' if txn and txn.deposit_confirmed else '' }}>
+                <label class="form-check-label">Deposit Confirmed</label>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="invoice_created" {{ 'checked' if txn and txn.invoice_created else '' }}>
+                <label class="form-check-label">Invoice Created</label>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="smoke_scheduled" {{ 'checked' if txn and txn.smoke_scheduled else '' }}>
+                <label class="form-check-label">Smoke Scheduled</label>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="six_d_completed" {{ 'checked' if txn and txn.six_d_completed else '' }}>
+                <label class="form-check-label">6D - W/S Completed</label>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="scan_completed" {{ 'checked' if txn and txn.scan_completed else '' }}>
+                <label class="form-check-label">Scan Completed</label>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Status (Edit mode only) -->
+<div class="form-card mb-3">
+    <div class="section-title"><i class="bi bi-flag me-1"></i> Deal Status</div>
+    <div class="row g-3">
+        <div class="col-md-4">
+            <select name="status" class="form-select">
+                <option value="active" {{ 'selected' if txn and txn.status == 'active' else '' }}>Active</option>
+                <option value="closed" {{ 'selected' if txn and txn.status == 'closed' else '' }}>Closed</option>
+                <option value="withdrawn" {{ 'selected' if txn and txn.status == 'withdrawn' else '' }}>Withdrawn</option>
+            </select>
+        </div>
+    </div>
+</div>
+{% endif %}

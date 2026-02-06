@@ -1,0 +1,246 @@
+/* ==========================================================================
+   VirtCam — Core Styles
+   ========================================================================== */
+
+:root {
+    --brand-blue: #1a3c6e;
+    --brand-blue-light: #e8edf4;
+    --brand-blue-hover: #15315a;
+    --green: #198754;
+    --yellow: #ffc107;
+    --red: #dc3545;
+    --gray-50: #f8f9fa;
+    --gray-100: #e9ecef;
+    --gray-600: #6c757d;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background: var(--gray-50);
+    color: #1e1e1e;
+}
+
+/* Navbar */
+.navbar {
+    background: #fff;
+    padding: 0.65rem 0;
+}
+.navbar-brand {
+    font-size: 1.15rem;
+    letter-spacing: -0.02em;
+}
+
+/* Primary button override */
+.btn-primary {
+    background-color: var(--brand-blue);
+    border-color: var(--brand-blue);
+}
+.btn-primary:hover {
+    background-color: var(--brand-blue-hover);
+    border-color: var(--brand-blue-hover);
+}
+
+/* ==========================================================================
+   Dashboard
+   ========================================================================== */
+
+.stat-card {
+    background: #fff;
+    border: 1px solid var(--gray-100);
+    border-radius: 10px;
+    padding: 1.25rem 1.5rem;
+}
+.stat-card .stat-label {
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--gray-600);
+    margin-bottom: 0.25rem;
+}
+.stat-card .stat-value {
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: var(--brand-blue);
+}
+
+/* Deal Table */
+.deal-table {
+    background: #fff;
+    border-radius: 10px;
+    border: 1px solid var(--gray-100);
+    overflow: hidden;
+}
+.deal-table table {
+    margin: 0;
+    font-size: 0.875rem;
+}
+.deal-table th {
+    background: var(--brand-blue);
+    color: #fff;
+    font-weight: 600;
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    padding: 0.65rem 0.75rem;
+    white-space: nowrap;
+    border: none;
+}
+.deal-table td {
+    padding: 0.6rem 0.75rem;
+    vertical-align: middle;
+    border-color: var(--gray-100);
+}
+.deal-table tbody tr:hover {
+    background: var(--brand-blue-light);
+    cursor: pointer;
+}
+
+/* Status indicators */
+.status-dot {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+}
+.status-dot.green { background: var(--green); }
+.status-dot.yellow { background: var(--yellow); }
+.status-dot.red { background: var(--red); }
+
+/* Deal type badges */
+.badge-buyer {
+    background: #d4edda;
+    color: #155724;
+    font-weight: 600;
+    font-size: 0.72rem;
+    padding: 0.3em 0.7em;
+    border-radius: 4px;
+}
+.badge-seller {
+    background: #cce5ff;
+    color: #004085;
+    font-weight: 600;
+    font-size: 0.72rem;
+    padding: 0.3em 0.7em;
+    border-radius: 4px;
+}
+
+/* Milestone checkmarks */
+.milestone-check {
+    font-size: 0.85rem;
+}
+.milestone-check .done {
+    color: var(--green);
+}
+.milestone-check .pending {
+    color: var(--gray-100);
+}
+
+/* ==========================================================================
+   Forms
+   ========================================================================== */
+
+.form-card {
+    background: #fff;
+    border: 1px solid var(--gray-100);
+    border-radius: 10px;
+    padding: 1.5rem;
+}
+.form-card .section-title {
+    font-size: 0.85rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--brand-blue);
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid var(--brand-blue-light);
+}
+
+/* ==========================================================================
+   Transaction Detail
+   ========================================================================== */
+
+.detail-header {
+    background: #fff;
+    border: 1px solid var(--gray-100);
+    border-radius: 10px;
+    padding: 1.5rem;
+    margin-bottom: 1.25rem;
+}
+
+.tab-card {
+    background: #fff;
+    border: 1px solid var(--gray-100);
+    border-radius: 0 0 10px 10px;
+    border-top: none;
+    padding: 1.5rem;
+}
+.nav-tabs .nav-link {
+    color: var(--gray-600);
+    font-weight: 500;
+    font-size: 0.9rem;
+}
+.nav-tabs .nav-link.active {
+    color: var(--brand-blue);
+    font-weight: 600;
+    border-color: var(--gray-100) var(--gray-100) #fff;
+}
+
+/* Email drafts */
+.email-draft {
+    background: var(--gray-50);
+    border: 1px solid var(--gray-100);
+    border-radius: 8px;
+    padding: 1.25rem;
+    margin-bottom: 1.25rem;
+}
+.email-draft .email-header {
+    font-size: 0.82rem;
+    color: var(--gray-600);
+    margin-bottom: 0.75rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--gray-100);
+}
+.email-draft .email-body {
+    white-space: pre-wrap;
+    font-size: 0.9rem;
+    line-height: 1.6;
+}
+
+/* File list */
+.file-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.6rem 0;
+    border-bottom: 1px solid var(--gray-100);
+}
+.file-item:last-child {
+    border-bottom: none;
+}
+.file-type-badge {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    font-weight: 600;
+    padding: 0.2em 0.6em;
+    border-radius: 3px;
+    background: var(--brand-blue-light);
+    color: var(--brand-blue);
+}
+
+/* Info grid on detail page */
+.info-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem 2rem;
+}
+.info-grid .info-label {
+    font-size: 0.78rem;
+    color: var(--gray-600);
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+}
+.info-grid .info-value {
+    font-weight: 500;
+    margin-bottom: 0.6rem;
+}

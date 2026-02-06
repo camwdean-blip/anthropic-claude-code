@@ -1,0 +1,339 @@
+{% extends "base.html" %}
+{% block title %}VirtCam — {{ txn.address }}{% endblock %}
+
+{% block content %}
+<!-- Header -->
+<div class="detail-header">
+    <div class="d-flex justify-content-between align-items-start">
+        <div>
+            <div class="d-flex align-items-center gap-2 mb-1">
+                <a href="{{ url_for('main.dashboard') }}" class="text-muted text-decoration-none"><i class="bi bi-arrow-left"></i></a>
+                <h4 class="mb-0">{{ txn.address }}{% if txn.unit %} #{{ txn.unit }}{% endif %}</h4>
+                <span class="badge-{{ txn.deal_type }}">{{ txn.deal_type|upper }}</span>
+                <span class="status-dot {{ txn.deadline_status }}"></span>
+            </div>
+            <div class="text-muted" style="font-size: 0.85rem;">
+                {{ txn.city }}{% if txn.state %}, {{ txn.state }}{% endif %} {{ txn.zip_code }}
+                {% if txn.mls_number %}&nbsp;&middot;&nbsp;MLS # {{ txn.mls_number }}{% endif %}
+                &nbsp;&middot;&nbsp;${{ "{:,.0f}".format(txn.price) }}
+            </div>
+        </div>
+        <div class="d-flex gap-2">
+            <a href="{{ url_for('main.download_td_sheet', txn_id=txn.id) }}" class="btn btn-sm btn-outline-primary">
+                <i class="bi bi-file-earmark-pdf me-1"></i>TD Sheet PDF
+            </a>
+            <a href="{{ url_for('main.edit_transaction', txn_id=txn.id) }}" class="btn btn-sm btn-primary">
+                <i class="bi bi-pencil me-1"></i>Edit
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- Tabs -->
+<ul class="nav nav-tabs">
+    <li class="nav-item">
+        <a class="nav-link {{ 'active' if tab == 'overview' }}" href="?tab=overview">Overview</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link {{ 'active' if tab == 'emails' }}" href="?tab=emails">
+            Email Drafts <span class="badge bg-primary ms-1">4</span>
+        </a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link {{ 'active' if tab == 'documents' }}" href="?tab=documents">
+            Documents <span class="badge bg-secondary ms-1">{{ files|length }}</span>
+        </a>
+    </li>
+</ul>
+
+<div class="tab-card">
+
+{% if tab == 'overview' %}
+<!-- ======== OVERVIEW TAB ======== -->
+<div class="row g-4">
+    <div class="col-md-6">
+        <h6 class="text-uppercase text-muted" style="font-size:0.75rem; letter-spacing:0.05em;">Buyer</h6>
+        <div class="info-grid">
+            <div><div class="info-label">Name</div><div class="info-value">{{ txn.buyer_name or '—' }}</div></div>
+            <div><div class="info-label">Email</div><div class="info-value">{{ txn.buyer_email or '—' }}</div></div>
+        </div>
+
+        <h6 class="text-uppercase text-muted mt-3" style="font-size:0.75rem; letter-spacing:0.05em;">Buyer's Attorney</h6>
+        <div class="info-grid">
+            <div><div class="info-label">Name</div><div class="info-value">{{ txn.buyer_attorney_name or '—' }}</div></div>
+            <div><div class="info-label">Firm</div><div class="info-value">{{ txn.buyer_attorney_firm or '—' }}</div></div>
+            <div><div class="info-label">Email</div><div class="info-value">{{ txn.buyer_attorney_email or '—' }}</div></div>
+            <div><div class="info-label">Phone</div><div class="info-value">{{ txn.buyer_attorney_phone or '—' }}</div></div>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <h6 class="text-uppercase text-muted" style="font-size:0.75rem; letter-spacing:0.05em;">Seller</h6>
+        <div class="info-grid">
+            <div><div class="info-label">Name</div><div class="info-value">{{ txn.seller_name or '—' }}</div></div>
+            <div><div class="info-label">Email</div><div class="info-value">{{ txn.seller_email or '—' }}</div></div>
+        </div>
+
+        <h6 class="text-uppercase text-muted mt-3" style="font-size:0.75rem; letter-spacing:0.05em;">Seller's Attorney</h6>
+        <div class="info-grid">
+            <div><div class="info-label">Name</div><div class="info-value">{{ txn.seller_attorney_name or '—' }}</div></div>
+            <div><div class="info-label">Firm</div><div class="info-value">{{ txn.seller_attorney_firm or '—' }}</div></div>
+            <div><div class="info-label">Email</div><div class="info-value">{{ txn.seller_attorney_email or '—' }}</div></div>
+            <div><div class="info-label">Phone</div><div class="info-value">{{ txn.seller_attorney_phone or '—' }}</div></div>
+        </div>
+    </div>
+</div>
+
+<hr class="my-4">
+
+<div class="row g-4">
+    <div class="col-md-6">
+        <h6 class="text-uppercase text-muted" style="font-size:0.75rem; letter-spacing:0.05em;">Key Dates</h6>
+        <div class="info-grid">
+            <div><div class="info-label">Offer Accepted</div><div class="info-value">{{ txn.offer_accepted_date.strftime('%B %d, %Y') if txn.offer_accepted_date else 'TBD' }}</div></div>
+            <div><div class="info-label">P&S</div><div class="info-value">{{ txn.purchase_and_sale_date.strftime('%B %d, %Y') if txn.purchase_and_sale_date else 'TBD' }}</div></div>
+            <div><div class="info-label">Mortgage Cont.</div><div class="info-value">{{ txn.mortgage_contingency_date.strftime('%B %d, %Y') if txn.mortgage_contingency_date else 'TBD' }}</div></div>
+            <div><div class="info-label">Closing</div><div class="info-value">{{ txn.closing_date.strftime('%B %d, %Y') if txn.closing_date else 'TBD' }}</div></div>
+            <div><div class="info-label">Commission Deadline</div><div class="info-value">{{ txn.commission_deadline.strftime('%B %d, %Y') if txn.commission_deadline else 'TBD' }}</div></div>
+            <div><div class="info-label">Inspection</div><div class="info-value">{{ txn.inspection_date or 'TBD' }}</div></div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <h6 class="text-uppercase text-muted" style="font-size:0.75rem; letter-spacing:0.05em;">Commission</h6>
+        <div class="info-grid">
+            <div><div class="info-label">Rate</div><div class="info-value">{{ txn.commission_percentage }}%</div></div>
+            <div><div class="info-label">Amount</div><div class="info-value">${{ "{:,.2f}".format(txn.price * txn.commission_percentage / 100) }}</div></div>
+            <div><div class="info-label">Bonus</div><div class="info-value">{{ "$" + "{:,.2f}".format(txn.bonus) if txn.bonus else '—' }}</div></div>
+            <div><div class="info-label">Total GCI</div><div class="info-value fw-bold" style="color:var(--brand-blue);">${{ "{:,.2f}".format(txn.gci) }}</div></div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <h6 class="text-uppercase text-muted" style="font-size:0.75rem; letter-spacing:0.05em;">Milestones</h6>
+        {% set milestones = [
+            ('Deposit Confirmed', txn.deposit_confirmed),
+            ('Invoice Created', txn.invoice_created),
+            ('Smoke Scheduled', txn.smoke_scheduled),
+            ('6D - W/S', txn.six_d_completed),
+            ('Scan Completed', txn.scan_completed),
+        ] %}
+        {% for label, done in milestones %}
+        <div class="d-flex align-items-center gap-2 mb-1">
+            <i class="bi {{ 'bi-check-circle-fill text-success' if done else 'bi-circle text-muted' }}" style="font-size:0.9rem;"></i>
+            <span style="font-size:0.88rem;">{{ label }}</span>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+
+{% elif tab == 'emails' %}
+<!-- ======== EMAILS TAB ======== -->
+<p class="text-muted mb-4" style="font-size:0.85rem;">
+    <i class="bi bi-info-circle me-1"></i>
+    These are pre-filled drafts using your templates. Click "Copy" to paste into your email client, then review and send.
+</p>
+
+{# ---------- Buyer Onboarding Email ---------- #}
+<div class="email-draft">
+    <div class="d-flex justify-content-between align-items-center mb-2">
+        <h6 class="mb-0"><i class="bi bi-envelope me-1"></i> Buyer Onboarding Email</h6>
+        <button class="btn btn-sm btn-outline-primary copy-btn" data-target="buyer-email">
+            <i class="bi bi-clipboard me-1"></i>Copy
+        </button>
+    </div>
+    <div class="email-header">
+        <strong>To:</strong> {{ txn.buyer_email }}<br>
+        <strong>Subject:</strong> Congratulations — Next Steps for {{ txn.address }}
+    </div>
+    <div class="email-body" id="buyer-email">Hi {{ txn.buyer_name.split(' ')[0] if txn.buyer_name else '' }} - Congratulations on having your offer accepted!
+
+Please find attached 'What to expect...' which explain the steps that follow after a signed offer.
+
+There are several additional documents you will need to sign for our compliance team:
+{% if not txn.lead_paint_signed %}
+
+Lead Paint Disclosure Acknowledgement:
+The lead paint form is the only one that can be confusing to complete. You must CHECK one of the boxes in the Purchaser's Acknowledgement section under (F) - either to have a 10 day period to conduct a lead paint inspection, or waive that right.
+{% endif %}
+
+Wire Transfer Fraud Advisory:
+The Wire Fraud Advisory form warns buyers of the risks of wiring large sums of money related to real estate transactions. Your attorney will call and confirm wire instructions should you want to use that service.
+
+Home Inspection Acknowledgement:
+This informs and educates buyers about the steps of a home inspection. It is sent to all buyers even if the inspection contingency is waived.
+
+TRID: This form is part of the new Truth in Lending rules that were implemented in 2016
+{% if txn.dual_agency %}
+
+Consent to Dual Agency:
+The broker is representing both parties in this transaction. This form grants your approval for this situation.
+{% endif %}
+
+I will set these up for you to sign electronically in the coming days. You will see an email that says Steven Cohen needs you to sign a document. Please let me know if you have any questions on any of the forms you receive.
+
+We will send your attorney the condominium documents and financials as soon as we receive them. We will also connect your attorney to the seller's.
+
+Please let me know if you have any questions or need further information.
+
+I look forward to working with you!</div>
+</div>
+
+{# ---------- Seller Onboarding Email ---------- #}
+<div class="email-draft">
+    <div class="d-flex justify-content-between align-items-center mb-2">
+        <h6 class="mb-0"><i class="bi bi-envelope me-1"></i> Seller Onboarding Email</h6>
+        <button class="btn btn-sm btn-outline-primary copy-btn" data-target="seller-email">
+            <i class="bi bi-clipboard me-1"></i>Copy
+        </button>
+    </div>
+    <div class="email-header">
+        <strong>To:</strong> {{ txn.seller_email }}<br>
+        <strong>Subject:</strong> Congratulations — Next Steps for {{ txn.address }}
+    </div>
+    <div class="email-body" id="seller-email">Hi {{ txn.seller_name.split(' ')[0] if txn.seller_name else '' }} - Congratulations on accepting an offer to purchase your home!
+
+Please find attached "What to expect...", which explains the steps that follow after a signed offer.
+
+Please let me know once you have engaged an attorney and I will send the offer and condo docs to your attorney and the buyer's attorney. If you would like a referral to one, please let me know.
+
+I have copies of the Master Deed and the Trust. However, we will also need a copy of the association's budget, a copy of the most recent bank statement and copies of recent association meeting minutes, if any. Please let me know if you have access to these, or if I should reach out to a trustee.
+
+The next step will be for the buyer to schedule the home inspection. As soon as I have this confirmed I will contact you. For the inspection we will need access to any common systems and meters, as well as roof access. If this access is through another unit owner's home, please arrange that access. Once the inspection is complete, I will report to you.
+
+Please let me know if you have any questions or need further information.
+
+Thank you!</div>
+</div>
+
+{# ---------- Buyer Attorney Email ---------- #}
+<div class="email-draft">
+    <div class="d-flex justify-content-between align-items-center mb-2">
+        <h6 class="mb-0"><i class="bi bi-envelope me-1"></i> Buyer's Attorney Email</h6>
+        <button class="btn btn-sm btn-outline-primary copy-btn" data-target="buyer-atty-email">
+            <i class="bi bi-clipboard me-1"></i>Copy
+        </button>
+    </div>
+    <div class="email-header">
+        <strong>To:</strong> {{ txn.buyer_attorney_email }}<br>
+        <strong>Subject:</strong> Transaction Documents — {{ txn.address }}
+    </div>
+    <div class="email-body" id="buyer-atty-email">Hello {{ txn.buyer_attorney_name.split(',')[0] if txn.buyer_attorney_name else '' }} - I hope you're well!
+
+I have attached the offer, MLS sheet, condo docs, financials, and transaction detail sheet below. The seller will be working with:
+
+{{ txn.seller_attorney_name }}
+{{ txn.seller_attorney_firm }}
+{{ txn.seller_attorney_address }}
+{{ txn.seller_attorney_phone }}
+{{ txn.seller_attorney_email }}
+{% if txn.inspection_date %}
+
+The inspection is scheduled for {{ txn.inspection_date }}, and I will facilitate.{% endif %} Please let me know if you need anything else at this time, and I can track it down.
+
+Best,
+Cam</div>
+</div>
+
+{# ---------- Seller Attorney Email ---------- #}
+<div class="email-draft">
+    <div class="d-flex justify-content-between align-items-center mb-2">
+        <h6 class="mb-0"><i class="bi bi-envelope me-1"></i> Seller's Attorney Email</h6>
+        <button class="btn btn-sm btn-outline-primary copy-btn" data-target="seller-atty-email">
+            <i class="bi bi-clipboard me-1"></i>Copy
+        </button>
+    </div>
+    <div class="email-header">
+        <strong>To:</strong> {{ txn.seller_attorney_email }}<br>
+        <strong>Subject:</strong> Transaction Documents — {{ txn.address }}
+    </div>
+    <div class="email-body" id="seller-atty-email">Hello {{ txn.seller_attorney_name.split(',')[0] if txn.seller_attorney_name else '' }} - I hope you're well!
+
+I have attached the offer, MLS sheet, condo docs, financials, and transaction detail sheet below. The buyer will be working with:
+
+{{ txn.buyer_attorney_name }}
+{{ txn.buyer_attorney_firm }}
+{{ txn.buyer_attorney_address }}
+{{ txn.buyer_attorney_phone }}
+{{ txn.buyer_attorney_email }}
+{% if txn.inspection_date %}
+
+The inspection is scheduled for {{ txn.inspection_date }}, and I will facilitate.{% endif %} Please let me know if you need anything else at this time, and I can track it down.
+
+Best,
+Cam</div>
+</div>
+
+
+{% elif tab == 'documents' %}
+<!-- ======== DOCUMENTS TAB ======== -->
+<div class="row g-4">
+    <div class="col-md-6">
+        <h6>Upload Documents</h6>
+        <form method="POST" action="{{ url_for('main.upload_file', txn_id=txn.id) }}" enctype="multipart/form-data">
+            <div class="mb-2">
+                <select name="file_type" class="form-select form-select-sm">
+                    <option value="offer">Offer</option>
+                    <option value="mls">MLS Sheet</option>
+                    <option value="condo_docs">Condo Docs</option>
+                    <option value="financials">Association Financials</option>
+                    <option value="what_to_expect">What to Expect</option>
+                    <option value="other">Other</option>
+                </select>
+            </div>
+            <div class="d-flex gap-2">
+                <input type="file" name="file" class="form-control form-control-sm" required>
+                <button type="submit" class="btn btn-sm btn-primary text-nowrap">
+                    <i class="bi bi-upload me-1"></i>Upload
+                </button>
+            </div>
+        </form>
+    </div>
+    <div class="col-md-6">
+        <h6>Deal Files</h6>
+        {% if files %}
+            {% for file in files %}
+            <div class="file-item">
+                <div class="d-flex align-items-center gap-2">
+                    <i class="bi bi-file-earmark-pdf text-muted"></i>
+                    <a href="{{ url_for('main.download_file', txn_id=txn.id, file_id=file.id) }}">
+                        {{ file.original_name }}
+                    </a>
+                    <span class="file-type-badge">{{ file.file_type.replace('_', ' ') }}</span>
+                </div>
+                <form method="POST" action="{{ url_for('main.delete_file', txn_id=txn.id, file_id=file.id) }}" style="display:inline;">
+                    <button type="submit" class="btn btn-sm btn-outline-danger" title="Delete">
+                        <i class="bi bi-trash"></i>
+                    </button>
+                </form>
+            </div>
+            {% endfor %}
+        {% else %}
+            <p class="text-muted">No files uploaded yet.</p>
+        {% endif %}
+    </div>
+</div>
+
+{% endif %}
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.querySelectorAll('.copy-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+        const target = document.getElementById(btn.dataset.target);
+        navigator.clipboard.writeText(target.innerText.trim()).then(() => {
+            const original = btn.innerHTML;
+            btn.innerHTML = '<i class="bi bi-check me-1"></i>Copied!';
+            btn.classList.replace('btn-outline-primary', 'btn-success');
+            setTimeout(() => {
+                btn.innerHTML = original;
+                btn.classList.replace('btn-success', 'btn-outline-primary');
+            }, 2000);
+        });
+    });
+});
+</script>
+{% endblock %}

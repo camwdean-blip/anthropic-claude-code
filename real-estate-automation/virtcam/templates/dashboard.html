@@ -1,0 +1,106 @@
+{% extends "base.html" %}
+{% block title %}VirtCam — Dashboard{% endblock %}
+
+{% block content %}
+<!-- Stat Cards -->
+<div class="row g-3 mb-4">
+    <div class="col-md-3">
+        <div class="stat-card">
+            <div class="stat-label">Active Deals</div>
+            <div class="stat-value">{{ active_count }}</div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stat-card">
+            <div class="stat-label">Showing</div>
+            <div class="stat-value">{{ transactions|length }}</div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stat-card">
+            <div class="stat-label">Total GCI</div>
+            <div class="stat-value">${{ "{:,.0f}".format(total_gci) }}</div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stat-card d-flex align-items-center justify-content-center">
+            <a href="{{ url_for('main.new_transaction') }}" class="btn btn-primary px-4">
+                <i class="bi bi-plus-lg me-1"></i> New Transaction
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- Filters -->
+<div class="d-flex gap-2 mb-3">
+    <div class="btn-group btn-group-sm">
+        <a href="?status=active&deal_type={{ deal_type_filter }}" class="btn {{ 'btn-primary' if status_filter == 'active' else 'btn-outline-secondary' }}">Active</a>
+        <a href="?status=closed&deal_type={{ deal_type_filter }}" class="btn {{ 'btn-primary' if status_filter == 'closed' else 'btn-outline-secondary' }}">Closed</a>
+        <a href="?status=all&deal_type={{ deal_type_filter }}" class="btn {{ 'btn-primary' if status_filter == 'all' else 'btn-outline-secondary' }}">All</a>
+    </div>
+    <div class="btn-group btn-group-sm">
+        <a href="?status={{ status_filter }}&deal_type=all" class="btn {{ 'btn-primary' if deal_type_filter == 'all' else 'btn-outline-secondary' }}">All Types</a>
+        <a href="?status={{ status_filter }}&deal_type=buyer" class="btn {{ 'btn-primary' if deal_type_filter == 'buyer' else 'btn-outline-secondary' }}">Buyer</a>
+        <a href="?status={{ status_filter }}&deal_type=seller" class="btn {{ 'btn-primary' if deal_type_filter == 'seller' else 'btn-outline-secondary' }}">Seller</a>
+    </div>
+</div>
+
+<!-- Deal Table -->
+<div class="deal-table">
+    <div class="table-responsive">
+        <table class="table table-hover mb-0">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>Address</th>
+                    <th>Type</th>
+                    <th>Price</th>
+                    <th>Buyer / Seller</th>
+                    <th>Agent</th>
+                    <th>Offer Date</th>
+                    <th>P&S</th>
+                    <th>Mort. Cont.</th>
+                    <th>Commission</th>
+                    <th>GCI</th>
+                    <th>Milestones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for txn in transactions %}
+                <tr onclick="window.location='{{ url_for('main.transaction_detail', txn_id=txn.id) }}'">
+                    <td><span class="status-dot {{ txn.deadline_status }}"></span></td>
+                    <td class="fw-semibold">{{ txn.address }}{% if txn.unit %} #{{ txn.unit }}{% endif %}</td>
+                    <td>
+                        <span class="badge-{{ txn.deal_type }}">{{ txn.deal_type|upper }}</span>
+                    </td>
+                    <td>${{ "{:,.0f}".format(txn.price) }}</td>
+                    <td>
+                        {% if txn.deal_type == 'buyer' %}{{ txn.buyer_name }}{% else %}{{ txn.seller_name }}{% endif %}
+                    </td>
+                    <td>{{ txn.agent }}</td>
+                    <td>{{ txn.offer_accepted_date.strftime('%m/%d') if txn.offer_accepted_date else '—' }}</td>
+                    <td>{{ txn.purchase_and_sale_date.strftime('%m/%d') if txn.purchase_and_sale_date else '—' }}</td>
+                    <td>{{ txn.mortgage_contingency_date.strftime('%m/%d') if txn.mortgage_contingency_date else '—' }}</td>
+                    <td>{{ txn.commission_percentage }}%</td>
+                    <td class="fw-semibold">${{ "{:,.0f}".format(txn.gci) }}</td>
+                    <td class="milestone-check">
+                        <span class="{{ 'done' if txn.deposit_confirmed else 'pending' }}" title="Deposit"><i class="bi bi-check-circle-fill"></i></span>
+                        <span class="{{ 'done' if txn.invoice_created else 'pending' }}" title="Invoice"><i class="bi bi-check-circle-fill"></i></span>
+                        <span class="{{ 'done' if txn.smoke_scheduled else 'pending' }}" title="Smoke"><i class="bi bi-check-circle-fill"></i></span>
+                        <span class="{{ 'done' if txn.six_d_completed else 'pending' }}" title="6D"><i class="bi bi-check-circle-fill"></i></span>
+                        <span class="{{ 'done' if txn.scan_completed else 'pending' }}" title="Scan"><i class="bi bi-check-circle-fill"></i></span>
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="12" class="text-center text-muted py-5">
+                        <i class="bi bi-inbox" style="font-size: 2rem;"></i>
+                        <p class="mt-2 mb-0">No transactions yet. <a href="{{ url_for('main.new_transaction') }}">Create your first deal.</a></p>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
