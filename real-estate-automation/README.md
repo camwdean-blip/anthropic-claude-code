@@ -14,6 +14,9 @@ For each transaction row in a CSV file, the script:
 ## Setup
 
 ```bash
+cd real-estate-automation
+python3 -m venv venv
+source venv/bin/activate
 pip install -r requirements.txt
 ```
 
@@ -35,10 +38,10 @@ Or edit `config.py` directly.
 
 ```bash
 # Process transactions (dry-run — generates docs but skips email)
-python process_transactions.py sample/transactions.csv --dry-run
+python3 process_transactions.py sample/transactions.csv --dry-run
 
 # Process and send emails
-python process_transactions.py sample/transactions.csv
+python3 process_transactions.py sample/transactions.csv
 ```
 
 ## CSV Format
