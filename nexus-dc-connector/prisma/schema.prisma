@@ -1,0 +1,73 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Vendor {
+  id                String   @id @default(cuid())
+  businessName      String
+  contactName       String
+  email             String
+  phone             String
+  website           String?
+  category          String
+  description       String
+  serviceArea       String   // Comma-separated states/regions
+  address           String?
+  city              String
+  state             String
+  zipCode           String
+  yearsInBusiness   Int?
+  certifications    String?  // Comma-separated
+  bonded            Boolean  @default(false)
+  insured           Boolean  @default(false)
+  licenseNumber     String?
+  googleBusinessUrl String?
+  googleRating      Float?
+  googleReviewCount Int?
+  logoUrl           String?
+  status            String   @default("pending") // pending, approved, rejected
+  featured          Boolean  @default(false)
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  introductions Introduction[]
+
+  @@index([category])
+  @@index([state])
+  @@index([status])
+}
+
+model Introduction {
+  id                 String   @id @default(cuid())
+  vendorId           String
+  buyerName          String
+  buyerEmail         String
+  buyerPhone         String
+  buyerCompany       String
+  buyerTitle         String?
+  projectDescription String
+  projectTimeline    String?
+  projectBudget      String?
+  stripePaymentId    String?
+  stripeSessionId    String?
+  amount             Int      @default(25000) // cents
+  status             String   @default("pending") // pending, paid, completed, refunded
+  createdAt          DateTime @default(now())
+
+  vendor Vendor @relation(fields: [vendorId], references: [id])
+
+  @@index([vendorId])
+  @@index([status])
+}
+
+model AdminUser {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  passwordHash String
+  createdAt    DateTime @default(now())
+}
