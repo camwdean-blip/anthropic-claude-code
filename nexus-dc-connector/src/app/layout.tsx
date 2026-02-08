@@ -4,7 +4,7 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 
 export const metadata: Metadata = {
-  title: 'Nexus DC Connector | Data Center Subcontractor & Supplier Directory',
+  title: 'Conduit Partners | Data Center Subcontractor & Supplier Directory',
   description:
     'Find verified data center subcontractors and equipment suppliers. Connect with electrical, mechanical, fire protection, cabling, and cooling specialists for your data center project.',
   keywords: [

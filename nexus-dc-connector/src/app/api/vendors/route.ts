@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/db';
 import { VENDOR_CATEGORIES } from '@/lib/categories';
+import { sendVendorApplicationReceipt } from '@/lib/email';
+import { createVendorContact } from '@/lib/hubspot';
 
 export async function POST(request: NextRequest) {
   try {
@@ -54,19 +56,27 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    const trimmedName = String(businessName).trim();
+    const trimmedContact = String(contactName).trim();
+    const trimmedEmail = String(email).trim().toLowerCase();
+    const trimmedPhone = String(phone).trim();
+    const trimmedCity = String(city).trim();
+    const trimmedState = String(state).trim();
+    const trimmedDesc = String(description).trim();
+
     const vendor = await prisma.vendor.create({
       data: {
-        businessName: String(businessName).trim(),
-        contactName: String(contactName).trim(),
-        email: String(email).trim().toLowerCase(),
-        phone: String(phone).trim(),
+        businessName: trimmedName,
+        contactName: trimmedContact,
+        email: trimmedEmail,
+        phone: trimmedPhone,
         website: website ? String(website).trim() : null,
         category: String(category),
-        description: String(description).trim(),
+        description: trimmedDesc,
         serviceArea: String(serviceArea).trim(),
         address: address ? String(address).trim() : null,
-        city: String(city).trim(),
-        state: String(state).trim(),
+        city: trimmedCity,
+        state: trimmedState,
         zipCode: String(zipCode).trim(),
         yearsInBusiness: yearsInBusiness ? parseInt(String(yearsInBusiness), 10) : null,
         certifications: certifications ? String(certifications).trim() : null,
@@ -78,6 +88,28 @@ export async function POST(request: NextRequest) {
         googleReviewCount: googleReviewCount ? parseInt(String(googleReviewCount), 10) : null,
         status: 'pending',
       },
+    });
+
+    // Send confirmation email and create CRM contact (non-blocking)
+    Promise.allSettled([
+      sendVendorApplicationReceipt(trimmedEmail, trimmedName),
+      createVendorContact({
+        businessName: trimmedName,
+        contactName: trimmedContact,
+        email: trimmedEmail,
+        phone: trimmedPhone,
+        website: website ? String(website).trim() : undefined,
+        category: String(category),
+        city: trimmedCity,
+        state: trimmedState,
+        description: trimmedDesc,
+      }),
+    ]).then((results) => {
+      results.forEach((r, i) => {
+        if (r.status === 'rejected') {
+          console.error(`Post-submission task ${i} failed:`, r.reason);
+        }
+      });
     });
 
     return NextResponse.json(

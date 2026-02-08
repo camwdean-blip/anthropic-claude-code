@@ -2,7 +2,7 @@ import Link from 'next/link';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Introduction Confirmed | Nexus DC Connector',
+  title: 'Introduction Confirmed | Conduit Partners',
 };
 
 export default async function ConnectSuccessPage({
@@ -47,7 +47,7 @@ export default async function ConnectSuccessPage({
               </li>
               <li className="flex gap-3">
                 <span className="flex-shrink-0 w-6 h-6 bg-brand-100 text-brand-700 rounded-full flex items-center justify-center font-semibold text-xs">3</span>
-                <span>Work directly with the vendor — Nexus DC Connector steps back and lets you build.</span>
+                <span>Work directly with the vendor — Conduit Partners steps back and lets you build.</span>
               </li>
             </ol>
           </div>

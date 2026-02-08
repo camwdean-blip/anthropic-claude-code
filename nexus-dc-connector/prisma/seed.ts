@@ -8,15 +8,15 @@ async function main() {
 
   // Create admin user
   const passwordHash = await bcrypt.hash(
-    process.env.ADMIN_PASSWORD || 'NexusDC2024!',
+    process.env.ADMIN_PASSWORD || 'Conduit2024!',
     12
   );
 
   const admin = await prisma.adminUser.upsert({
-    where: { email: process.env.ADMIN_EMAIL || 'admin@nexusdcconnector.com' },
+    where: { email: process.env.ADMIN_EMAIL || 'admin@conduitpartners.com' },
     update: { passwordHash },
     create: {
-      email: process.env.ADMIN_EMAIL || 'admin@nexusdcconnector.com',
+      email: process.env.ADMIN_EMAIL || 'admin@conduitpartners.com',
       passwordHash,
     },
   });
@@ -339,8 +339,8 @@ async function main() {
 
   console.log('\nSeeding complete!');
   console.log('------------------');
-  console.log(`Admin login: ${process.env.ADMIN_EMAIL || 'admin@nexusdcconnector.com'}`);
-  console.log(`Admin password: ${process.env.ADMIN_PASSWORD || 'NexusDC2024!'}`);
+  console.log(`Admin login: ${process.env.ADMIN_EMAIL || 'admin@conduitpartners.com'}`);
+  console.log(`Admin password: ${process.env.ADMIN_PASSWORD || 'Conduit2024!'}`);
 }
 
 main()

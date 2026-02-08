@@ -54,7 +54,7 @@ export default function ApplyPage() {
               Application Submitted!
             </h1>
             <p className="text-silver-600 leading-relaxed max-w-md mx-auto">
-              Thank you for applying to Nexus DC Connector. Our team will review
+              Thank you for applying to Conduit Partners. Our team will review
               your listing and get back to you within 1-2 business days. Once
               approved, your profile will be live in the directory.
             </p>
@@ -73,7 +73,7 @@ export default function ApplyPage() {
             List Your Business
           </h1>
           <p className="text-silver-500 mt-1">
-            Join the Nexus DC Connector directory — completely free. Get in front
+            Join the Conduit Partners directory — completely free. Get in front
             of general contractors and data center developers.
           </p>
         </div>

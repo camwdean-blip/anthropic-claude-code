@@ -7,18 +7,18 @@ export default function Header() {
   const [mobileOpen, setMobileOpen] = useState(false);
 
   return (
-    <header className="bg-white border-b border-silver-200 sticky top-0 z-50">
+    <header className="bg-silver-900 border-b border-silver-800 sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
+        <div className="flex items-center justify-between h-14">
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-2.5">
-            <div className="w-8 h-8 bg-brand-700 rounded-lg flex items-center justify-center">
+          <Link href="/" className="flex items-center gap-2">
+            <div className="w-7 h-7 border-2 border-accent-500 rounded flex items-center justify-center">
               <svg
-                className="w-5 h-5 text-white"
+                className="w-3.5 h-3.5 text-accent-400"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
-                strokeWidth={2}
+                strokeWidth={2.5}
               >
                 <path
                   strokeLinecap="round"
@@ -27,47 +27,42 @@ export default function Header() {
                 />
               </svg>
             </div>
-            <div className="flex flex-col">
-              <span className="text-lg font-bold text-silver-900 leading-tight tracking-tight">
-                Nexus DC
-              </span>
-              <span className="text-[10px] font-semibold text-brand-600 uppercase tracking-widest -mt-0.5">
-                Connector
-              </span>
-            </div>
+            <span className="text-base font-semibold text-white tracking-tight">
+              Conduit Partners
+            </span>
           </Link>
 
           {/* Desktop Nav */}
-          <nav className="hidden md:flex items-center gap-8">
+          <nav className="hidden md:flex items-center gap-6">
             <Link
               href="/directory"
-              className="text-sm font-medium text-silver-600 hover:text-brand-700 transition-colors"
+              className="text-sm text-silver-400 hover:text-white transition-colors"
             >
-              Find Vendors
+              Directory
             </Link>
             <Link
               href="/apply"
-              className="text-sm font-medium text-silver-600 hover:text-brand-700 transition-colors"
+              className="text-sm text-silver-400 hover:text-white transition-colors"
             >
               List Your Business
             </Link>
-            <Link href="/directory" className="btn-primary text-sm py-2 px-4">
-              Browse Directory
+            <Link href="/directory" className="text-sm px-4 py-1.5 bg-accent-600 text-white rounded hover:bg-accent-700 transition-colors font-medium">
+              Browse Vendors
             </Link>
           </nav>
 
           {/* Mobile hamburger */}
           <button
-            className="md:hidden p-2 text-silver-600 hover:text-silver-900"
+            className="md:hidden p-2 text-silver-400 hover:text-white"
             onClick={() => setMobileOpen(!mobileOpen)}
             aria-label="Toggle menu"
           >
             {mobileOpen ? (
-              <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
               </svg>
             ) : (
-              <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
               </svg>
             )}
@@ -76,27 +71,27 @@ export default function Header() {
 
         {/* Mobile Nav */}
         {mobileOpen && (
-          <div className="md:hidden border-t border-silver-200 py-4 space-y-3">
+          <div className="md:hidden border-t border-silver-800 py-3 space-y-2">
             <Link
               href="/directory"
-              className="block text-sm font-medium text-silver-600 hover:text-brand-700 py-2"
+              className="block text-sm text-silver-400 hover:text-white py-1.5"
               onClick={() => setMobileOpen(false)}
             >
-              Find Vendors
+              Directory
             </Link>
             <Link
               href="/apply"
-              className="block text-sm font-medium text-silver-600 hover:text-brand-700 py-2"
+              className="block text-sm text-silver-400 hover:text-white py-1.5"
               onClick={() => setMobileOpen(false)}
             >
               List Your Business
             </Link>
             <Link
               href="/directory"
-              className="btn-primary text-sm py-2 px-4 w-full text-center"
+              className="block text-sm px-4 py-1.5 bg-accent-600 text-white rounded text-center font-medium mt-2"
               onClick={() => setMobileOpen(false)}
             >
-              Browse Directory
+              Browse Vendors
             </Link>
           </div>
         )}

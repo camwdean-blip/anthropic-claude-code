@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/db';
 import { stripe, INTRODUCTION_FEE_CENTS } from '@/lib/stripe';
+import { sendIntroductionEmails } from '@/lib/email';
+import { createBuyerDeal } from '@/lib/hubspot';
 
 export async function POST(request: NextRequest) {
   try {
@@ -29,7 +31,7 @@ export async function POST(request: NextRequest) {
     // Verify vendor exists and is approved
     const vendor = await prisma.vendor.findUnique({
       where: { id: vendorId },
-      select: { id: true, businessName: true, status: true },
+      select: { id: true, businessName: true, email: true, phone: true, status: true },
     });
 
     if (!vendor || vendor.status !== 'approved') {
@@ -39,16 +41,22 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    const trimmedBuyerName = String(buyerName).trim();
+    const trimmedBuyerEmail = String(buyerEmail).trim().toLowerCase();
+    const trimmedBuyerPhone = String(buyerPhone).trim();
+    const trimmedBuyerCompany = String(buyerCompany).trim();
+    const trimmedProjectDesc = String(projectDescription).trim();
+
     // Create the introduction record (pending payment)
     const introduction = await prisma.introduction.create({
       data: {
         vendorId,
-        buyerName: String(buyerName).trim(),
-        buyerEmail: String(buyerEmail).trim().toLowerCase(),
-        buyerPhone: String(buyerPhone).trim(),
-        buyerCompany: String(buyerCompany).trim(),
+        buyerName: trimmedBuyerName,
+        buyerEmail: trimmedBuyerEmail,
+        buyerPhone: trimmedBuyerPhone,
+        buyerCompany: trimmedBuyerCompany,
         buyerTitle: buyerTitle ? String(buyerTitle).trim() : null,
-        projectDescription: String(projectDescription).trim(),
+        projectDescription: trimmedProjectDesc,
         projectTimeline: projectTimeline ? String(projectTimeline) : null,
         projectBudget: projectBudget ? String(projectBudget) : null,
         amount: INTRODUCTION_FEE_CENTS,
@@ -68,7 +76,7 @@ export async function POST(request: NextRequest) {
               currency: 'usd',
               product_data: {
                 name: `Introduction to ${vendor.businessName}`,
-                description: `Warm introduction connecting ${buyerCompany} with ${vendor.businessName} through Nexus DC Connector.`,
+                description: `Warm introduction connecting ${trimmedBuyerCompany} with ${vendor.businessName} through Conduit Partners.`,
               },
               unit_amount: INTRODUCTION_FEE_CENTS,
             },
@@ -78,7 +86,7 @@ export async function POST(request: NextRequest) {
         mode: 'payment',
         success_url: `${appUrl}/connect/success?intro=${introduction.id}`,
         cancel_url: `${appUrl}/connect/${vendorId}`,
-        customer_email: buyerEmail,
+        customer_email: trimmedBuyerEmail,
         metadata: {
           introductionId: introduction.id,
           vendorId,
@@ -96,15 +104,39 @@ export async function POST(request: NextRequest) {
         introductionId: introduction.id,
       });
     } catch (stripeError) {
-      // If Stripe fails (e.g., not configured), return the intro ID so
-      // the app still works in development without Stripe keys
+      // If Stripe fails (e.g., not configured), fall back to dev mode
       console.error('Stripe error (dev mode fallback):', stripeError);
 
-      // Mark as paid for development purposes
+      // Mark as paid and fire emails + CRM for development testing
       await prisma.introduction.update({
         where: { id: introduction.id },
         data: { status: 'paid' },
       });
+
+      Promise.allSettled([
+        sendIntroductionEmails({
+          vendorName: vendor.businessName,
+          vendorEmail: vendor.email,
+          vendorPhone: vendor.phone,
+          buyerName: trimmedBuyerName,
+          buyerEmail: trimmedBuyerEmail,
+          buyerPhone: trimmedBuyerPhone,
+          buyerCompany: trimmedBuyerCompany,
+          projectDescription: trimmedProjectDesc,
+        }),
+        createBuyerDeal({
+          buyerName: trimmedBuyerName,
+          buyerEmail: trimmedBuyerEmail,
+          buyerPhone: trimmedBuyerPhone,
+          buyerCompany: trimmedBuyerCompany,
+          buyerTitle: buyerTitle ? String(buyerTitle).trim() : undefined,
+          vendorName: vendor.businessName,
+          projectDescription: trimmedProjectDesc,
+          projectBudget: projectBudget || undefined,
+          projectTimeline: projectTimeline || undefined,
+          amount: INTRODUCTION_FEE_CENTS,
+        }),
+      ]).catch(console.error);
 
       return NextResponse.json({
         introductionId: introduction.id,

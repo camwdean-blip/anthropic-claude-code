@@ -49,7 +49,7 @@ export default function AdminLoginPage() {
             </svg>
           </div>
           <h1 className="text-xl font-bold text-white">Admin Login</h1>
-          <p className="text-sm text-silver-400 mt-1">Nexus DC Connector</p>
+          <p className="text-sm text-silver-400 mt-1">Conduit Partners</p>
         </div>
 
         <form onSubmit={handleSubmit} className="bg-white rounded-xl p-6 shadow-lg space-y-4">
@@ -69,7 +69,7 @@ export default function AdminLoginPage() {
               type="email"
               required
               className="input-field"
-              placeholder="admin@nexusdcconnector.com"
+              placeholder="admin@conduitpartners.com"
             />
           </div>
 

@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Admin | Nexus DC Connector',
+  title: 'Admin | Conduit Partners',
   robots: 'noindex, nofollow',
 };
 

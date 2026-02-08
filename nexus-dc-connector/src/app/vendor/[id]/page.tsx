@@ -19,8 +19,8 @@ export async function generateMetadata({
   if (!vendor) return { title: 'Vendor Not Found' };
 
   return {
-    title: `${vendor.businessName} | Nexus DC Connector`,
-    description: `${vendor.businessName} — ${getCategoryName(vendor.category)} in ${vendor.city}, ${vendor.state}. Connect through Nexus DC Connector.`,
+    title: `${vendor.businessName} | Conduit Partners`,
+    description: `${vendor.businessName} — ${getCategoryName(vendor.category)} in ${vendor.city}, ${vendor.state}. Connect through Conduit Partners.`,
   };
 }
 

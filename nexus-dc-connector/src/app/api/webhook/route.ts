@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { stripe } from '@/lib/stripe';
 import { prisma } from '@/lib/db';
 import { sendIntroductionEmails } from '@/lib/email';
+import { createBuyerDeal } from '@/lib/hubspot';
 import Stripe from 'stripe';
 
 export async function POST(request: NextRequest) {
@@ -42,17 +43,31 @@ export async function POST(request: NextRequest) {
         },
       });
 
-      // Send introduction emails
-      await sendIntroductionEmails({
-        vendorName: introduction.vendor.businessName,
-        vendorEmail: introduction.vendor.email,
-        vendorPhone: introduction.vendor.phone,
-        buyerName: introduction.buyerName,
-        buyerEmail: introduction.buyerEmail,
-        buyerPhone: introduction.buyerPhone,
-        buyerCompany: introduction.buyerCompany,
-        projectDescription: introduction.projectDescription,
-      });
+      // Send emails + create CRM deal in parallel
+      await Promise.allSettled([
+        sendIntroductionEmails({
+          vendorName: introduction.vendor.businessName,
+          vendorEmail: introduction.vendor.email,
+          vendorPhone: introduction.vendor.phone,
+          buyerName: introduction.buyerName,
+          buyerEmail: introduction.buyerEmail,
+          buyerPhone: introduction.buyerPhone,
+          buyerCompany: introduction.buyerCompany,
+          projectDescription: introduction.projectDescription,
+        }),
+        createBuyerDeal({
+          buyerName: introduction.buyerName,
+          buyerEmail: introduction.buyerEmail,
+          buyerPhone: introduction.buyerPhone,
+          buyerCompany: introduction.buyerCompany,
+          buyerTitle: introduction.buyerTitle || undefined,
+          vendorName: introduction.vendor.businessName,
+          projectDescription: introduction.projectDescription,
+          projectBudget: introduction.projectBudget || undefined,
+          projectTimeline: introduction.projectTimeline || undefined,
+          amount: introduction.amount,
+        }),
+      ]);
 
       // Update status to completed
       await prisma.introduction.update({

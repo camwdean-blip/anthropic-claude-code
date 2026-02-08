@@ -5,7 +5,7 @@ import VendorCard from '@/components/VendorCard';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Vendor Directory | Nexus DC Connector',
+  title: 'Vendor Directory | Conduit Partners',
   description: 'Browse verified data center subcontractors and equipment suppliers. Filter by specialty, location, and more.',
 };
 
