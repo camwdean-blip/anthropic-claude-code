@@ -117,7 +117,7 @@ def generate_td_sheet_pdf(txn):
     ]
     elements.append(_two_column_tables(buyer_atty, seller_atty, half_w))
 
-    # --- Key Dates & Commission side by side ---
+    # --- Key Dates & Commission side by side (dates gets more space) ---
     elements.append(Paragraph("Dates & Commission", styles["SectionHead"]))
     commission = txn.price * (txn.commission_percentage / 100)
     dates_data = [
@@ -138,7 +138,13 @@ def generate_td_sheet_pdf(txn):
         ["", ""],
         ["", ""],
     ]
-    elements.append(_two_column_tables(dates_data, commission_data, half_w))
+    dates_w = 4.2 * inch
+    comm_w = 2.4 * inch
+    elements.append(_two_column_tables_split(
+        dates_data, right_data=commission_data,
+        left_width=dates_w, right_width=comm_w,
+        left_label_w=1.6 * inch, right_label_w=0.9 * inch,
+    ))
 
     # --- Notes (only if any) ---
     notes_parts = []
@@ -196,6 +202,45 @@ def _two_column_tables(left_data, right_data, half_width):
     outer = Table(
         [[left_table, right_table]],
         colWidths=[half_width, half_width],
+    )
+    outer.setStyle(TableStyle([
+        ("VALIGN", (0, 0), (-1, -1), "TOP"),
+        ("LEFTPADDING", (0, 0), (-1, -1), 0),
+        ("RIGHTPADDING", (0, 0), (0, 0), 6),
+        ("RIGHTPADDING", (1, 0), (1, 0), 0),
+        ("TOPPADDING", (0, 0), (-1, -1), 0),
+        ("BOTTOMPADDING", (0, 0), (-1, -1), 0),
+    ]))
+    return outer
+
+
+def _two_column_tables_split(left_data, right_data, left_width, right_width,
+                              left_label_w, right_label_w):
+    """
+    Like _two_column_tables but with independent widths for each side.
+    Allows dates to get more room and commission to be narrower.
+    """
+    def make_inner(data, label_w, total_w):
+        value_w = total_w - label_w - 0.1 * inch
+        t = Table(data, colWidths=[label_w, value_w])
+        style_cmds = list(_base_style().getCommands())
+        style_cmds.extend([
+            ("SPAN", (0, 0), (1, 0)),
+            ("BACKGROUND", (0, 0), (1, 0), BRAND_BLUE),
+            ("TEXTCOLOR", (0, 0), (1, 0), colors.white),
+            ("FONTNAME", (0, 0), (1, 0), "Helvetica-Bold"),
+            ("FONTSIZE", (0, 0), (1, 0), 7),
+            ("ALIGN", (0, 0), (1, 0), "LEFT"),
+        ])
+        t.setStyle(TableStyle(style_cmds))
+        return t
+
+    left_table = make_inner(left_data, left_label_w, left_width)
+    right_table = make_inner(right_data, right_label_w, right_width)
+
+    outer = Table(
+        [[left_table, right_table]],
+        colWidths=[left_width, right_width],
     )
     outer.setStyle(TableStyle([
         ("VALIGN", (0, 0), (-1, -1), "TOP"),
