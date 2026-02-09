@@ -9,7 +9,55 @@
     <h4 class="mb-0">New Transaction</h4>
 </div>
 
-<form method="POST" action="{{ url_for('main.new_transaction') }}">
+<!-- Step 1: Upload Documents (optional but encouraged) -->
+<div class="form-card mb-4">
+    <div class="section-title"><i class="bi bi-cloud-arrow-up me-1"></i> Step 1 — Upload Documents (Optional)</div>
+    <p class="text-muted" style="font-size:0.85rem;">
+        Upload your offer and/or MLS sheet and we'll try to pre-fill the form below.
+        You can also skip this and fill everything in manually.
+    </p>
+
+    <form id="extract-form" enctype="multipart/form-data">
+        <div class="row g-3">
+            <div class="col-md-5">
+                <label class="form-label">Offer PDF</label>
+                <input type="file" name="offer_file" class="form-control form-control-sm" accept=".pdf">
+            </div>
+            <div class="col-md-5">
+                <label class="form-label">MLS Sheet PDF</label>
+                <input type="file" name="mls_file" class="form-control form-control-sm" accept=".pdf">
+            </div>
+            <div class="col-md-2 d-flex align-items-end">
+                <button type="submit" class="btn btn-primary btn-sm w-100" id="extract-btn">
+                    <i class="bi bi-magic me-1"></i>Extract & Fill
+                </button>
+            </div>
+        </div>
+
+        <!-- Additional documents (stored with the deal, not parsed) -->
+        <div class="row g-3 mt-1">
+            <div class="col-md-5">
+                <label class="form-label">Condo Docs PDF</label>
+                <input type="file" name="condo_docs_file" class="form-control form-control-sm" accept=".pdf,.doc,.docx">
+            </div>
+            <div class="col-md-5">
+                <label class="form-label">Association Financials PDF</label>
+                <input type="file" name="financials_file" class="form-control form-control-sm" accept=".pdf,.xls,.xlsx">
+            </div>
+        </div>
+    </form>
+
+    <div id="extract-status" class="mt-2" style="display:none;"></div>
+</div>
+
+<!-- Step 2: Transaction Form (pre-filled or manual) -->
+<form method="POST" action="{{ url_for('main.new_transaction') }}" enctype="multipart/form-data" id="txn-form">
+    <!-- Hidden inputs to carry the uploaded file names through to the POST -->
+    <input type="hidden" name="uploaded_offer" id="uploaded_offer" value="">
+    <input type="hidden" name="uploaded_mls" id="uploaded_mls" value="">
+    <input type="hidden" name="uploaded_condo_docs" id="uploaded_condo_docs" value="">
+    <input type="hidden" name="uploaded_financials" id="uploaded_financials" value="">
+
     {% set show_milestones = false %}
     {% include "_form_fields.html" %}
 
@@ -20,4 +68,76 @@
         <a href="{{ url_for('main.dashboard') }}" class="btn btn-outline-secondary">Cancel</a>
     </div>
 </form>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.getElementById('extract-form').addEventListener('submit', async function(e) {
+    e.preventDefault();
+
+    const btn = document.getElementById('extract-btn');
+    const status = document.getElementById('extract-status');
+    const originalBtn = btn.innerHTML;
+
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span>Extracting...';
+    status.style.display = 'block';
+    status.className = 'mt-2 text-muted';
+    status.innerHTML = '<i class="bi bi-hourglass-split me-1"></i>Reading PDFs and extracting fields...';
+
+    const formData = new FormData(this);
+
+    try {
+        const resp = await fetch('{{ url_for("main.extract_pdf_fields") }}', {
+            method: 'POST',
+            body: formData,
+        });
+        const data = await resp.json();
+
+        if (data.error) {
+            status.className = 'mt-2 text-danger';
+            status.innerHTML = '<i class="bi bi-exclamation-triangle me-1"></i>' + data.error;
+        } else {
+            // Pre-fill the form
+            const fields = data.fields;
+            let filledCount = 0;
+            for (const [key, value] of Object.entries(fields)) {
+                const input = document.querySelector(`[name="${key}"]`);
+                if (input && value) {
+                    // Only fill if the field is currently empty
+                    if (!input.value) {
+                        input.value = value;
+                        // Briefly highlight the filled field
+                        input.style.backgroundColor = '#d4edda';
+                        setTimeout(() => { input.style.backgroundColor = ''; }, 2000);
+                        filledCount++;
+                    }
+                }
+            }
+
+            // Store uploaded file references
+            if (data.uploaded_files) {
+                for (const [key, value] of Object.entries(data.uploaded_files)) {
+                    const hidden = document.getElementById('uploaded_' + key);
+                    if (hidden) hidden.value = value;
+                }
+            }
+
+            if (filledCount > 0) {
+                status.className = 'mt-2 text-success';
+                status.innerHTML = `<i class="bi bi-check-circle me-1"></i>Extracted ${filledCount} field(s). Review and adjust below, then click "Create Transaction."`;
+            } else {
+                status.className = 'mt-2 text-warning';
+                status.innerHTML = '<i class="bi bi-info-circle me-1"></i>Files uploaded but couldn\'t extract fields automatically. Fill in the form manually.';
+            }
+        }
+    } catch (err) {
+        status.className = 'mt-2 text-danger';
+        status.innerHTML = '<i class="bi bi-exclamation-triangle me-1"></i>Something went wrong: ' + err.message;
+    }
+
+    btn.disabled = false;
+    btn.innerHTML = originalBtn;
+});
+</script>
 {% endblock %}

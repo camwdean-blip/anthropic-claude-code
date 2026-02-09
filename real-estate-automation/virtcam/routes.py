@@ -8,13 +8,14 @@ from datetime import datetime, date
 
 from flask import (
     Blueprint, render_template, request, redirect, url_for, flash,
-    current_app, send_file
+    current_app, send_file, jsonify
 )
 from werkzeug.utils import secure_filename
 
 from app import db
 from models import Transaction, DealFile
 from utils.td_sheet_pdf import generate_td_sheet_pdf
+from utils.pdf_extractor import extract_fields_from_pdf
 
 main_bp = Blueprint("main", __name__)
 
@@ -107,10 +108,68 @@ def new_transaction():
         db.session.add(txn)
         db.session.commit()
 
+        # Attach any pre-uploaded files from the extract step
+        _attach_preuploaded_files(txn, request.form)
+
         flash(f"Transaction created for {txn.address}!", "success")
         return redirect(url_for("main.transaction_detail", txn_id=txn.id))
 
     return render_template("new_transaction.html")
+
+
+# ---------------------------------------------------------------------------
+# PDF Extract & Pre-fill (AJAX)
+# ---------------------------------------------------------------------------
+
+@main_bp.route("/extract-pdf", methods=["POST"])
+def extract_pdf_fields():
+    """
+    Accepts offer and/or MLS PDFs, extracts text, parses fields,
+    saves the files to a temp staging area, and returns JSON with
+    extracted fields + file references.
+    """
+    staging_dir = os.path.join(current_app.config["UPLOAD_FOLDER"], "_staging")
+    os.makedirs(staging_dir, exist_ok=True)
+
+    all_fields = {}
+    uploaded_files = {}
+
+    file_map = [
+        ("offer_file", "offer"),
+        ("mls_file", "mls"),
+        ("condo_docs_file", "condo_docs"),
+        ("financials_file", "financials"),
+    ]
+
+    for form_key, file_type in file_map:
+        file = request.files.get(form_key)
+        if not file or file.filename == "":
+            continue
+
+        ext = file.filename.rsplit(".", 1)[-1].lower() if "." in file.filename else ""
+        if ext not in ALLOWED_EXTENSIONS:
+            continue
+
+        # Save to staging
+        safe_name = secure_filename(file.filename)
+        staged_name = f"{uuid.uuid4().hex[:8]}_{safe_name}"
+        staged_path = os.path.join(staging_dir, staged_name)
+        file.save(staged_path)
+
+        uploaded_files[file_type] = staged_name
+
+        # Only try extraction on offer and MLS PDFs
+        if file_type in ("offer", "mls") and ext == "pdf":
+            try:
+                fields = extract_fields_from_pdf(staged_path, file_type)
+                all_fields.update(fields)
+            except Exception:
+                pass  # extraction failed — form still works manually
+
+    # Remove internal fields (prefixed with _) that shouldn't map to form inputs
+    all_fields = {k: v for k, v in all_fields.items() if not k.startswith("_")}
+
+    return jsonify({"fields": all_fields, "uploaded_files": uploaded_files})
 
 
 # ---------------------------------------------------------------------------
@@ -279,3 +338,42 @@ def _parse_date(val):
         return datetime.strptime(val, "%Y-%m-%d").date()
     except ValueError:
         return None
+
+
+def _attach_preuploaded_files(txn, form):
+    """Move staged files from the extract step into the deal's folder."""
+    staging_dir = os.path.join(current_app.config["UPLOAD_FOLDER"], "_staging")
+    deal_folder = os.path.join(current_app.config["UPLOAD_FOLDER"], str(txn.id))
+    os.makedirs(deal_folder, exist_ok=True)
+
+    file_types = {
+        "uploaded_offer": "offer",
+        "uploaded_mls": "mls",
+        "uploaded_condo_docs": "condo_docs",
+        "uploaded_financials": "financials",
+    }
+
+    for form_key, file_type in file_types.items():
+        staged_name = form.get(form_key, "").strip()
+        if not staged_name:
+            continue
+
+        src = os.path.join(staging_dir, staged_name)
+        if not os.path.exists(src):
+            continue
+
+        dst = os.path.join(deal_folder, staged_name)
+        os.rename(src, dst)
+
+        # Reconstruct original name (strip the uuid prefix)
+        original_name = staged_name.split("_", 1)[1] if "_" in staged_name else staged_name
+
+        deal_file = DealFile(
+            transaction_id=txn.id,
+            filename=staged_name,
+            original_name=original_name,
+            file_type=file_type,
+        )
+        db.session.add(deal_file)
+
+    db.session.commit()
