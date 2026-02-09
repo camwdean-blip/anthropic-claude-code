@@ -112,16 +112,18 @@
     <div class="col-md-3">
         <h6 class="text-uppercase text-muted" style="font-size:0.75rem; letter-spacing:0.05em;">Milestones</h6>
         {% set milestones = [
-            ('Deposit Confirmed', txn.deposit_confirmed),
-            ('Invoice Created', txn.invoice_created),
-            ('Smoke Scheduled', txn.smoke_scheduled),
-            ('6D - W/S', txn.six_d_completed),
-            ('Scan Completed', txn.scan_completed),
+            ('Deposit Confirmed', 'deposit_confirmed', txn.deposit_confirmed),
+            ('Invoice Created', 'invoice_created', txn.invoice_created),
+            ('Smoke Scheduled', 'smoke_scheduled', txn.smoke_scheduled),
+            ('6D - W/S', 'six_d_completed', txn.six_d_completed),
+            ('Scan Completed', 'scan_completed', txn.scan_completed),
         ] %}
-        {% for label, done in milestones %}
-        <div class="d-flex align-items-center gap-2 mb-1">
-            <i class="bi {{ 'bi-check-circle-fill text-success' if done else 'bi-circle text-muted' }}" style="font-size:0.9rem;"></i>
-            <span style="font-size:0.88rem;">{{ label }}</span>
+        {% for label, field, done in milestones %}
+        <div class="form-check mb-1">
+            <input class="form-check-input milestone-toggle" type="checkbox"
+                   id="ms-{{ field }}" data-field="{{ field }}"
+                   data-txn-id="{{ txn.id }}" {{ 'checked' if done else '' }}>
+            <label class="form-check-label" for="ms-{{ field }}" style="font-size:0.88rem;">{{ label }}</label>
         </div>
         {% endfor %}
     </div>
@@ -333,6 +335,28 @@ document.querySelectorAll('.copy-btn').forEach(btn => {
                 btn.classList.replace('btn-success', 'btn-outline-primary');
             }, 2000);
         });
+    });
+});
+
+// Milestone checkboxes — save on click
+document.querySelectorAll('.milestone-toggle').forEach(cb => {
+    cb.addEventListener('change', async () => {
+        const txnId = cb.dataset.txnId;
+        const field = cb.dataset.field;
+        const checked = cb.checked;
+
+        try {
+            const resp = await fetch(`/transaction/${txnId}/milestone`, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({field: field, value: checked}),
+            });
+            if (!resp.ok) {
+                cb.checked = !checked;  // revert on failure
+            }
+        } catch {
+            cb.checked = !checked;
+        }
     });
 });
 </script>

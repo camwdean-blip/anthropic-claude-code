@@ -246,6 +246,32 @@ def edit_transaction(txn_id):
 
 
 # ---------------------------------------------------------------------------
+# Milestone Toggle (AJAX)
+# ---------------------------------------------------------------------------
+
+ALLOWED_MILESTONES = {
+    "deposit_confirmed", "invoice_created", "smoke_scheduled",
+    "six_d_completed", "scan_completed",
+}
+
+
+@main_bp.route("/transaction/<int:txn_id>/milestone", methods=["POST"])
+def toggle_milestone(txn_id):
+    txn = Transaction.query.get_or_404(txn_id)
+    data = request.get_json()
+
+    field = data.get("field")
+    value = data.get("value")
+
+    if field not in ALLOWED_MILESTONES:
+        return jsonify({"error": "Invalid field"}), 400
+
+    setattr(txn, field, bool(value))
+    db.session.commit()
+    return jsonify({"ok": True, "field": field, "value": bool(value)})
+
+
+# ---------------------------------------------------------------------------
 # TD Sheet PDF Download
 # ---------------------------------------------------------------------------
 
