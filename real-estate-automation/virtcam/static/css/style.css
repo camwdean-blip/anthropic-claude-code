@@ -123,6 +123,14 @@ body {
     padding: 0.3em 0.7em;
     border-radius: 4px;
 }
+.badge-dual {
+    background: #f3e5f5;
+    color: #6a1b9a;
+    font-weight: 600;
+    font-size: 0.72rem;
+    padding: 0.3em 0.7em;
+    border-radius: 4px;
+}
 
 /* Milestone checkmarks */
 .milestone-check {

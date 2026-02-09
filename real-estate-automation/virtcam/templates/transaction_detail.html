@@ -9,7 +9,7 @@
             <div class="d-flex align-items-center gap-2 mb-1">
                 <a href="{{ url_for('main.dashboard') }}" class="text-muted text-decoration-none"><i class="bi bi-arrow-left"></i></a>
                 <h4 class="mb-0">{{ txn.address }}{% if txn.unit %} #{{ txn.unit }}{% endif %}</h4>
-                <span class="badge-{{ txn.deal_type }}">{{ txn.deal_type|upper }}</span>
+                <span class="badge-{{ txn.deal_type }}">{{ 'DUAL REP' if txn.deal_type == 'dual' else txn.deal_type|upper }}</span>
                 <span class="status-dot {{ txn.deadline_status }}"></span>
             </div>
             <div class="text-muted" style="font-size: 0.85rem;">

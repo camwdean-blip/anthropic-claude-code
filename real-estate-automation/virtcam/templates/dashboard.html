@@ -42,6 +42,7 @@
         <a href="?status={{ status_filter }}&deal_type=all" class="btn {{ 'btn-primary' if deal_type_filter == 'all' else 'btn-outline-secondary' }}">All Types</a>
         <a href="?status={{ status_filter }}&deal_type=buyer" class="btn {{ 'btn-primary' if deal_type_filter == 'buyer' else 'btn-outline-secondary' }}">Buyer</a>
         <a href="?status={{ status_filter }}&deal_type=seller" class="btn {{ 'btn-primary' if deal_type_filter == 'seller' else 'btn-outline-secondary' }}">Seller</a>
+        <a href="?status={{ status_filter }}&deal_type=dual" class="btn {{ 'btn-primary' if deal_type_filter == 'dual' else 'btn-outline-secondary' }}">Dual</a>
     </div>
 </div>
 
@@ -75,7 +76,7 @@
                     </td>
                     <td>${{ "{:,.0f}".format(txn.price) }}</td>
                     <td>
-                        {% if txn.deal_type == 'buyer' %}{{ txn.buyer_name }}{% else %}{{ txn.seller_name }}{% endif %}
+                        {% if txn.deal_type == 'buyer' %}{{ txn.buyer_name }}{% elif txn.deal_type == 'seller' %}{{ txn.seller_name }}{% else %}{{ txn.buyer_name }} / {{ txn.seller_name }}{% endif %}
                     </td>
                     <td>{{ txn.agent }}</td>
                     <td>{{ txn.offer_accepted_date.strftime('%m/%d') if txn.offer_accepted_date else '—' }}</td>

@@ -44,6 +44,7 @@
             <select name="deal_type" class="form-select" required>
                 <option value="buyer" {{ 'selected' if txn and txn.deal_type == 'buyer' else '' }}>Buyer</option>
                 <option value="seller" {{ 'selected' if txn and txn.deal_type == 'seller' else '' }}>Seller</option>
+                <option value="dual" {{ 'selected' if txn and txn.deal_type == 'dual' else '' }}>Dual Representation</option>
             </select>
         </div>
         <div class="col-md-3">

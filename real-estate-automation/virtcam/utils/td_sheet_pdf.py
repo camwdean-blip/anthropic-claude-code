@@ -64,7 +64,7 @@ def generate_td_sheet_pdf(txn):
     elements.append(Paragraph("Transaction Detail Sheet", styles["Title2"]))
     elements.append(Paragraph(
         f"MLS # {txn.mls_number} &nbsp;&nbsp;|&nbsp;&nbsp; "
-        f"{txn.deal_type.title()} Side &nbsp;&nbsp;|&nbsp;&nbsp; "
+        f"{'Dual Representation' if txn.deal_type == 'dual' else txn.deal_type.title() + ' Side'} &nbsp;&nbsp;|&nbsp;&nbsp; "
         f"Offer Accepted: {_fmt_date(txn.offer_accepted_date)}",
         styles["SubInfo"]
     ))
