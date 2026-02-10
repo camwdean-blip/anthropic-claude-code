@@ -144,9 +144,10 @@
 <div class="form-card mb-3">
     <div class="section-title"><i class="bi bi-briefcase me-1"></i> Buyer's Attorney</div>
     <div class="row g-3">
-        <div class="col-md-4">
+        <div class="col-md-4 position-relative">
             <label class="form-label">Name</label>
-            <input type="text" name="buyer_attorney_name" class="form-control" value="{{ txn.buyer_attorney_name if txn else '' }}">
+            <input type="text" name="buyer_attorney_name" class="form-control attorney-name-input" data-prefix="buyer_attorney" value="{{ txn.buyer_attorney_name if txn else '' }}" autocomplete="off">
+            <div class="attorney-suggestions" style="display:none;"></div>
         </div>
         <div class="col-md-4">
             <label class="form-label">Firm</label>
@@ -171,9 +172,10 @@
 <div class="form-card mb-3">
     <div class="section-title"><i class="bi bi-briefcase-fill me-1"></i> Seller's Attorney</div>
     <div class="row g-3">
-        <div class="col-md-4">
+        <div class="col-md-4 position-relative">
             <label class="form-label">Name</label>
-            <input type="text" name="seller_attorney_name" class="form-control" value="{{ txn.seller_attorney_name if txn else '' }}">
+            <input type="text" name="seller_attorney_name" class="form-control attorney-name-input" data-prefix="seller_attorney" value="{{ txn.seller_attorney_name if txn else '' }}" autocomplete="off">
+            <div class="attorney-suggestions" style="display:none;"></div>
         </div>
         <div class="col-md-4">
             <label class="form-label">Firm</label>
@@ -277,3 +279,52 @@
     </div>
 </div>
 {% endif %}
+
+<!-- Attorney Autocomplete JS -->
+<script>
+document.querySelectorAll('.attorney-name-input').forEach(input => {
+    const dropdown = input.nextElementSibling;
+    const prefix = input.dataset.prefix;
+    let debounce;
+
+    input.addEventListener('input', () => {
+        clearTimeout(debounce);
+        const q = input.value.trim();
+        if (q.length < 2) { dropdown.style.display = 'none'; return; }
+
+        debounce = setTimeout(async () => {
+            try {
+                const resp = await fetch(`/attorneys/search?q=${encodeURIComponent(q)}`);
+                const results = await resp.json();
+                if (!results.length) { dropdown.style.display = 'none'; return; }
+
+                dropdown.innerHTML = results.map(c =>
+                    `<div class="attorney-suggestion" data-contact='${JSON.stringify(c)}'>
+                        <strong>${c.name}</strong>${c.firm ? ` — ${c.firm}` : ''}
+                    </div>`
+                ).join('');
+                dropdown.style.display = 'block';
+            } catch { dropdown.style.display = 'none'; }
+        }, 250);
+    });
+
+    dropdown.addEventListener('click', (e) => {
+        const item = e.target.closest('.attorney-suggestion');
+        if (!item) return;
+        const c = JSON.parse(item.dataset.contact);
+        const form = input.closest('form');
+        form.querySelector(`[name="${prefix}_name"]`).value = c.name;
+        form.querySelector(`[name="${prefix}_firm"]`).value = c.firm;
+        form.querySelector(`[name="${prefix}_email"]`).value = c.email;
+        form.querySelector(`[name="${prefix}_address"]`).value = c.address;
+        form.querySelector(`[name="${prefix}_phone"]`).value = c.phone;
+        dropdown.style.display = 'none';
+    });
+
+    document.addEventListener('click', (e) => {
+        if (!input.contains(e.target) && !dropdown.contains(e.target)) {
+            dropdown.style.display = 'none';
+        }
+    });
+});
+</script>

@@ -126,6 +126,29 @@ class Transaction(db.Model):
         return "green"
 
 
+class AttorneyContact(db.Model):
+    """Saved attorney contacts for autocomplete."""
+    __tablename__ = "attorney_contacts"
+
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(200), nullable=False)
+    firm = db.Column(db.String(200), default="")
+    address = db.Column(db.String(300), default="")
+    phone = db.Column(db.String(30), default="")
+    email = db.Column(db.String(200), default="")
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "name": self.name,
+            "firm": self.firm,
+            "address": self.address,
+            "phone": self.phone,
+            "email": self.email,
+        }
+
+
 class DealFile(db.Model):
     """Uploaded files associated with a transaction."""
     __tablename__ = "deal_files"

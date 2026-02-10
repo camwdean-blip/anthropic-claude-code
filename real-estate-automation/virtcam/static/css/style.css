@@ -236,6 +236,105 @@ body {
     color: var(--brand-blue);
 }
 
+/* Upcoming banner */
+.upcoming-banner {
+    background: #fff;
+    border: 1px solid var(--gray-100);
+    border-left: 4px solid var(--brand-blue);
+    border-radius: 8px;
+    padding: 1rem 1.25rem;
+}
+.upcoming-banner h6 {
+    color: var(--brand-blue);
+    font-size: 0.82rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+.upcoming-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: var(--brand-blue-light);
+    color: var(--brand-blue);
+    font-size: 0.8rem;
+    padding: 0.35em 0.85em;
+    border-radius: 6px;
+    text-decoration: none;
+    transition: background 0.15s;
+}
+.upcoming-chip:hover {
+    background: #d0d9e8;
+    color: var(--brand-blue);
+}
+.upcoming-chip.urgent {
+    background: #fde8e8;
+    color: var(--red);
+}
+.upcoming-chip.urgent:hover {
+    background: #f8d0d0;
+    color: var(--red);
+}
+.upcoming-days {
+    font-weight: 700;
+    font-size: 0.72rem;
+    padding: 0.15em 0.45em;
+    border-radius: 3px;
+    background: rgba(0,0,0,0.08);
+}
+
+/* Deadline row highlighting */
+.deal-table tr.row-red {
+    background: #fff5f5 !important;
+    border-left: 3px solid var(--red);
+}
+.deal-table tr.row-red:hover {
+    background: #fee !important;
+}
+.deal-table tr.row-yellow {
+    background: #fffcf0 !important;
+    border-left: 3px solid var(--yellow);
+}
+.deal-table tr.row-yellow:hover {
+    background: #fff8e0 !important;
+}
+
+/* Sortable column headers */
+.deal-table th.sortable {
+    cursor: pointer;
+    user-select: none;
+}
+.deal-table th.sortable:hover {
+    background: var(--brand-blue-hover);
+}
+.deal-table th.sortable i {
+    font-size: 0.65rem;
+    opacity: 0.6;
+    margin-left: 2px;
+}
+
+/* Attorney autocomplete */
+.attorney-suggestions {
+    position: absolute;
+    z-index: 100;
+    background: #fff;
+    border: 1px solid var(--gray-100);
+    border-radius: 6px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    max-height: 200px;
+    overflow-y: auto;
+    width: 100%;
+    left: 0;
+    top: 100%;
+}
+.attorney-suggestion {
+    padding: 0.5rem 0.75rem;
+    cursor: pointer;
+    font-size: 0.85rem;
+}
+.attorney-suggestion:hover {
+    background: var(--brand-blue-light);
+}
+
 /* Info grid on detail page */
 .info-grid {
     display: grid;
@@ -251,4 +350,21 @@ body {
 .info-grid .info-value {
     font-weight: 500;
     margin-bottom: 0.6rem;
+}
+
+/* ==========================================================================
+   Print
+   ========================================================================== */
+
+@media print {
+    .navbar, .btn, .btn-group, .stat-card a, .upcoming-banner,
+    .d-flex.justify-content-between.align-items-center.mb-3 > .d-flex:last-child {
+        display: none !important;
+    }
+    .stat-card { border: 1px solid #ccc; }
+    .deal-table { box-shadow: none; }
+    .deal-table th { background: #333 !important; color: #fff !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .deal-table tr.row-red { background: #fff5f5 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .deal-table tr.row-yellow { background: #fffcf0 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    body { font-size: 11px; }
 }

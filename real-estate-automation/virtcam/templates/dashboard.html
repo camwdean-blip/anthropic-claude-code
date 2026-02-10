@@ -2,6 +2,21 @@
 {% block title %}VirtCam — Dashboard{% endblock %}
 
 {% block content %}
+<!-- Upcoming This Week -->
+{% if upcoming %}
+<div class="upcoming-banner mb-4">
+    <h6 class="mb-2"><i class="bi bi-clock-history me-1"></i> Upcoming This Week</h6>
+    <div class="d-flex flex-wrap gap-2">
+        {% for item in upcoming %}
+        <a href="{{ url_for('main.transaction_detail', txn_id=item.txn_id) }}" class="upcoming-chip {{ 'urgent' if item.days <= 3 else '' }}">
+            <strong>{{ item.label }}</strong> — {{ item.address }}
+            <span class="upcoming-days">{{ 'TODAY' if item.days == 0 else (item.days ~ 'd') }}</span>
+        </a>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+
 <!-- Stat Cards -->
 <div class="row g-3 mb-4">
     <div class="col-md-3">
@@ -31,8 +46,9 @@
     </div>
 </div>
 
-<!-- Filters -->
-<div class="d-flex gap-2 mb-3">
+<!-- Filters + Export -->
+<div class="d-flex justify-content-between align-items-center mb-3">
+<div class="d-flex gap-2">
     <div class="btn-group btn-group-sm">
         <a href="?status=active&deal_type={{ deal_type_filter }}" class="btn {{ 'btn-primary' if status_filter == 'active' else 'btn-outline-secondary' }}">Active</a>
         <a href="?status=closed&deal_type={{ deal_type_filter }}" class="btn {{ 'btn-primary' if status_filter == 'closed' else 'btn-outline-secondary' }}">Closed</a>
@@ -45,30 +61,39 @@
         <a href="?status={{ status_filter }}&deal_type=dual" class="btn {{ 'btn-primary' if deal_type_filter == 'dual' else 'btn-outline-secondary' }}">Dual</a>
     </div>
 </div>
+<div class="d-flex gap-2">
+    <a href="{{ url_for('main.export_csv', status=status_filter, deal_type=deal_type_filter) }}" class="btn btn-sm btn-outline-secondary">
+        <i class="bi bi-download me-1"></i>Export CSV
+    </a>
+    <button onclick="window.print()" class="btn btn-sm btn-outline-secondary">
+        <i class="bi bi-printer me-1"></i>Print
+    </button>
+</div>
+</div>
 
 <!-- Deal Table -->
 <div class="deal-table">
     <div class="table-responsive">
-        <table class="table table-hover mb-0">
+        <table class="table table-hover mb-0" id="deal-table">
             <thead>
                 <tr>
                     <th></th>
-                    <th>Address</th>
+                    <th class="sortable" data-col="1" data-type="text">Address <i class="bi bi-chevron-expand"></i></th>
                     <th>Type</th>
-                    <th>Price</th>
+                    <th class="sortable" data-col="3" data-type="num">Price <i class="bi bi-chevron-expand"></i></th>
                     <th>Buyer / Seller</th>
                     <th>Agent</th>
-                    <th>Offer Date</th>
-                    <th>P&S</th>
-                    <th>Mort. Cont.</th>
+                    <th class="sortable" data-col="6" data-type="date">Offer Date <i class="bi bi-chevron-expand"></i></th>
+                    <th class="sortable" data-col="7" data-type="date">P&S <i class="bi bi-chevron-expand"></i></th>
+                    <th class="sortable" data-col="8" data-type="date">Mort. Cont. <i class="bi bi-chevron-expand"></i></th>
                     <th>Commission</th>
-                    <th>GCI</th>
+                    <th class="sortable" data-col="10" data-type="num">GCI <i class="bi bi-chevron-expand"></i></th>
                     <th>Milestones</th>
                 </tr>
             </thead>
             <tbody>
                 {% for txn in transactions %}
-                <tr onclick="window.location='{{ url_for('main.transaction_detail', txn_id=txn.id) }}'">
+                <tr onclick="window.location='{{ url_for('main.transaction_detail', txn_id=txn.id) }}'" class="{{ 'row-red' if txn.deadline_status == 'red' else ('row-yellow' if txn.deadline_status == 'yellow' else '') }}">
                     <td><span class="status-dot {{ txn.deadline_status }}"></span></td>
                     <td class="fw-semibold">{{ txn.address }}{% if txn.unit %} #{{ txn.unit }}{% endif %}</td>
                     <td>
@@ -104,4 +129,51 @@
         </table>
     </div>
 </div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+// Sortable columns
+document.querySelectorAll('.sortable').forEach(th => {
+    th.style.cursor = 'pointer';
+    th.addEventListener('click', () => {
+        const table = document.getElementById('deal-table');
+        const tbody = table.querySelector('tbody');
+        const rows = Array.from(tbody.querySelectorAll('tr'));
+        const col = parseInt(th.dataset.col);
+        const type = th.dataset.type;
+        const asc = th.dataset.dir !== 'asc';
+        th.dataset.dir = asc ? 'asc' : 'desc';
+
+        // Reset other headers
+        document.querySelectorAll('.sortable').forEach(h => {
+            if (h !== th) h.dataset.dir = '';
+        });
+
+        rows.sort((a, b) => {
+            const aText = a.cells[col]?.textContent.trim() || '';
+            const bText = b.cells[col]?.textContent.trim() || '';
+
+            if (type === 'num') {
+                const aNum = parseFloat(aText.replace(/[$,]/g, '')) || 0;
+                const bNum = parseFloat(bText.replace(/[$,]/g, '')) || 0;
+                return asc ? aNum - bNum : bNum - aNum;
+            } else if (type === 'date') {
+                if (aText === '—' && bText === '—') return 0;
+                if (aText === '—') return 1;
+                if (bText === '—') return -1;
+                const aParts = aText.split('/');
+                const bParts = bText.split('/');
+                const aVal = parseInt(aParts[0]) * 100 + parseInt(aParts[1]);
+                const bVal = parseInt(bParts[0]) * 100 + parseInt(bParts[1]);
+                return asc ? aVal - bVal : bVal - aVal;
+            } else {
+                return asc ? aText.localeCompare(bText) : bText.localeCompare(aText);
+            }
+        });
+
+        rows.forEach(row => tbody.appendChild(row));
+    });
+});
+</script>
 {% endblock %}

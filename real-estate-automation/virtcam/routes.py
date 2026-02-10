@@ -6,14 +6,17 @@ import os
 import uuid
 from datetime import datetime, date
 
+import csv
+import io
+
 from flask import (
     Blueprint, render_template, request, redirect, url_for, flash,
-    current_app, send_file, jsonify
+    current_app, send_file, jsonify, Response
 )
 from werkzeug.utils import secure_filename
 
 from app import db
-from models import Transaction, DealFile
+from models import Transaction, DealFile, AttorneyContact
 from utils.td_sheet_pdf import generate_td_sheet_pdf
 from utils.pdf_extractor import extract_fields_from_pdf
 
@@ -79,6 +82,49 @@ def dashboard():
 
 
 # ---------------------------------------------------------------------------
+# CSV Export
+# ---------------------------------------------------------------------------
+
+@main_bp.route("/export.csv")
+def export_csv():
+    status_filter = request.args.get("status", "active")
+    deal_type_filter = request.args.get("deal_type", "all")
+
+    query = Transaction.query
+    if status_filter != "all":
+        query = query.filter_by(status=status_filter)
+    if deal_type_filter != "all":
+        query = query.filter_by(deal_type=deal_type_filter)
+
+    transactions = query.order_by(Transaction.offer_accepted_date.desc()).all()
+
+    output = io.StringIO()
+    writer = csv.writer(output)
+    writer.writerow([
+        "Address", "Unit", "City", "State", "Type", "Price", "Buyer", "Seller",
+        "Agent", "Offer Date", "P&S Date", "Mortgage Cont.", "Closing",
+        "Commission %", "GCI", "Status",
+    ])
+    for t in transactions:
+        writer.writerow([
+            t.address, t.unit, t.city, t.state, t.deal_type, t.price,
+            t.buyer_name, t.seller_name, t.agent,
+            t.offer_accepted_date.isoformat() if t.offer_accepted_date else "",
+            t.purchase_and_sale_date.isoformat() if t.purchase_and_sale_date else "",
+            t.mortgage_contingency_date.isoformat() if t.mortgage_contingency_date else "",
+            t.closing_date.isoformat() if t.closing_date else "",
+            t.commission_percentage, f"{t.gci:.2f}", t.status,
+        ])
+
+    output.seek(0)
+    return Response(
+        output.getvalue(),
+        mimetype="text/csv",
+        headers={"Content-Disposition": "attachment; filename=virtcam_deals.csv"},
+    )
+
+
+# ---------------------------------------------------------------------------
 # New Transaction
 # ---------------------------------------------------------------------------
 
@@ -136,6 +182,9 @@ def new_transaction():
 
         db.session.add(txn)
         db.session.commit()
+
+        # Auto-save attorney contacts
+        _save_attorney_contacts(request.form)
 
         # Attach any pre-uploaded files from the extract step
         _attach_preuploaded_files(txn, request.form)
@@ -269,6 +318,10 @@ def edit_transaction(txn_id):
         txn.scan_completed = "scan_completed" in request.form
 
         db.session.commit()
+
+        # Auto-save attorney contacts
+        _save_attorney_contacts(request.form)
+
         flash("Transaction updated.", "success")
         return redirect(url_for("main.transaction_detail", txn_id=txn.id))
 
@@ -426,6 +479,79 @@ def delete_file(txn_id, file_id):
     db.session.commit()
     flash("File deleted.", "success")
     return redirect(url_for("main.transaction_detail", txn_id=txn_id, tab="documents"))
+
+
+# ---------------------------------------------------------------------------
+# Attorney Contact Book (AJAX)
+# ---------------------------------------------------------------------------
+
+@main_bp.route("/attorneys/search")
+def search_attorneys():
+    q = request.args.get("q", "").strip()
+    if len(q) < 2:
+        return jsonify([])
+    contacts = AttorneyContact.query.filter(
+        AttorneyContact.name.ilike(f"%{q}%")
+    ).order_by(AttorneyContact.name).limit(10).all()
+    return jsonify([c.to_dict() for c in contacts])
+
+
+@main_bp.route("/attorneys/save", methods=["POST"])
+def save_attorney():
+    data = request.get_json()
+    name = (data.get("name") or "").strip()
+    if not name:
+        return jsonify({"error": "Name required"}), 400
+
+    # Update existing or create new
+    existing = AttorneyContact.query.filter(
+        AttorneyContact.name.ilike(name)
+    ).first()
+    if existing:
+        existing.firm = data.get("firm", "").strip()
+        existing.address = data.get("address", "").strip()
+        existing.phone = data.get("phone", "").strip()
+        existing.email = data.get("email", "").strip()
+    else:
+        contact = AttorneyContact(
+            name=name,
+            firm=data.get("firm", "").strip(),
+            address=data.get("address", "").strip(),
+            phone=data.get("phone", "").strip(),
+            email=data.get("email", "").strip(),
+        )
+        db.session.add(contact)
+
+    db.session.commit()
+    return jsonify({"ok": True})
+
+
+# ---------------------------------------------------------------------------
+# Auto-save attorneys on transaction create/edit
+# ---------------------------------------------------------------------------
+
+def _save_attorney_contacts(form):
+    """Auto-save buyer and seller attorney info to the contact book."""
+    for prefix in ("buyer_attorney", "seller_attorney"):
+        name = form.get(f"{prefix}_name", "").strip()
+        if not name:
+            continue
+        existing = AttorneyContact.query.filter(
+            AttorneyContact.name.ilike(name)
+        ).first()
+        fields = {
+            "firm": form.get(f"{prefix}_firm", "").strip(),
+            "address": form.get(f"{prefix}_address", "").strip(),
+            "phone": form.get(f"{prefix}_phone", "").strip(),
+            "email": form.get(f"{prefix}_email", "").strip(),
+        }
+        if existing:
+            for k, v in fields.items():
+                if v:
+                    setattr(existing, k, v)
+        else:
+            db.session.add(AttorneyContact(name=name, **fields))
+    db.session.commit()
 
 
 # ---------------------------------------------------------------------------
