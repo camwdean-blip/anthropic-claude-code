@@ -246,6 +246,51 @@ def edit_transaction(txn_id):
 
 
 # ---------------------------------------------------------------------------
+# Status Update (AJAX)
+# ---------------------------------------------------------------------------
+
+ALLOWED_STATUSES = {"active", "closed", "withdrawn"}
+
+
+@main_bp.route("/transaction/<int:txn_id>/status", methods=["POST"])
+def update_status(txn_id):
+    txn = Transaction.query.get_or_404(txn_id)
+    data = request.get_json()
+    status = data.get("status")
+
+    if status not in ALLOWED_STATUSES:
+        return jsonify({"error": "Invalid status"}), 400
+
+    txn.status = status
+    db.session.commit()
+    return jsonify({"ok": True, "status": status})
+
+
+# ---------------------------------------------------------------------------
+# Delete Transaction
+# ---------------------------------------------------------------------------
+
+@main_bp.route("/transaction/<int:txn_id>/delete", methods=["POST"])
+def delete_transaction(txn_id):
+    txn = Transaction.query.get_or_404(txn_id)
+    address = txn.address
+
+    # Delete associated files from disk
+    deal_folder = os.path.join(current_app.config["UPLOAD_FOLDER"], str(txn.id))
+    if os.path.isdir(deal_folder):
+        import shutil
+        shutil.rmtree(deal_folder)
+
+    # Delete file records and transaction
+    DealFile.query.filter_by(transaction_id=txn.id).delete()
+    db.session.delete(txn)
+    db.session.commit()
+
+    flash(f"Deleted transaction for {address}.", "success")
+    return redirect(url_for("main.dashboard"))
+
+
+# ---------------------------------------------------------------------------
 # Milestone Toggle (AJAX)
 # ---------------------------------------------------------------------------
 
