@@ -26,6 +26,8 @@ main_bp = Blueprint("main", __name__)
 
 @main_bp.route("/")
 def dashboard():
+    from datetime import timedelta
+
     status_filter = request.args.get("status", "active")
     deal_type_filter = request.args.get("deal_type", "all")
 
@@ -41,6 +43,30 @@ def dashboard():
     total_gci = sum(t.gci for t in transactions)
     active_count = Transaction.query.filter_by(status="active").count()
 
+    # Upcoming deadlines this week (next 7 days) for active deals
+    today = date.today()
+    week_out = today + timedelta(days=7)
+    upcoming = []
+    active_txns = Transaction.query.filter_by(status="active").all()
+    date_fields = [
+        ("P&S", "purchase_and_sale_date"),
+        ("Mortgage Cont.", "mortgage_contingency_date"),
+        ("Commission Deadline", "commission_deadline"),
+        ("Closing", "closing_date"),
+    ]
+    for txn in active_txns:
+        for label, field in date_fields:
+            d = getattr(txn, field)
+            if d and today <= d <= week_out:
+                upcoming.append({
+                    "address": txn.address,
+                    "txn_id": txn.id,
+                    "label": label,
+                    "date": d,
+                    "days": (d - today).days,
+                })
+    upcoming.sort(key=lambda x: x["date"])
+
     return render_template(
         "dashboard.html",
         transactions=transactions,
@@ -48,6 +74,7 @@ def dashboard():
         active_count=active_count,
         status_filter=status_filter,
         deal_type_filter=deal_type_filter,
+        upcoming=upcoming,
     )
 
 
@@ -100,6 +127,8 @@ def new_transaction():
             # Inspection
             inspection_date=request.form.get("inspection_date", "").strip(),
             inspection_contingency_waived="inspection_contingency_waived" in request.form,
+            # Notes
+            notes=request.form.get("notes", "").strip(),
             # Toggles
             lead_paint_signed="lead_paint_signed" in request.form,
             dual_agency="dual_agency" in request.form,
@@ -227,6 +256,7 @@ def edit_transaction(txn_id):
         txn.seller_attorney_email = request.form.get("seller_attorney_email", "").strip()
         txn.inspection_date = request.form.get("inspection_date", "").strip()
         txn.inspection_contingency_waived = "inspection_contingency_waived" in request.form
+        txn.notes = request.form.get("notes", "").strip()
         txn.lead_paint_signed = "lead_paint_signed" in request.form
         txn.dual_agency = "dual_agency" in request.form
         txn.status = request.form.get("status", "active")

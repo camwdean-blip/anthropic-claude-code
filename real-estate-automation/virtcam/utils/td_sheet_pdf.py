@@ -154,6 +154,8 @@ def generate_td_sheet_pdf(txn):
         notes_parts.append("Inspection contingency waived")
     if txn.dual_agency:
         notes_parts.append("Dual agency — consent required")
+    if getattr(txn, "notes", None):
+        notes_parts.append(txn.notes)
 
     if notes_parts:
         elements.append(Spacer(1, 4))

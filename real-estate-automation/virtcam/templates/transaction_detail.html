@@ -138,6 +138,12 @@
     </div>
 </div>
 
+{% if txn.notes %}
+<hr class="my-4">
+<h6 class="text-uppercase text-muted" style="font-size:0.75rem; letter-spacing:0.05em;">Notes</h6>
+<div style="white-space: pre-wrap; font-size: 0.9rem; line-height: 1.6;">{{ txn.notes }}</div>
+{% endif %}
+
 
 {% elif tab == 'emails' %}
 <!-- ======== EMAILS TAB ======== -->
@@ -151,12 +157,17 @@
     <div class="d-flex justify-content-between align-items-center mb-2">
         <h6 class="mb-0"><i class="bi bi-envelope me-1"></i> Buyer Onboarding Email</h6>
         <button class="btn btn-sm btn-outline-primary copy-btn" data-target="buyer-email">
-            <i class="bi bi-clipboard me-1"></i>Copy
+            <i class="bi bi-clipboard me-1"></i>Copy Body
         </button>
     </div>
     <div class="email-header">
         <strong>To:</strong> {{ txn.buyer_email }}<br>
-        <strong>Subject:</strong> Congratulations — Next Steps for {{ txn.address }}
+        <div class="d-flex align-items-center gap-2">
+            <span><strong>Subject:</strong> <span id="buyer-subject">Congratulations — Next Steps for {{ txn.address }}</span></span>
+            <button class="btn btn-sm btn-outline-secondary copy-btn py-0 px-1" data-target="buyer-subject" style="font-size:0.7rem;">
+                <i class="bi bi-clipboard"></i>
+            </button>
+        </div>
     </div>
     <div class="email-body" id="buyer-email">Hi {{ txn.buyer_name.split(' ')[0] if txn.buyer_name else '' }} - Congratulations on having your offer accepted!
 
@@ -196,12 +207,17 @@ I look forward to working with you!</div>
     <div class="d-flex justify-content-between align-items-center mb-2">
         <h6 class="mb-0"><i class="bi bi-envelope me-1"></i> Seller Onboarding Email</h6>
         <button class="btn btn-sm btn-outline-primary copy-btn" data-target="seller-email">
-            <i class="bi bi-clipboard me-1"></i>Copy
+            <i class="bi bi-clipboard me-1"></i>Copy Body
         </button>
     </div>
     <div class="email-header">
         <strong>To:</strong> {{ txn.seller_email }}<br>
-        <strong>Subject:</strong> Congratulations — Next Steps for {{ txn.address }}
+        <div class="d-flex align-items-center gap-2">
+            <span><strong>Subject:</strong> <span id="seller-subject">Congratulations — Next Steps for {{ txn.address }}</span></span>
+            <button class="btn btn-sm btn-outline-secondary copy-btn py-0 px-1" data-target="seller-subject" style="font-size:0.7rem;">
+                <i class="bi bi-clipboard"></i>
+            </button>
+        </div>
     </div>
     <div class="email-body" id="seller-email">Hi {{ txn.seller_name.split(' ')[0] if txn.seller_name else '' }} - Congratulations on accepting an offer to purchase your home!
 
@@ -223,12 +239,17 @@ Thank you!</div>
     <div class="d-flex justify-content-between align-items-center mb-2">
         <h6 class="mb-0"><i class="bi bi-envelope me-1"></i> Buyer's Attorney Email</h6>
         <button class="btn btn-sm btn-outline-primary copy-btn" data-target="buyer-atty-email">
-            <i class="bi bi-clipboard me-1"></i>Copy
+            <i class="bi bi-clipboard me-1"></i>Copy Body
         </button>
     </div>
     <div class="email-header">
         <strong>To:</strong> {{ txn.buyer_attorney_email }}<br>
-        <strong>Subject:</strong> Transaction Documents — {{ txn.address }}
+        <div class="d-flex align-items-center gap-2">
+            <span><strong>Subject:</strong> <span id="buyer-atty-subject">Transaction Documents — {{ txn.address }}</span></span>
+            <button class="btn btn-sm btn-outline-secondary copy-btn py-0 px-1" data-target="buyer-atty-subject" style="font-size:0.7rem;">
+                <i class="bi bi-clipboard"></i>
+            </button>
+        </div>
     </div>
     <div class="email-body" id="buyer-atty-email">Hello {{ txn.buyer_attorney_name.split(',')[0] if txn.buyer_attorney_name else '' }} - I hope you're well!
 
@@ -252,12 +273,17 @@ Cam</div>
     <div class="d-flex justify-content-between align-items-center mb-2">
         <h6 class="mb-0"><i class="bi bi-envelope me-1"></i> Seller's Attorney Email</h6>
         <button class="btn btn-sm btn-outline-primary copy-btn" data-target="seller-atty-email">
-            <i class="bi bi-clipboard me-1"></i>Copy
+            <i class="bi bi-clipboard me-1"></i>Copy Body
         </button>
     </div>
     <div class="email-header">
         <strong>To:</strong> {{ txn.seller_attorney_email }}<br>
-        <strong>Subject:</strong> Transaction Documents — {{ txn.address }}
+        <div class="d-flex align-items-center gap-2">
+            <span><strong>Subject:</strong> <span id="seller-atty-subject">Transaction Documents — {{ txn.address }}</span></span>
+            <button class="btn btn-sm btn-outline-secondary copy-btn py-0 px-1" data-target="seller-atty-subject" style="font-size:0.7rem;">
+                <i class="bi bi-clipboard"></i>
+            </button>
+        </div>
     </div>
     <div class="email-body" id="seller-atty-email">Hello {{ txn.seller_attorney_name.split(',')[0] if txn.seller_attorney_name else '' }} - I hope you're well!
 

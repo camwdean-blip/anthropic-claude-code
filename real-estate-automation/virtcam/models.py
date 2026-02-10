@@ -68,6 +68,9 @@ class Transaction(db.Model):
     inspection_date = db.Column(db.String(100), default="")  # free text: "1:30pm Friday 3/15"
     inspection_contingency_waived = db.Column(db.Boolean, default=False)
 
+    # --- Notes ---
+    notes = db.Column(db.Text, default="")
+
     # --- Toggles ---
     lead_paint_signed = db.Column(db.Boolean, default=False)
     dual_agency = db.Column(db.Boolean, default=False)
