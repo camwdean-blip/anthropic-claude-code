@@ -1,11 +1,12 @@
 import Link from "next/link";
+import DownloadPdfButton from "./DownloadPdfButton";
 
 const sections = [
   {
     id: "personal",
     title: "Personal Life",
     icon: "🏠",
-    color: "bg-blue-500",
+    color: "bg-[#1e3a5f]",
     guides: [
       {
         title: "Meal Planning & Grocery Optimization",
@@ -67,7 +68,7 @@ const sections = [
     id: "work",
     title: "AI at Work",
     icon: "💼",
-    color: "bg-indigo-500",
+    color: "bg-[#1a7a6d]",
     guides: [
       {
         title: "Email Writing That Saves Hours",
@@ -128,8 +129,8 @@ const sections = [
   {
     id: "recreation",
     title: "AI for Fun",
-    icon: "🎮",
-    color: "bg-pink-500",
+    icon: "🎯",
+    color: "bg-[#8b6914]",
     guides: [
       {
         title: "Trip Planning That Actually Works",
@@ -147,7 +148,7 @@ const sections = [
         tool: "ChatGPT or Claude",
         why: "Streaming algorithms show you what's popular. AI recommends based on WHY you liked something — the themes, pacing, and tone. Much more accurate.",
         proTip:
-          "Works great for books too: \"I liked Atomic Habits and thinking, Fast and Slow. Recommend 5 books. I don't want anything over 300 pages.\"",
+          "Works great for books too: \"I liked Atomic Habits and Thinking, Fast and Slow. Recommend 5 books. I don't want anything over 300 pages.\"",
       },
       {
         title: "Learning New Hobbies with AI Tutoring",
@@ -156,7 +157,7 @@ const sections = [
         tool: "ChatGPT or Claude",
         why: "AI creates a structured learning path tailored to your schedule. It's the difference between randomly watching YouTube videos and actually making progress.",
         proTip:
-          "After each practice session, tell AI what was hard and easy. It'll adjust the plan: \"Day 5 done. Chord changes between G and C are still rough.\" → AI will add extra practice for that transition.",
+          "After each practice session, tell AI what was hard and easy. It'll adjust the plan: \"Day 5 done. Chord changes between G and C are still rough.\" AI will add extra practice for that transition.",
       },
       {
         title: "Creative Writing & Storytelling",
@@ -287,23 +288,26 @@ const bonusContent = [
 
 export default function PlaybookPage() {
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen" style={{ backgroundColor: "var(--cream)" }}>
       {/* Header */}
-      <header className="border-b border-gray-100 bg-white px-6 py-4">
+      <header className="no-print border-b px-6 py-5" style={{ borderColor: "var(--warm-gray-200)", backgroundColor: "white" }}>
         <div className="mx-auto flex max-w-5xl items-center justify-between">
-          <Link href="/" className="text-xl font-bold tracking-tight">
+          <Link href="/" className="text-2xl font-bold tracking-tight">
             <span className="gradient-text">The AI Playbook</span>
           </Link>
-          <span className="rounded-full bg-green-100 px-3 py-1 text-sm font-medium text-green-700">
-            Full Access
-          </span>
+          <div className="flex items-center gap-4">
+            <span className="rounded-lg px-4 py-2 text-base font-medium" style={{ backgroundColor: "var(--teal-light)", color: "var(--teal)" }}>
+              Full Access
+            </span>
+            <DownloadPdfButton />
+          </div>
         </div>
       </header>
 
       {/* Table of Contents */}
-      <nav className="border-b border-gray-100 bg-gray-50 px-6 py-6">
+      <nav className="no-print border-b px-6 py-8" style={{ borderColor: "var(--warm-gray-200)", backgroundColor: "var(--warm-white)" }}>
         <div className="mx-auto max-w-5xl">
-          <h2 className="mb-4 text-sm font-semibold tracking-wide text-gray-500 uppercase">
+          <h2 className="mb-5 text-base font-semibold tracking-wide uppercase" style={{ color: "var(--warm-gray-600)" }}>
             Jump to a section
           </h2>
           <div className="flex flex-wrap gap-3">
@@ -311,7 +315,8 @@ export default function PlaybookPage() {
               <a
                 key={s.id}
                 href={`#${s.id}`}
-                className="rounded-full border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-gray-700 transition-colors hover:border-indigo-300 hover:text-indigo-600"
+                className="rounded-lg border bg-white px-5 py-3 text-base font-medium transition-colors"
+                style={{ borderColor: "var(--warm-gray-200)", color: "var(--warm-gray-700)" }}
               >
                 {s.icon} {s.title}
               </a>
@@ -320,7 +325,8 @@ export default function PlaybookPage() {
               <a
                 key={b.id}
                 href={`#${b.id}`}
-                className="rounded-full border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-gray-700 transition-colors hover:border-indigo-300 hover:text-indigo-600"
+                className="rounded-lg border bg-white px-5 py-3 text-base font-medium transition-colors"
+                style={{ borderColor: "var(--warm-gray-200)", color: "var(--warm-gray-700)" }}
               >
                 {b.icon} {b.title}
               </a>
@@ -329,137 +335,148 @@ export default function PlaybookPage() {
         </div>
       </nav>
 
-      {/* Welcome */}
-      <section className="px-6 py-12">
-        <div className="mx-auto max-w-3xl text-center">
-          <h1 className="mb-4 text-3xl font-extrabold tracking-tight text-gray-900 sm:text-4xl">
-            Welcome to Your AI Playbook
-          </h1>
-          <p className="text-lg text-gray-600">
-            Everything below is a step-by-step guide with real prompts you can
-            copy and paste. Each guide tells you which tool to use, why it works,
-            and pro tips to get even better results. Pick a section and dive in.
-          </p>
-        </div>
-      </section>
-
-      {/* Main Sections */}
-      {sections.map((section) => (
-        <section
-          key={section.id}
-          id={section.id}
-          className="border-t border-gray-100 px-6 py-16"
-        >
-          <div className="mx-auto max-w-4xl">
-            <div className="mb-10 flex items-center gap-3">
-              <span
-                className={`flex h-10 w-10 items-center justify-center rounded-full text-xl text-white ${section.color}`}
-              >
-                {section.icon}
-              </span>
-              <h2 className="text-2xl font-bold text-gray-900">
-                {section.title}
-              </h2>
-            </div>
-
-            <div className="space-y-10">
-              {section.guides.map((guide) => (
-                <article
-                  key={guide.title}
-                  className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm sm:p-8"
-                >
-                  <h3 className="mb-4 text-xl font-bold text-gray-900">
-                    {guide.title}
-                  </h3>
-
-                  <div className="mb-4">
-                    <div className="mb-2 text-xs font-semibold tracking-wide text-indigo-600 uppercase">
-                      Copy & paste this prompt
-                    </div>
-                    <div className="rounded-xl bg-gray-50 p-4 font-mono text-sm leading-relaxed whitespace-pre-wrap text-gray-700">
-                      {guide.prompt}
-                    </div>
-                  </div>
-
-                  <div className="mb-3 flex items-center gap-2 text-sm">
-                    <span className="font-medium text-gray-500">
-                      Best tool:
-                    </span>
-                    <span className="rounded-full bg-indigo-50 px-3 py-0.5 text-sm font-medium text-indigo-700">
-                      {guide.tool}
-                    </span>
-                  </div>
-
-                  <div className="mb-4">
-                    <div className="mb-1 text-sm font-semibold text-gray-700">
-                      Why this works:
-                    </div>
-                    <p className="text-sm text-gray-600">{guide.why}</p>
-                  </div>
-
-                  <div className="rounded-xl border border-amber-200 bg-amber-50 p-4">
-                    <div className="mb-1 text-sm font-semibold text-amber-800">
-                      Pro Tip
-                    </div>
-                    <p className="text-sm text-amber-700">{guide.proTip}</p>
-                  </div>
-                </article>
-              ))}
-            </div>
+      {/* PDF content wrapper */}
+      <div id="playbook-content">
+        {/* Welcome */}
+        <section className="px-6 py-16">
+          <div className="mx-auto max-w-3xl text-center">
+            <h1 className="mb-6 text-3xl font-bold tracking-tight sm:text-4xl" style={{ color: "var(--warm-gray-900)" }}>
+              Welcome to Your AI Playbook
+            </h1>
+            <p className="text-xl leading-relaxed" style={{ color: "var(--warm-gray-600)" }}>
+              Everything below is a step-by-step guide with real prompts you can
+              copy and paste. Each guide tells you which tool to use, why it works,
+              and pro tips to get even better results. Pick a section and dive in.
+            </p>
           </div>
         </section>
-      ))}
 
-      {/* Bonus Content */}
-      {bonusContent.map((bonus) => (
-        <section
-          key={bonus.id}
-          id={bonus.id}
-          className="border-t border-gray-100 bg-gray-50 px-6 py-16"
-        >
-          <div className="mx-auto max-w-4xl">
-            <div className="mb-10 flex items-center gap-3">
-              <span className="text-3xl">{bonus.icon}</span>
-              <h2 className="text-2xl font-bold text-gray-900">
-                {bonus.title}
-              </h2>
-            </div>
-
-            <div className="space-y-8">
-              {bonus.content.map((block) => (
-                <div
-                  key={block.subtitle}
-                  className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm sm:p-8"
+        {/* Main Sections */}
+        {sections.map((section) => (
+          <section
+            key={section.id}
+            id={section.id}
+            className="border-t px-6 py-20"
+            style={{ borderColor: "var(--warm-gray-200)" }}
+          >
+            <div className="mx-auto max-w-4xl">
+              <div className="mb-12 flex items-center gap-4">
+                <span
+                  className={`flex h-12 w-12 items-center justify-center rounded-lg text-2xl text-white ${section.color}`}
                 >
-                  <h3 className="mb-3 text-lg font-bold text-gray-900">
-                    {block.subtitle}
-                  </h3>
-                  <div className="whitespace-pre-line text-gray-600 leading-relaxed">
-                    {block.text}
-                  </div>
-                </div>
-              ))}
+                  {section.icon}
+                </span>
+                <h2 className="text-3xl font-bold" style={{ color: "var(--warm-gray-900)" }}>
+                  {section.title}
+                </h2>
+              </div>
+
+              <div className="space-y-10">
+                {section.guides.map((guide) => (
+                  <article
+                    key={guide.title}
+                    className="rounded-xl bg-white p-8 shadow-sm sm:p-10"
+                    style={{ border: "1px solid var(--warm-gray-200)" }}
+                  >
+                    <h3 className="mb-6 text-2xl font-bold" style={{ color: "var(--warm-gray-900)" }}>
+                      {guide.title}
+                    </h3>
+
+                    <div className="mb-6">
+                      <div className="mb-3 text-sm font-semibold tracking-wide uppercase" style={{ color: "var(--teal)" }}>
+                        Copy & paste this prompt
+                      </div>
+                      <div className="rounded-lg p-5 font-mono text-base leading-relaxed whitespace-pre-wrap" style={{ backgroundColor: "var(--warm-gray-50)", color: "var(--warm-gray-700)", border: "1px solid var(--warm-gray-200)" }}>
+                        {guide.prompt}
+                      </div>
+                    </div>
+
+                    <div className="mb-4 flex items-center gap-3 text-base">
+                      <span className="font-medium" style={{ color: "var(--warm-gray-600)" }}>
+                        Best tool:
+                      </span>
+                      <span className="rounded-lg px-4 py-1.5 text-base font-medium" style={{ backgroundColor: "var(--teal-light)", color: "var(--teal)" }}>
+                        {guide.tool}
+                      </span>
+                    </div>
+
+                    <div className="mb-5">
+                      <div className="mb-2 text-base font-semibold" style={{ color: "var(--warm-gray-700)" }}>
+                        Why this works:
+                      </div>
+                      <p className="text-base leading-relaxed" style={{ color: "var(--warm-gray-600)" }}>{guide.why}</p>
+                    </div>
+
+                    <div className="rounded-lg p-5" style={{ backgroundColor: "var(--gold-light)", border: "1px solid #e8d5a0" }}>
+                      <div className="mb-2 text-base font-semibold" style={{ color: "#8b6914" }}>
+                        Pro Tip
+                      </div>
+                      <p className="text-base leading-relaxed" style={{ color: "#7a5c12" }}>{guide.proTip}</p>
+                    </div>
+                  </article>
+                ))}
+              </div>
             </div>
-          </div>
-        </section>
-      ))}
+          </section>
+        ))}
+
+        {/* Bonus Content */}
+        {bonusContent.map((bonus) => (
+          <section
+            key={bonus.id}
+            id={bonus.id}
+            className="border-t px-6 py-20"
+            style={{ borderColor: "var(--warm-gray-200)", backgroundColor: "var(--warm-white)" }}
+          >
+            <div className="mx-auto max-w-4xl">
+              <div className="mb-12 flex items-center gap-4">
+                <span className="text-3xl">{bonus.icon}</span>
+                <h2 className="text-3xl font-bold" style={{ color: "var(--warm-gray-900)" }}>
+                  {bonus.title}
+                </h2>
+              </div>
+
+              <div className="space-y-8">
+                {bonus.content.map((block) => (
+                  <div
+                    key={block.subtitle}
+                    className="rounded-xl bg-white p-8 shadow-sm sm:p-10"
+                    style={{ border: "1px solid var(--warm-gray-200)" }}
+                  >
+                    <h3 className="mb-4 text-xl font-bold" style={{ color: "var(--warm-gray-900)" }}>
+                      {block.subtitle}
+                    </h3>
+                    <div className="whitespace-pre-line text-base leading-relaxed" style={{ color: "var(--warm-gray-600)" }}>
+                      {block.text}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </section>
+        ))}
+      </div>
 
       {/* Footer */}
-      <footer className="border-t border-gray-100 bg-white px-6 py-12">
+      <footer className="no-print border-t px-6 py-16" style={{ borderColor: "var(--warm-gray-200)", backgroundColor: "white" }}>
         <div className="mx-auto max-w-3xl text-center">
-          <h2 className="mb-4 text-2xl font-bold text-gray-900">
+          <h2 className="mb-5 text-2xl font-bold" style={{ color: "var(--warm-gray-900)" }}>
             That&apos;s your AI Playbook.
           </h2>
-          <p className="mb-6 text-gray-600">
+          <p className="mb-4 text-lg leading-relaxed" style={{ color: "var(--warm-gray-600)" }}>
             Bookmark this page and come back whenever you need a prompt or want to
             try something new. We update this playbook as AI evolves — so you
             always have the latest techniques.
           </p>
-          <p className="text-sm text-gray-400">
+          <div className="mb-8">
+            <DownloadPdfButton />
+          </div>
+          <p className="text-base" style={{ color: "var(--warm-gray-600)" }}>
             Questions or feedback?{" "}
             <a
               href="mailto:support@theaiplaybook.com"
-              className="text-indigo-600 underline"
+              className="underline"
+              style={{ color: "var(--teal)" }}
             >
               support@theaiplaybook.com
             </a>

@@ -4,7 +4,7 @@ const freePreview = [
   {
     category: "Personal Life",
     icon: "🏠",
-    color: "from-blue-500 to-cyan-500",
+    color: "bg-[#1e3a5f]",
     tip: "Plan Your Entire Week of Meals in 30 Seconds",
     description:
       'Open ChatGPT or Claude, type: "Plan 5 healthy dinners for a family of 4 with a $75 grocery budget. Give me a shopping list organized by aisle." That\'s it. You just saved an hour of meal planning.',
@@ -13,7 +13,7 @@ const freePreview = [
   {
     category: "Work",
     icon: "💼",
-    color: "from-indigo-500 to-purple-500",
+    color: "bg-[#1a7a6d]",
     tip: "Write Emails That Actually Sound Like You — in Half the Time",
     description:
       'Paste a difficult email you received and say: "Write a professional but warm reply that agrees to the meeting but asks to push it to next week." Then tell it to match your tone. Done in 30 seconds instead of 15 minutes.',
@@ -21,9 +21,9 @@ const freePreview = [
   },
   {
     category: "Recreation",
-    icon: "🎮",
-    color: "from-pink-500 to-rose-500",
-    tip: "Plan a Trip That Actually Fits Your Vibe",
+    icon: "🎯",
+    color: "bg-[#8b6914]",
+    tip: "Plan a Trip That Actually Fits Your Style",
     description:
       '"I have 4 days off, a $1,500 budget, I like hiking but hate crowds, and I fly out of Chicago. Plan my trip." You\'ll get a full itinerary with hotels, activities, and restaurants — tailored to you, not a generic travel blog.',
     tools: "ChatGPT, Claude, Perplexity",
@@ -33,6 +33,7 @@ const freePreview = [
 const fullPlaybookFeatures = [
   {
     title: "Personal AI Mastery",
+    icon: "🏠",
     items: [
       "Meal planning & grocery optimization",
       "AI-powered budgeting & finance tracking",
@@ -44,6 +45,7 @@ const fullPlaybookFeatures = [
   },
   {
     title: "AI at Work",
+    icon: "💼",
     items: [
       "Email writing that saves hours per week",
       "Meeting notes & action items on autopilot",
@@ -55,6 +57,7 @@ const fullPlaybookFeatures = [
   },
   {
     title: "AI for Fun",
+    icon: "🎯",
     items: [
       "Trip planning that actually works",
       "Movie, book & music recommendations",
@@ -66,6 +69,7 @@ const fullPlaybookFeatures = [
   },
   {
     title: "Bonus Content",
+    icon: "🎁",
     items: [
       "Vibe Coding: build apps without being a programmer",
       "Prompt Engineering Cheat Sheet (copy & paste templates)",
@@ -113,36 +117,38 @@ const testimonials = [
   },
   {
     name: "Lisa K.",
-    role: "Teacher",
-    text: "I was scared of AI. This playbook made it feel like learning to use Google for the first time. Now I can't imagine life without it.",
+    role: "Retired teacher",
+    text: "I was nervous about AI. This playbook made it feel like learning to use Google for the first time. Now I use it every single day.",
   },
 ];
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen" style={{ backgroundColor: "var(--cream)" }}>
       {/* Navigation */}
-      <nav className="fixed top-0 left-0 right-0 z-50 border-b border-gray-100 bg-white/80 backdrop-blur-md">
-        <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
-          <div className="text-xl font-bold tracking-tight">
+      <nav className="no-print fixed top-0 left-0 right-0 z-50 border-b" style={{ borderColor: "var(--warm-gray-200)", backgroundColor: "rgba(250, 248, 245, 0.95)", backdropFilter: "blur(8px)" }}>
+        <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-5">
+          <div className="text-2xl font-bold tracking-tight">
             <span className="gradient-text">The AI Playbook</span>
           </div>
-          <div className="flex items-center gap-6">
+          <div className="flex items-center gap-8">
             <a
               href="#preview"
-              className="hidden text-sm text-gray-600 hover:text-gray-900 sm:block"
+              className="hidden text-base hover:underline sm:block"
+              style={{ color: "var(--warm-gray-600)" }}
             >
               Free Preview
             </a>
             <a
               href="#full-playbook"
-              className="hidden text-sm text-gray-600 hover:text-gray-900 sm:block"
+              className="hidden text-base hover:underline sm:block"
+              style={{ color: "var(--warm-gray-600)" }}
             >
               Full Playbook
             </a>
             <a
               href="#pricing"
-              className="rounded-full bg-indigo-600 px-5 py-2 text-sm font-medium text-white transition-colors hover:bg-indigo-700"
+              className="btn-primary rounded-lg px-6 py-3 text-base font-semibold text-white"
             >
               Get Full Access
             </a>
@@ -151,91 +157,93 @@ export default function Home() {
       </nav>
 
       {/* Hero Section */}
-      <section className="relative overflow-hidden px-6 pt-32 pb-20">
-        <div className="absolute inset-0 bg-gradient-to-b from-indigo-50/50 to-white" />
+      <section className="relative overflow-hidden px-6 pt-36 pb-24">
+        <div className="absolute inset-0" style={{ background: "linear-gradient(to bottom, var(--warm-gray-100), var(--cream))" }} />
         <div className="relative mx-auto max-w-4xl text-center">
-          <div className="mb-6 inline-block rounded-full bg-indigo-100 px-4 py-1.5 text-sm font-medium text-indigo-700">
-            No tech background needed
+          <div className="mb-8 inline-block rounded-lg px-5 py-2 text-base font-medium" style={{ backgroundColor: "var(--teal-light)", color: "var(--teal)" }}>
+            No tech background needed — written in plain English
           </div>
-          <h1 className="mb-6 text-4xl leading-tight font-extrabold tracking-tight text-gray-900 sm:text-5xl md:text-6xl">
+          <h1 className="mb-8 text-4xl leading-tight font-bold tracking-tight sm:text-5xl md:text-6xl" style={{ color: "var(--warm-gray-900)" }}>
             Stop Being Confused by AI.
             <br />
-            <span className="gradient-text">Start Using It.</span>
+            <span className="gradient-text">Start Using It Today.</span>
           </h1>
-          <p className="mx-auto mb-8 max-w-2xl text-lg text-gray-600 sm:text-xl">
+          <p className="mx-auto mb-10 max-w-2xl text-xl leading-relaxed" style={{ color: "var(--warm-gray-600)" }}>
             A practical, no-jargon playbook that shows you exactly how to use AI
-            in your <strong>personal life</strong>, at <strong>work</strong>, and
-            for <strong>fun</strong>. Real examples you can copy and paste —
+            in your <strong style={{ color: "var(--warm-gray-800)" }}>personal life</strong>, at <strong style={{ color: "var(--warm-gray-800)" }}>work</strong>, and
+            for <strong style={{ color: "var(--warm-gray-800)" }}>fun</strong>. Real examples you can copy and paste —
             results in minutes.
           </p>
-          <div className="flex flex-col items-center justify-center gap-4 sm:flex-row">
+          <div className="flex flex-col items-center justify-center gap-5 sm:flex-row">
             <a
               href="#pricing"
-              className="pulse-cta rounded-full bg-indigo-600 px-8 py-4 text-lg font-semibold text-white shadow-lg transition-colors hover:bg-indigo-700"
+              className="pulse-cta rounded-lg px-10 py-5 text-xl font-semibold text-white shadow-md"
+              style={{ backgroundColor: "var(--navy)" }}
             >
               Get the Full Playbook — $29.99
             </a>
             <a
               href="#preview"
-              className="rounded-full border border-gray-200 px-8 py-4 text-lg font-medium text-gray-700 transition-colors hover:border-gray-300 hover:bg-gray-50"
+              className="rounded-lg border-2 px-10 py-5 text-xl font-medium transition-colors"
+              style={{ borderColor: "var(--warm-gray-300)", color: "var(--warm-gray-700)" }}
             >
               See Free Preview
             </a>
           </div>
-          <p className="mt-4 text-sm text-gray-500">
+          <p className="mt-6 text-base" style={{ color: "var(--warm-gray-600)" }}>
             One-time payment. Lifetime access. 7-day money-back guarantee.
           </p>
         </div>
       </section>
 
       {/* Problem Section */}
-      <section className="border-t border-gray-100 bg-gray-50 px-6 py-20">
+      <section className="border-t px-6 py-24" style={{ borderColor: "var(--warm-gray-200)", backgroundColor: "var(--warm-white)" }}>
         <div className="mx-auto max-w-3xl text-center">
-          <h2 className="mb-6 text-3xl font-bold tracking-tight text-gray-900">
-            AI is everywhere. Nobody taught you how to use it.
+          <h2 className="mb-8 text-3xl font-bold tracking-tight" style={{ color: "var(--warm-gray-900)" }}>
+            AI is everywhere. But nobody taught you how to use it.
           </h2>
-          <p className="mb-8 text-lg text-gray-600">
+          <p className="mb-10 text-xl leading-relaxed" style={{ color: "var(--warm-gray-600)" }}>
             Your kids are using it for homework. Your coworkers are using it to
             get ahead. Headlines say it&apos;ll change everything. But when you
             sit down and try it, you get... mediocre results and more confusion.
           </p>
           <div className="grid gap-6 sm:grid-cols-3">
-            <div className="rounded-2xl bg-white p-6 shadow-sm">
-              <div className="mb-3 text-3xl">😩</div>
-              <p className="font-medium text-gray-900">
+            <div className="rounded-xl bg-white p-8 shadow-sm" style={{ border: "1px solid var(--warm-gray-200)" }}>
+              <div className="mb-4 text-4xl">😩</div>
+              <p className="text-lg font-medium" style={{ color: "var(--warm-gray-800)" }}>
                 &quot;I tried ChatGPT but didn&apos;t know what to ask&quot;
               </p>
             </div>
-            <div className="rounded-2xl bg-white p-6 shadow-sm">
-              <div className="mb-3 text-3xl">😤</div>
-              <p className="font-medium text-gray-900">
+            <div className="rounded-xl bg-white p-8 shadow-sm" style={{ border: "1px solid var(--warm-gray-200)" }}>
+              <div className="mb-4 text-4xl">😤</div>
+              <p className="text-lg font-medium" style={{ color: "var(--warm-gray-800)" }}>
                 &quot;It gave me generic answers that weren&apos;t helpful&quot;
               </p>
             </div>
-            <div className="rounded-2xl bg-white p-6 shadow-sm">
-              <div className="mb-3 text-3xl">😰</div>
-              <p className="font-medium text-gray-900">
+            <div className="rounded-xl bg-white p-8 shadow-sm" style={{ border: "1px solid var(--warm-gray-200)" }}>
+              <div className="mb-4 text-4xl">😰</div>
+              <p className="text-lg font-medium" style={{ color: "var(--warm-gray-800)" }}>
                 &quot;I feel like I&apos;m falling behind everyone else&quot;
               </p>
             </div>
           </div>
-          <p className="mt-8 text-lg font-medium text-indigo-600">
+          <p className="mt-10 text-xl font-semibold" style={{ color: "var(--teal)" }}>
             The AI Playbook fixes all of this. In plain English.
           </p>
         </div>
       </section>
 
       {/* Free Preview Section */}
-      <section id="preview" className="px-6 py-20">
+      <section id="preview" className="px-6 py-24">
         <div className="mx-auto max-w-5xl">
-          <div className="mb-12 text-center">
-            <div className="mb-3 text-sm font-semibold tracking-wide text-indigo-600 uppercase">
+          <div className="mb-14 text-center">
+            <div className="mb-4 text-base font-semibold tracking-wide uppercase" style={{ color: "var(--teal)" }}>
               Free Preview
             </div>
-            <h2 className="mb-4 text-3xl font-bold tracking-tight text-gray-900">
-              Try 3 AI tricks right now — on us
+            <h2 className="mb-5 text-3xl font-bold tracking-tight" style={{ color: "var(--warm-gray-900)" }}>
+              Try 3 AI tips right now — on us
             </h2>
-            <p className="mx-auto max-w-2xl text-gray-600">
+            <p className="mx-auto max-w-2xl text-lg" style={{ color: "var(--warm-gray-600)" }}>
               These are real examples from the playbook. Copy, paste, and see the
               results for yourself. The full playbook has 20+ guides like these.
             </p>
@@ -245,26 +253,27 @@ export default function Home() {
             {freePreview.map((item) => (
               <div
                 key={item.category}
-                className="card-hover overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-sm"
+                className="card-hover overflow-hidden rounded-xl bg-white shadow-sm"
+                style={{ border: "1px solid var(--warm-gray-200)" }}
               >
                 <div
-                  className={`bg-gradient-to-r ${item.color} px-6 py-4 text-white`}
+                  className={`${item.color} px-6 py-5 text-white`}
                 >
                   <span className="mr-2 text-2xl">{item.icon}</span>
-                  <span className="text-sm font-semibold uppercase tracking-wide">
+                  <span className="text-base font-semibold uppercase tracking-wide">
                     {item.category}
                   </span>
                 </div>
                 <div className="p-6">
-                  <h3 className="mb-3 text-lg font-bold text-gray-900">
+                  <h3 className="mb-4 text-xl font-bold" style={{ color: "var(--warm-gray-900)" }}>
                     {item.tip}
                   </h3>
-                  <p className="mb-4 text-sm leading-relaxed text-gray-600">
+                  <p className="mb-5 text-base leading-relaxed" style={{ color: "var(--warm-gray-600)" }}>
                     {item.description}
                   </p>
-                  <div className="flex items-center gap-2 text-xs text-gray-400">
+                  <div className="flex items-center gap-2 text-sm" style={{ color: "var(--warm-gray-600)" }}>
                     <span>Works with:</span>
-                    <span className="font-medium text-gray-500">
+                    <span className="font-semibold" style={{ color: "var(--warm-gray-700)" }}>
                       {item.tools}
                     </span>
                   </div>
@@ -273,13 +282,14 @@ export default function Home() {
             ))}
           </div>
 
-          <div className="mt-12 text-center">
-            <p className="mb-4 text-lg font-medium text-gray-700">
+          <div className="mt-14 text-center">
+            <p className="mb-5 text-xl font-medium" style={{ color: "var(--warm-gray-700)" }}>
               That was just 3 out of 25+ guides in the full playbook.
             </p>
             <a
               href="#pricing"
-              className="inline-block rounded-full bg-indigo-600 px-8 py-3 font-semibold text-white transition-colors hover:bg-indigo-700"
+              className="inline-block rounded-lg px-10 py-4 text-lg font-semibold text-white transition-colors"
+              style={{ backgroundColor: "var(--navy)" }}
             >
               Unlock Everything
             </a>
@@ -290,17 +300,18 @@ export default function Home() {
       {/* Full Playbook Contents */}
       <section
         id="full-playbook"
-        className="border-t border-gray-100 bg-gray-50 px-6 py-20"
+        className="border-t px-6 py-24"
+        style={{ borderColor: "var(--warm-gray-200)", backgroundColor: "var(--warm-white)" }}
       >
         <div className="mx-auto max-w-5xl">
-          <div className="mb-12 text-center">
-            <div className="mb-3 text-sm font-semibold tracking-wide text-indigo-600 uppercase">
+          <div className="mb-14 text-center">
+            <div className="mb-4 text-base font-semibold tracking-wide uppercase" style={{ color: "var(--teal)" }}>
               Full Playbook
             </div>
-            <h2 className="mb-4 text-3xl font-bold tracking-tight text-gray-900">
+            <h2 className="mb-5 text-3xl font-bold tracking-tight" style={{ color: "var(--warm-gray-900)" }}>
               Everything inside the AI Playbook
             </h2>
-            <p className="mx-auto max-w-2xl text-gray-600">
+            <p className="mx-auto max-w-2xl text-lg" style={{ color: "var(--warm-gray-600)" }}>
               25+ step-by-step guides, copy-paste prompts, and real-world
               examples across every area of your life.
             </p>
@@ -310,18 +321,20 @@ export default function Home() {
             {fullPlaybookFeatures.map((section) => (
               <div
                 key={section.title}
-                className="rounded-2xl border border-gray-100 bg-white p-8 shadow-sm"
+                className="rounded-xl bg-white p-8 shadow-sm"
+                style={{ border: "1px solid var(--warm-gray-200)" }}
               >
-                <h3 className="mb-4 text-xl font-bold text-gray-900">
-                  {section.title}
+                <h3 className="mb-5 text-2xl font-bold" style={{ color: "var(--warm-gray-900)" }}>
+                  <span className="mr-2">{section.icon}</span> {section.title}
                 </h3>
-                <ul className="space-y-2">
+                <ul className="space-y-3">
                   {section.items.map((item) => (
                     <li
                       key={item}
-                      className="flex items-start gap-2 text-gray-600"
+                      className="flex items-start gap-3 text-lg"
+                      style={{ color: "var(--warm-gray-600)" }}
                     >
-                      <span className="mt-0.5 text-indigo-500">✓</span>
+                      <span className="mt-1 text-base" style={{ color: "var(--teal)" }}>&#10003;</span>
                       <span>{item}</span>
                     </li>
                   ))}
@@ -333,10 +346,10 @@ export default function Home() {
       </section>
 
       {/* Social Proof */}
-      <section className="px-6 py-20">
+      <section className="px-6 py-24">
         <div className="mx-auto max-w-5xl">
-          <div className="mb-12 text-center">
-            <h2 className="mb-4 text-3xl font-bold tracking-tight text-gray-900">
+          <div className="mb-14 text-center">
+            <h2 className="mb-5 text-3xl font-bold tracking-tight" style={{ color: "var(--warm-gray-900)" }}>
               People like you are already using this
             </h2>
           </div>
@@ -344,13 +357,14 @@ export default function Home() {
             {testimonials.map((t) => (
               <div
                 key={t.name}
-                className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm"
+                className="rounded-xl bg-white p-8 shadow-sm"
+                style={{ border: "1px solid var(--warm-gray-200)" }}
               >
-                <div className="mb-3 text-indigo-400">★★★★★</div>
-                <p className="mb-4 text-gray-700">&quot;{t.text}&quot;</p>
+                <div className="mb-4 text-xl" style={{ color: "var(--gold)" }}>&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+                <p className="mb-5 text-lg leading-relaxed" style={{ color: "var(--warm-gray-700)" }}>&quot;{t.text}&quot;</p>
                 <div>
-                  <p className="font-semibold text-gray-900">{t.name}</p>
-                  <p className="text-sm text-gray-500">{t.role}</p>
+                  <p className="text-lg font-semibold" style={{ color: "var(--warm-gray-900)" }}>{t.name}</p>
+                  <p className="text-base" style={{ color: "var(--warm-gray-600)" }}>{t.role}</p>
                 </div>
               </div>
             ))}
@@ -361,26 +375,27 @@ export default function Home() {
       {/* Pricing Section */}
       <section
         id="pricing"
-        className="border-t border-gray-100 bg-gradient-to-b from-indigo-50 to-white px-6 py-20"
+        className="border-t px-6 py-24"
+        style={{ borderColor: "var(--warm-gray-200)", background: "linear-gradient(to bottom, var(--warm-white), var(--cream))" }}
       >
         <div className="mx-auto max-w-2xl text-center">
-          <h2 className="mb-2 text-3xl font-bold tracking-tight text-gray-900">
+          <h2 className="mb-3 text-3xl font-bold tracking-tight" style={{ color: "var(--warm-gray-900)" }}>
             Get the full AI Playbook
           </h2>
-          <p className="mb-10 text-gray-600">
+          <p className="mb-12 text-lg" style={{ color: "var(--warm-gray-600)" }}>
             Less than a dinner out. More useful than a college course.
           </p>
 
-          <div className="rounded-3xl border-2 border-indigo-200 bg-white p-8 shadow-lg sm:p-10">
-            <div className="mb-2 text-sm font-semibold text-indigo-600 uppercase">
+          <div className="rounded-2xl border-2 bg-white p-10 shadow-md sm:p-12" style={{ borderColor: "var(--navy)" }}>
+            <div className="mb-3 text-base font-semibold uppercase" style={{ color: "var(--teal)" }}>
               Lifetime Access
             </div>
-            <div className="mb-1 text-5xl font-extrabold text-gray-900">
+            <div className="mb-2 text-6xl font-bold" style={{ color: "var(--warm-gray-900)" }}>
               $29.99
             </div>
-            <p className="mb-8 text-gray-500">One-time payment. No subscription.</p>
+            <p className="mb-10 text-lg" style={{ color: "var(--warm-gray-600)" }}>One-time payment. No subscription.</p>
 
-            <ul className="mb-8 space-y-3 text-left">
+            <ul className="mb-10 space-y-4 text-left">
               {[
                 "25+ step-by-step AI guides",
                 "Copy-paste prompt templates",
@@ -388,14 +403,15 @@ export default function Home() {
                 "Vibe Coding bonus chapter",
                 "Prompt Engineering cheat sheet",
                 "Top 10 AI tools comparison",
+                "Downloadable PDF version",
                 "Free updates as AI evolves",
                 "7-day money-back guarantee",
               ].map((item) => (
-                <li key={item} className="flex items-center gap-3">
-                  <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-indigo-100 text-xs text-indigo-600">
-                    ✓
+                <li key={item} className="flex items-center gap-4 text-lg">
+                  <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-sm text-white" style={{ backgroundColor: "var(--teal)" }}>
+                    &#10003;
                   </span>
-                  <span className="text-gray-700">{item}</span>
+                  <span style={{ color: "var(--warm-gray-700)" }}>{item}</span>
                 </li>
               ))}
             </ul>
@@ -403,12 +419,13 @@ export default function Home() {
             <form action="/api/checkout" method="POST">
               <button
                 type="submit"
-                className="pulse-cta w-full cursor-pointer rounded-full bg-indigo-600 py-4 text-lg font-bold text-white shadow-lg transition-colors hover:bg-indigo-700"
+                className="pulse-cta w-full cursor-pointer rounded-lg py-5 text-xl font-bold text-white shadow-md transition-colors"
+                style={{ backgroundColor: "var(--navy)" }}
               >
                 Get Instant Access
               </button>
             </form>
-            <p className="mt-3 text-xs text-gray-400">
+            <p className="mt-4 text-base" style={{ color: "var(--warm-gray-600)" }}>
               Secure payment via Stripe. Works with all major cards, Apple Pay &
               Google Pay.
             </p>
@@ -417,19 +434,20 @@ export default function Home() {
       </section>
 
       {/* FAQ Section */}
-      <section className="border-t border-gray-100 px-6 py-20">
+      <section className="border-t px-6 py-24" style={{ borderColor: "var(--warm-gray-200)" }}>
         <div className="mx-auto max-w-3xl">
-          <h2 className="mb-10 text-center text-3xl font-bold tracking-tight text-gray-900">
-            Frequently asked questions
+          <h2 className="mb-12 text-center text-3xl font-bold tracking-tight" style={{ color: "var(--warm-gray-900)" }}>
+            Frequently Asked Questions
           </h2>
           <div className="space-y-6">
             {faqs.map((faq) => (
               <div
                 key={faq.q}
-                className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm"
+                className="rounded-xl bg-white p-8 shadow-sm"
+                style={{ border: "1px solid var(--warm-gray-200)" }}
               >
-                <h3 className="mb-2 font-semibold text-gray-900">{faq.q}</h3>
-                <p className="text-gray-600">{faq.a}</p>
+                <h3 className="mb-3 text-xl font-semibold" style={{ color: "var(--warm-gray-900)" }}>{faq.q}</h3>
+                <p className="text-lg leading-relaxed" style={{ color: "var(--warm-gray-600)" }}>{faq.a}</p>
               </div>
             ))}
           </div>
@@ -437,18 +455,19 @@ export default function Home() {
       </section>
 
       {/* Final CTA */}
-      <section className="border-t border-gray-100 bg-gray-900 px-6 py-20 text-center">
+      <section className="border-t px-6 py-24 text-center" style={{ backgroundColor: "var(--navy)" }}>
         <div className="mx-auto max-w-2xl">
-          <h2 className="mb-4 text-3xl font-bold text-white">
+          <h2 className="mb-5 text-3xl font-bold text-white">
             Ready to stop guessing and start using AI?
           </h2>
-          <p className="mb-8 text-gray-400">
+          <p className="mb-10 text-xl" style={{ color: "rgba(255, 255, 255, 0.7)" }}>
             Join thousands of people who went from &quot;I don&apos;t get AI&quot; to
             &quot;I can&apos;t believe I waited this long.&quot;
           </p>
           <a
             href="#pricing"
-            className="inline-block rounded-full bg-indigo-600 px-8 py-4 text-lg font-semibold text-white transition-colors hover:bg-indigo-700"
+            className="inline-block rounded-lg px-10 py-5 text-xl font-semibold text-white transition-colors"
+            style={{ backgroundColor: "var(--teal)" }}
           >
             Get the AI Playbook — $29.99
           </a>
@@ -456,19 +475,19 @@ export default function Home() {
       </section>
 
       {/* Footer */}
-      <footer className="border-t border-gray-800 bg-gray-900 px-6 py-8">
+      <footer className="border-t px-6 py-10" style={{ backgroundColor: "#1a2e47", borderColor: "#15253a" }}>
         <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-4 sm:flex-row">
-          <p className="text-sm text-gray-500">
+          <p className="text-base" style={{ color: "rgba(255, 255, 255, 0.5)" }}>
             &copy; {new Date().getFullYear()} The AI Playbook. All rights reserved.
           </p>
-          <div className="flex gap-6 text-sm text-gray-500">
-            <Link href="/terms" className="hover:text-gray-300">
+          <div className="flex gap-8 text-base" style={{ color: "rgba(255, 255, 255, 0.5)" }}>
+            <Link href="/terms" className="hover:text-white transition-colors">
               Terms
             </Link>
-            <Link href="/privacy" className="hover:text-gray-300">
+            <Link href="/privacy" className="hover:text-white transition-colors">
               Privacy
             </Link>
-            <a href="mailto:support@theaiplaybook.com" className="hover:text-gray-300">
+            <a href="mailto:support@theaiplaybook.com" className="hover:text-white transition-colors">
               Contact
             </a>
           </div>
