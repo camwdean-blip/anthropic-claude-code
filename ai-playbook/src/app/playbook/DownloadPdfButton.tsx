@@ -2,6 +2,27 @@
 
 import { useState } from "react";
 
+function resolveCSSSVariables(element: HTMLElement) {
+  const computed = getComputedStyle(document.documentElement);
+  const allElements = element.querySelectorAll("*");
+
+  const resolve = (el: Element) => {
+    const htmlEl = el as HTMLElement;
+    if (!htmlEl.style) return;
+    const inlineStyle = htmlEl.getAttribute("style");
+    if (!inlineStyle || !inlineStyle.includes("var(--")) return;
+
+    const resolved = inlineStyle.replace(
+      /var\(--([^)]+)\)/g,
+      (_, varName) => computed.getPropertyValue(`--${varName}`).trim() || ""
+    );
+    htmlEl.setAttribute("style", resolved);
+  };
+
+  resolve(element);
+  allElements.forEach(resolve);
+}
+
 export default function DownloadPdfButton() {
   const [isGenerating, setIsGenerating] = useState(false);
 
@@ -12,14 +33,27 @@ export default function DownloadPdfButton() {
       const element = document.getElementById("playbook-content");
       if (!element) return;
 
+      // Clone the element so we can resolve CSS variables without affecting the page
+      const clone = element.cloneNode(true) as HTMLElement;
+      clone.style.position = "absolute";
+      clone.style.left = "-9999px";
+      clone.style.top = "0";
+      clone.style.width = element.offsetWidth + "px";
+      clone.style.backgroundColor = "#faf8f5";
+      document.body.appendChild(clone);
+
+      // Resolve all CSS variables in the clone
+      resolveCSSSVariables(clone);
+
       const opt = {
-        margin: [0.75, 0.75, 0.75, 0.75],
+        margin: [0.5, 0.5, 0.5, 0.5],
         filename: "The-AI-Playbook.pdf",
-        image: { type: "jpeg", quality: 0.95 },
+        image: { type: "jpeg", quality: 0.92 },
         html2canvas: {
           scale: 2,
           useCORS: true,
           letterRendering: true,
+          backgroundColor: "#faf8f5",
         },
         jsPDF: {
           unit: "in",
@@ -29,7 +63,10 @@ export default function DownloadPdfButton() {
         pagebreak: { mode: ["avoid-all", "css", "legacy"] },
       };
 
-      await html2pdf().set(opt).from(element).save();
+      await html2pdf().set(opt).from(clone).save();
+
+      // Clean up the clone
+      document.body.removeChild(clone);
     } catch (error) {
       console.error("PDF generation failed:", error);
       alert("There was an issue generating the PDF. Please try again.");
