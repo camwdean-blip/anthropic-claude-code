@@ -3,11 +3,20 @@ import Stripe from "stripe";
 
 export async function POST() {
   const stripeKey = process.env.STRIPE_SECRET_KEY;
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
 
   if (!stripeKey) {
     return NextResponse.json(
       { error: "Stripe is not configured. Add STRIPE_SECRET_KEY to your environment variables." },
       { status: 500 }
+    );
+  }
+
+  // In development, skip Stripe and redirect straight to success page
+  if (process.env.NODE_ENV === "development") {
+    return NextResponse.redirect(
+      `${baseUrl}/success?session_id=dev_test_session`,
+      303
     );
   }
 
@@ -31,8 +40,8 @@ export async function POST() {
         },
       ],
       mode: "payment",
-      success_url: `${process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000"}/success?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000"}/#pricing`,
+      success_url: `${baseUrl}/success?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${baseUrl}/#pricing`,
     });
 
     return NextResponse.redirect(session.url!, 303);
