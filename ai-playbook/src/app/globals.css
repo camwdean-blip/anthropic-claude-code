@@ -98,14 +98,55 @@ h1, h2, h3, h4, h5, h6 {
 
 /* Print styles for PDF */
 @media print {
-  nav, .no-print {
+  nav, header, footer, .no-print {
     display: none !important;
   }
-  body {
-    font-size: 14px;
-    background: white;
-    color: black;
+
+  html, body {
+    font-size: 12px;
+    background: white !important;
+    color: #1a1816 !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
   }
+
+  /* Keep all content visible */
+  #playbook-content {
+    display: block !important;
+  }
+
+  /* Clean card styling for print */
+  #playbook-content article,
+  #playbook-content .rounded-xl {
+    border: 1px solid #ccc !important;
+    box-shadow: none !important;
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+
+  /* Section headers start on new page */
+  #playbook-content > section {
+    page-break-before: always;
+  }
+
+  #playbook-content > section:first-child {
+    page-break-before: auto;
+  }
+
+  /* Preserve background colors for badges and highlights */
+  [style*="background"] {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  /* Tighten spacing for print */
+  .py-20 { padding-top: 2rem !important; padding-bottom: 2rem !important; }
+  .py-16 { padding-top: 1.5rem !important; padding-bottom: 1.5rem !important; }
+  .py-10 { padding-top: 1rem !important; padding-bottom: 1rem !important; }
+  .mb-12 { margin-bottom: 1.5rem !important; }
+  .space-y-10 > * + * { margin-top: 1.5rem !important; }
+  .space-y-8 > * + * { margin-top: 1.25rem !important; }
+
   .print-break {
     page-break-before: always;
   }
