@@ -1,7 +1,369 @@
 import Link from "next/link";
 import DownloadPdfButton from "./DownloadPdfButton";
 
-const sections = [
+/* ───────────────────────────────────────────
+   PART 1 — FOUNDATIONS: Origin & History of AI
+   ─────────────────────────────────────────── */
+const foundationSections = [
+  {
+    id: "origins",
+    title: "The Origin of AI: How We Got Here",
+    icon: "🧠",
+    color: "bg-[#4a2c6e]",
+    blocks: [
+      {
+        subtitle: "The Dream (1940s–1960s): Machines That Think",
+        text: `In 1950, mathematician Alan Turing asked a simple question: "Can machines think?" He proposed the Turing Test — if a machine could fool a human into thinking it was also human through conversation, it could be considered "intelligent."
+
+By 1956, a group of scientists at Dartmouth College coined the term "Artificial Intelligence" and predicted that machines would match human intelligence within a generation. They were wildly optimistic about the timeline — but they were right about the direction.
+
+Early AI could solve math proofs and play checkers. But it couldn't do anything that required common sense, context, or understanding the messy real world.`,
+      },
+      {
+        subtitle: "The Winters (1970s–1990s): Hype, Crash, Repeat",
+        text: `AI went through two major "winters" — periods where funding dried up because the technology couldn't deliver on its promises. Computers were too slow. Data was too scarce. The algorithms were too primitive.
+
+But quietly, important breakthroughs happened:
+• Expert systems (1980s) — AI that could diagnose diseases and configure computers by following hand-coded rules
+• Machine learning (1990s) — Instead of coding rules, let the machine LEARN patterns from data
+• Deep Blue (1997) — IBM's chess computer beat world champion Garry Kasparov, proving machines could outperform humans at specific tasks`,
+      },
+      {
+        subtitle: "The Deep Learning Revolution (2010s)",
+        text: `Three things converged to change everything:
+
+1. Massive data — The internet generated more text, images, and video than ever before
+2. Powerful GPUs — Graphics cards designed for video games turned out to be perfect for training AI
+3. Neural networks — Algorithms inspired by the human brain that get better with more data
+
+In 2012, a neural network crushed the ImageNet competition (image recognition) by a huge margin. Google, Facebook, and others started pouring billions into AI. Self-driving cars, voice assistants (Siri, Alexa), and recommendation algorithms transformed daily life.`,
+      },
+      {
+        subtitle: "The ChatGPT Moment (2022–Present): AI for Everyone",
+        text: `On November 30, 2022, OpenAI released ChatGPT. It reached 100 million users in 2 months — the fastest-growing app in history. For the first time, anyone could have a conversation with AI and get genuinely useful results.
+
+What makes modern AI different from everything before:
+• It understands context and nuance, not just keywords
+• It can write, analyze, create, and reason across virtually any domain
+• It gets dramatically better every few months
+• It's accessible to everyone — no programming required
+
+We are now in the era of "foundation models" — AI systems like GPT-4, Claude, and Gemini that are trained on vast amounts of human knowledge and can be applied to almost any task. This playbook teaches you how to use them like a pro.`,
+      },
+    ],
+  },
+  {
+    id: "how-ai-works",
+    title: "How AI Actually Works (No Jargon)",
+    icon: "⚙️",
+    color: "bg-[#2d4a3e]",
+    blocks: [
+      {
+        subtitle: "The Core Idea: Pattern Prediction",
+        text: `Modern AI (specifically "Large Language Models" or LLMs) works by predicting what comes next. That's it.
+
+It read billions of web pages, books, articles, and conversations during training. From all of that, it learned patterns:
+• After "The capital of France is" → "Paris" is very likely
+• After "Dear Hiring Manager, I am writing to" → a job application usually follows
+• After seeing a coding problem → the solution pattern usually looks like X
+
+It's not "thinking" the way you do. It's making extremely sophisticated predictions based on patterns in human knowledge. But the result often looks like understanding — and that's what makes it useful.`,
+      },
+      {
+        subtitle: "Why This Matters for You",
+        text: `Understanding that AI is a pattern-prediction engine helps you use it better:
+
+✅ AI is great at: Anything where patterns exist — writing, analysis, coding, brainstorming, summarizing, translating, planning
+✅ AI is great at: Combining knowledge from multiple fields in ways humans rarely do
+✅ AI is great at: Doing in 30 seconds what would take you 30 minutes
+
+❌ AI is NOT great at: Facts about very recent events (it has a training cutoff)
+❌ AI is NOT great at: Niche topics with very little written about them
+❌ AI is NOT great at: Tasks that require physical-world interaction
+❌ AI is NOT great at: Being 100% accurate every single time — always verify important facts
+
+The golden rule: AI is your brilliant, fast, sometimes overconfident colleague. Use it for the first draft, the brainstorm, the heavy lifting — then apply your own judgment.`,
+      },
+      {
+        subtitle: "The Key AI Models You Should Know",
+        text: `Think of these as different "brains" you can choose from:
+
+ChatGPT (by OpenAI) — The most popular. Great all-around. Best for: general tasks, image generation, voice conversations.
+
+Claude (by Anthropic) — Known for nuance, safety, and long-document analysis. Best for: writing, research, careful reasoning, and handling large amounts of text.
+
+Gemini (by Google) — Deeply integrated with Google services. Best for: anything tied to Gmail, Docs, Search, or YouTube.
+
+Perplexity — An AI-powered search engine. Best for: research with real-time sources and citations.
+
+Each has free and paid tiers. The paid versions ($20/month typically) are significantly better — longer conversations, smarter models, and more features. This playbook will tell you which tool is best for each task.`,
+      },
+    ],
+  },
+];
+
+/* ───────────────────────────────────────────
+   PART 2 — MASTERING PROMPTS: How to Speak to AI
+   ─────────────────────────────────────────── */
+const promptMasterySections = [
+  {
+    id: "prompt-fundamentals",
+    title: "Level 1: Prompt Fundamentals",
+    icon: "🎯",
+    color: "bg-[#8b6914]",
+    blocks: [
+      {
+        subtitle: "Why Your Prompts Determine Your Results",
+        text: `The #1 mistake people make with AI: they type vague requests and get vague answers. Then they think AI isn't useful.
+
+Bad prompt: "Help me with my resume"
+Good prompt: "I'm a marketing manager with 8 years of experience applying for a Senior Director role at a SaaS company. Rewrite my resume summary to emphasize leadership, data-driven decision making, and team scaling. Keep it to 3 sentences."
+
+The difference? Specificity. AI can't read your mind. The more context you give, the better the output. Think of it like briefing a new employee — the more detail you provide, the better work they produce.`,
+      },
+      {
+        subtitle: "The 5-Part Prompt Formula (Your New Best Friend)",
+        text: `Use this framework for any prompt and you'll immediately get better results:
+
+1. ROLE — Tell AI who to be
+   "You are a senior financial advisor..."
+   "Act as an experienced elementary school teacher..."
+
+2. TASK — What specifically you need done
+   "Create a 30-day meal plan..."
+   "Write a cold email to..."
+   "Analyze this data and find trends..."
+
+3. CONTEXT — Background information
+   "I run a small bakery in Portland with 3 employees..."
+   "This is for a college application to MIT..."
+
+4. FORMAT — How you want the output
+   "Give me a numbered list..."
+   "Present this as a table with columns for..."
+   "Write this as a professional email under 150 words..."
+
+5. CONSTRAINTS — Boundaries and rules
+   "Don't use jargon..."
+   "Budget is under $500..."
+   "Keep it appropriate for a 10-year-old audience..."
+
+You don't need all five every time, but the more you include, the better your results will be.`,
+      },
+      {
+        subtitle: "Copy-Paste Starter Templates",
+        text: `Here are battle-tested templates you can customize immediately:
+
+EMAIL TEMPLATE:
+"Write a [tone: friendly/formal/urgent] email to [recipient] about [topic]. Key points to include: [list]. Keep it under [X] words. End with [specific call to action]."
+
+SUMMARY TEMPLATE:
+"Summarize the following in [X] bullet points. Focus on [what matters to you]. Audience is [who will read this]. Here's the text: [paste]"
+
+BRAINSTORM TEMPLATE:
+"Give me [X] ideas for [topic]. Requirements: [constraints]. I like [preferences]. I don't want [anti-preferences]. For each idea, include a one-sentence explanation of why it would work."
+
+ANALYSIS TEMPLATE:
+"Analyze [this data/situation/text]. Look specifically for [what you want to find]. Present your findings as [format]. Include [specific elements like recommendations, risks, next steps]."
+
+LEARNING TEMPLATE:
+"Explain [topic] as if I'm a [beginner/intermediate/expert]. Use analogies from [something I'm familiar with]. After explaining, give me 3 practice questions to test my understanding."`,
+      },
+    ],
+  },
+  {
+    id: "prompt-intermediate",
+    title: "Level 2: Intermediate Prompt Techniques",
+    icon: "🔧",
+    color: "bg-[#1e3a5f]",
+    blocks: [
+      {
+        subtitle: "Chain-of-Thought: Make AI Show Its Work",
+        text: `One of the most powerful techniques in prompting is asking AI to think step by step. This dramatically improves accuracy on complex problems.
+
+Instead of: "What's the best marketing strategy for my business?"
+
+Try: "I run a local dog grooming business in Austin, TX. Walk me through step by step how to build a marketing strategy. For each step, explain your reasoning, consider alternatives, and tell me which option you'd recommend and why."
+
+Why it works: When AI has to explain its reasoning, it catches its own errors. It's the difference between asking someone to blurt out an answer vs. asking them to show their work on a math test.
+
+Other phrases that trigger better reasoning:
+• "Think through this carefully before answering"
+• "Consider the pros and cons of each option"
+• "What assumptions are you making? Are they valid?"
+• "Break this into steps and solve each one"`,
+      },
+      {
+        subtitle: "Few-Shot Prompting: Teach AI by Example",
+        text: `Instead of describing what you want, SHOW IT. Give AI 2-3 examples of your desired output, and it will match the pattern perfectly.
+
+Example — Turning meeting notes into action items:
+
+"I'm going to give you meeting notes. Turn them into action items in this format:
+
+Meeting note: 'Sarah mentioned we need to update the homepage by Friday'
+Action item: [Sarah] Update homepage copy — Due: Friday 1/17
+
+Meeting note: 'Team agreed to postpone the product launch to March'
+Action item: [Team] Reschedule product launch timeline — Due: March (exact date TBD)
+
+Now do the same for these notes:
+[paste your actual meeting notes]"
+
+This technique works for:
+• Writing in your company's specific format
+• Generating content in a particular style
+• Converting data from one format to another
+• Creating consistent outputs across multiple requests`,
+      },
+      {
+        subtitle: "The Conversation Technique: Iterate, Don't Restart",
+        text: `Most people treat AI like a search engine: type query, get answer, start over. Power users treat it like a conversation. The magic is in the follow-up.
+
+Start broad → Get specific → Refine
+
+Turn 1: "I want to start a YouTube channel about personal finance for millennials. Give me 10 video topic ideas."
+Turn 2: "I like ideas 3, 7, and 9. Expand each into a full video outline with timestamps."
+Turn 3: "For idea #7, write me a script for the first 2 minutes — the hook and introduction."
+Turn 4: "Make the tone more conversational. Add a personal anecdote about paying off student loans."
+Turn 5: "Now write the thumbnail text and a YouTube description optimized for search."
+
+In 5 turns, you went from a vague idea to a production-ready video plan. Each turn builds on the last. This is how professionals use AI — as an iterative collaborator, not a one-shot tool.
+
+Pro tip: If the conversation goes off track, say "Let's step back. Here's what I actually need..." and redirect.`,
+      },
+      {
+        subtitle: "Role Stacking: Get Expert-Level Advice",
+        text: `Don't just assign one role — stack them for richer perspectives.
+
+"You are a financial advisor with 20 years of experience who also has a background in behavioral psychology. I want you to help me create a savings plan, but I also want you to address the emotional and psychological barriers that might prevent me from sticking to it."
+
+Or get multiple perspectives:
+
+"Analyze my business plan from three perspectives:
+1. As a venture capitalist — would you invest? What concerns you?
+2. As a potential customer — would you buy this? What's missing?
+3. As a competitor — what would you do to beat this business?
+
+Give each perspective its own section."
+
+This technique produces dramatically richer analysis than a single-perspective prompt.`,
+      },
+    ],
+  },
+  {
+    id: "prompt-advanced",
+    title: "Level 3: Advanced Prompt Mastery",
+    icon: "🏆",
+    color: "bg-[#6b1d1d]",
+    blocks: [
+      {
+        subtitle: "System Prompts & Custom Instructions",
+        text: `Both ChatGPT and Claude let you set "Custom Instructions" — persistent rules that apply to every conversation. This is like training a permanent assistant.
+
+Go to Settings → Custom Instructions (ChatGPT) or Project settings (Claude) and set things like:
+
+"About me:
+- I'm a small business owner running an e-commerce store selling handmade candles
+- I have a team of 4 people
+- I'm based in the US, primarily sell domestically
+- My budget for most projects is under $1,000
+- I prefer practical, actionable advice over theory
+
+How I want responses:
+- Keep answers concise — bullet points over paragraphs
+- Always include specific next steps I can take this week
+- If you're not sure about something, say so rather than guessing
+- When suggesting tools or services, include approximate costs
+- Use simple language — no marketing buzzwords"
+
+Now EVERY conversation starts with this context automatically. No more repeating yourself.`,
+      },
+      {
+        subtitle: "Mega-Prompts: Complex Tasks in One Shot",
+        text: `For large, complex tasks, write a detailed mega-prompt that covers everything. This saves hours of back-and-forth.
+
+Example — Complete Content Marketing Strategy:
+
+"You are a content marketing strategist. Create a complete 90-day content plan for my business.
+
+ABOUT MY BUSINESS:
+- B2B SaaS tool for project management
+- Target audience: team leads at companies with 50-200 employees
+- Main competitors: Asana, Monday.com, ClickUp
+- Our differentiator: built-in time tracking and client billing
+- Current marketing: blog posts 1x/week, LinkedIn, email newsletter (2,000 subscribers)
+
+WHAT I NEED:
+1. Content pillars (3-4 main themes we should focus on)
+2. A 90-day editorial calendar with specific topics, formats, and channels
+3. For each piece of content, specify: target keyword, content type (blog/video/social), estimated time to create, and distribution channels
+4. A lead magnet idea that would attract our ideal customer
+5. KPIs to track and realistic benchmarks for each
+
+FORMAT:
+- Present the editorial calendar as a table
+- Keep topic descriptions to one sentence each
+- Group content by month
+- Include a 'Quick Wins' section at the top — things I can do THIS WEEK
+
+CONSTRAINTS:
+- I have one part-time content writer (10 hours/week)
+- Budget for tools/ads: $200/month
+- No video production capability yet (just written and image content)
+- Focus on SEO and LinkedIn as primary channels"
+
+This single prompt replaces a $5,000 marketing consultant engagement.`,
+      },
+      {
+        subtitle: "AI as a Thought Partner: The Socratic Method",
+        text: `The most advanced use of AI isn't getting answers — it's getting better questions. Use AI to challenge your own thinking.
+
+"I'm planning to quit my job and start a freelance consulting business. Instead of just encouraging me, I want you to:
+
+1. Ask me the 10 hardest questions I need to answer before making this decision
+2. For each question, explain why it matters
+3. After I answer them, tell me honestly — based on my answers — whether you think I'm ready or if there are gaps I should address first"
+
+Other Socratic prompts:
+• "What are the strongest arguments AGAINST my plan?"
+• "What am I not thinking about that could cause this to fail?"
+• "If you were betting against me, what would be your strategy?"
+• "Steelman the opposing view — make the best possible case for the other side"
+• "Rate my plan 1-10 and be brutally honest. Then tell me what would make it a 10."
+
+This approach is especially powerful for:
+- Major life decisions (career changes, big purchases, moves)
+- Business strategy and planning
+- Investment decisions
+- Conflict resolution (understanding the other person's perspective)`,
+      },
+      {
+        subtitle: "Prompt Chaining: Multi-Step Workflows",
+        text: `For complex projects, chain multiple prompts together where each output feeds into the next. This is how you build complete systems.
+
+Example — Building a Complete Course:
+
+Step 1: "List the 8 most important topics someone needs to learn to master personal finance. Order them from foundational to advanced."
+
+Step 2: "For topic #1 [from the list], create a complete lesson outline: learning objectives, key concepts, 3 real-world examples, and 5 quiz questions."
+
+Step 3: "Write the full lesson content for the outline above. Aim for 1,500 words. Use a conversational tone. Include analogies a 25-year-old would relate to."
+
+Step 4: "Create a visual summary of this lesson — describe what a one-page infographic should contain, including layout, key stats, and pull quotes."
+
+Step 5: "Write 5 social media posts promoting this lesson — 2 for LinkedIn, 2 for Twitter/X, 1 for Instagram. Each should have a different hook."
+
+Repeat steps 2-5 for each topic, and you have a complete course with marketing materials. What would take weeks takes a day.`,
+      },
+    ],
+  },
+];
+
+/* ───────────────────────────────────────────
+   PART 3 — APPLICATIONS: Personal, Work, Fun
+   ─────────────────────────────────────────── */
+const applicationSections = [
   {
     id: "personal",
     title: "Personal Life",
@@ -15,14 +377,14 @@ const sections = [
         tool: "ChatGPT or Claude",
         why: "AI knows thousands of recipes and can factor in your constraints instantly. The organized grocery list alone saves 20+ minutes at the store.",
         proTip:
-          "Follow up with: \"Make Monday's recipe gluten-free\" or \"Swap Thursday for something I can make in a slow cooker.\" AI remembers the full plan and adjusts.",
+          'Follow up with: "Make Monday\'s recipe gluten-free" or "Swap Thursday for something I can make in a slow cooker." AI remembers the full plan and adjusts.',
       },
       {
         title: "AI-Powered Budgeting & Finance Tracking",
         prompt:
           '"Here are my expenses from last month: [paste bank statement or list]. Categorize them, find where I\'m overspending, and suggest a realistic budget for next month. I want to save $500/month."',
         tool: "ChatGPT or Claude",
-        why: "AI can spot spending patterns you miss. It won't judge you, and it gives specific, actionable numbers — not generic advice like \"eat out less.\"",
+        why: 'AI can spot spending patterns you miss. It won\'t judge you, and it gives specific, actionable numbers — not generic advice like "eat out less."',
         proTip:
           "For privacy, you can change the vendor names if you're uncomfortable sharing real ones. The categories and amounts are what matter.",
       },
@@ -33,7 +395,7 @@ const sections = [
         tool: "ChatGPT or Claude",
         why: "The hardest part of decluttering is deciding what goes where. AI gives you a framework so you're not standing there paralyzed. The hour-by-hour plan keeps you moving.",
         proTip:
-          "Take a photo of the space (if using ChatGPT with vision or Claude) and say \"Here's what I'm working with.\" It'll give even more specific advice.",
+          'Take a photo of the space (if using ChatGPT with vision or Claude) and say "Here\'s what I\'m working with." It\'ll give even more specific advice.',
       },
       {
         title: "Health & Fitness Planning",
@@ -42,7 +404,7 @@ const sections = [
         tool: "ChatGPT or Claude",
         why: "Personal trainers cost $50-100/hour. AI gives you a solid plan for free. It won't replace a doctor, but for getting started, it's better than random YouTube workouts.",
         proTip:
-          "After week 1, tell AI how it went: \"Week 1 done. Squats were too easy, pushups were too hard.\" It'll adjust the plan for week 2.",
+          'After week 1, tell AI how it went: "Week 1 done. Squats were too easy, pushups were too hard." It\'ll adjust the plan for week 2.',
       },
       {
         title: "Smart Parenting: Homework Help & Activities",
@@ -51,7 +413,7 @@ const sections = [
         tool: "ChatGPT or Claude",
         why: "AI is infinitely patient and can explain the same concept 50 different ways. It's not replacing you — it's giving you the right words when you're stuck.",
         proTip:
-          "For activity ideas: \"It's a rainy Saturday. My kids are 5 and 8. Give me 10 indoor activities that don't require buying anything and will keep them busy for at least 30 minutes each.\"",
+          '"It\'s a rainy Saturday. My kids are 5 and 8. Give me 10 indoor activities that don\'t require buying anything and will keep them busy for at least 30 minutes each."',
       },
       {
         title: "Gift Ideas, Event Planning & More",
@@ -60,7 +422,7 @@ const sections = [
         tool: "ChatGPT, Claude, or Perplexity",
         why: "AI has seen millions of gift guides and can cross-reference multiple interests. It's like having a really thoughtful friend who always knows what to get people.",
         proTip:
-          "For event planning: \"Plan a backyard birthday party for a 7-year-old who likes superheroes. Budget: $200. 12 kids. Give me a timeline, food, activities, and a supply list.\"",
+          '"Plan a backyard birthday party for a 7-year-old who likes superheroes. Budget: $200. 12 kids. Give me a timeline, food, activities, and a supply list."',
       },
     ],
   },
@@ -77,7 +439,7 @@ const sections = [
         tool: "ChatGPT or Claude",
         why: "The average professional spends 2.5 hours/day on email. AI cuts that in half. The key is giving it specific instructions — length, tone, and what points to hit.",
         proTip:
-          "Create a \"tone template\": paste 2-3 emails you've written before and say \"Match this writing style for all future emails.\" AI will mimic how you actually write.",
+          'Create a "tone template": paste 2-3 emails you\'ve written before and say "Match this writing style for all future emails." AI will mimic how you actually write.',
       },
       {
         title: "Meeting Notes & Action Items on Autopilot",
@@ -95,7 +457,7 @@ const sections = [
         tool: "ChatGPT or Claude",
         why: "AI structures your thinking. Instead of staring at a blank slide deck, you have a complete outline in 60 seconds. You just fill in the design.",
         proTip:
-          "Follow up with: \"Write the speaker notes for slide 3\" or \"Make the Q4 plan section more specific with 3 concrete initiatives.\"",
+          'Follow up with: "Write the speaker notes for slide 3" or "Make the Q4 plan section more specific with 3 concrete initiatives."',
       },
       {
         title: "Resume & LinkedIn Optimization",
@@ -104,7 +466,7 @@ const sections = [
         tool: "ChatGPT or Claude",
         why: "Recruiters spend 6-7 seconds scanning a resume. AI helps you put the right keywords and metrics front and center — the ones that match what they're actually looking for.",
         proTip:
-          "For LinkedIn: \"Rewrite my LinkedIn summary for a [your field] professional. Make it conversational but authoritative. I want to attract [type of opportunity].\"",
+          '"Rewrite my LinkedIn summary for a [your field] professional. Make it conversational but authoritative. I want to attract [type of opportunity]."',
       },
       {
         title: "Side Hustle Ideas Powered by AI",
@@ -129,7 +491,7 @@ const sections = [
   {
     id: "recreation",
     title: "AI for Fun",
-    icon: "🎯",
+    icon: "🎮",
     color: "bg-[#8b6914]",
     guides: [
       {
@@ -139,7 +501,7 @@ const sections = [
         tool: "ChatGPT, Claude, or Perplexity",
         why: "Travel blogs give you the same 10 tourist spots. AI plans around YOUR preferences, budget, and travel style. It's like having a travel agent who actually listens.",
         proTip:
-          "Use Perplexity for trip planning — it searches the web in real-time and gives you links to book hotels and restaurants directly. It's the best AI tool for travel.",
+          "Use Perplexity for trip planning — it searches the web in real-time and gives you links to book hotels and restaurants directly.",
       },
       {
         title: "Movie, Book & Music Recommendations",
@@ -148,7 +510,7 @@ const sections = [
         tool: "ChatGPT or Claude",
         why: "Streaming algorithms show you what's popular. AI recommends based on WHY you liked something — the themes, pacing, and tone. Much more accurate.",
         proTip:
-          "Works great for books too: \"I liked Atomic Habits and Thinking, Fast and Slow. Recommend 5 books. I don't want anything over 300 pages.\"",
+          '"I liked Atomic Habits and Thinking, Fast and Slow. Recommend 5 books. I don\'t want anything over 300 pages."',
       },
       {
         title: "Learning New Hobbies with AI Tutoring",
@@ -157,7 +519,7 @@ const sections = [
         tool: "ChatGPT or Claude",
         why: "AI creates a structured learning path tailored to your schedule. It's the difference between randomly watching YouTube videos and actually making progress.",
         proTip:
-          "After each practice session, tell AI what was hard and easy. It'll adjust the plan: \"Day 5 done. Chord changes between G and C are still rough.\" AI will add extra practice for that transition.",
+          'After each practice session, tell AI what was hard and easy. It\'ll adjust the plan: "Day 5 done. Chord changes between G and C are still rough."',
       },
       {
         title: "Creative Writing & Storytelling",
@@ -166,7 +528,7 @@ const sections = [
         tool: "ChatGPT or Claude",
         why: "Whether it's bedtime stories, journal prompts, or that novel you've been thinking about — AI gives you a first draft to work from. You edit and make it yours.",
         proTip:
-          "For journaling: \"Give me 5 journal prompts about gratitude that aren't cheesy. I want prompts that actually make me think.\"",
+          '"Give me 5 journal prompts about gratitude that aren\'t cheesy. I want prompts that actually make me think."',
       },
       {
         title: "AI Art & Photo Editing",
@@ -175,21 +537,24 @@ const sections = [
         tool: "ChatGPT (DALL-E), Midjourney, or Canva AI",
         why: "AI art tools have gotten incredible. You can create custom art for your home, social media posts, party invitations, or just for fun — no artistic skill needed.",
         proTip:
-          "For the best results, be specific about style: \"watercolor\", \"minimalist\", \"vintage photograph\", \"Studio Ghibli style\". The more specific your description, the better the output.",
+          'For the best results, be specific about style: "watercolor", "minimalist", "vintage photograph", "Studio Ghibli style". The more specific your description, the better the output.',
       },
       {
         title: "Party Planning & Social Events",
         prompt:
           '"I\'m hosting a dinner party for 8 adults. Theme: Italian night. Budget: $100 for food. I want it to feel special but not be stressful to cook. Give me: a menu (appetizer, main, dessert), a shopping list, a cooking timeline so everything is ready by 7pm, and a playlist suggestion."',
         tool: "ChatGPT or Claude",
-        why: "AI handles the logistics so you can focus on being a good host. The cooking timeline alone is worth it — no more scrambling at 6:45pm with three things still in the oven.",
+        why: "AI handles the logistics so you can focus on being a good host. The cooking timeline alone is worth it — no more scrambling at 6:45pm.",
         proTip:
-          "For kids' parties: \"Plan a Minecraft-themed birthday party for a 10-year-old. 15 kids. Budget: $150. Include games, food, decorations, and a party schedule.\"",
+          '"Plan a Minecraft-themed birthday party for a 10-year-old. 15 kids. Budget: $150. Include games, food, decorations, and a party schedule."',
       },
     ],
   },
 ];
 
+/* ───────────────────────────────────────────
+   PART 4 — BONUS: Vibe Coding, Tools, Personal Bot
+   ─────────────────────────────────────────── */
 const bonusContent = [
   {
     id: "vibe-coding",
@@ -202,7 +567,7 @@ const bonusContent = [
       },
       {
         subtitle: "How to Get Started",
-        text: "1. Go to claude.ai or chatgpt.com\n2. Describe what you want to build: \"Build me a simple website that tracks my daily water intake. It should have a button to add a glass, show my daily total, and reset each day.\"\n3. AI will write the complete code\n4. Copy it into a free tool like CodePen, Replit, or Vercel to see it work\n5. Tell AI what to change: \"Make the button bigger and add a progress bar\"",
+        text: '1. Go to claude.ai or chatgpt.com\n2. Describe what you want to build: "Build me a simple website that tracks my daily water intake. It should have a button to add a glass, show my daily total, and reset each day."\n3. AI will write the complete code\n4. Copy it into a free tool like CodePen, Replit, or Vercel to see it work\n5. Tell AI what to change: "Make the button bigger and add a progress bar"',
       },
       {
         subtitle: "Real Things People Have Built",
@@ -211,29 +576,6 @@ const bonusContent = [
       {
         subtitle: "Best Tools for Vibe Coding",
         text: "- Claude.ai — Best for complex projects and understanding what you want\n- ChatGPT — Great all-rounder, good with visual design\n- Replit — Write and run code in your browser\n- Vercel — Deploy your creation to the internet for free\n- Cursor / Claude Code — More advanced: AI-powered code editors",
-      },
-    ],
-  },
-  {
-    id: "prompt-engineering",
-    title: "Prompt Engineering Cheat Sheet",
-    icon: "📋",
-    content: [
-      {
-        subtitle: "The Golden Rule",
-        text: "Be specific. \"Write me something about dogs\" → bad. \"Write a 200-word blog post about why golden retrievers are the best family dogs, aimed at first-time dog owners, in a warm and encouraging tone\" → great.",
-      },
-      {
-        subtitle: "The 5-Part Prompt Formula",
-        text: "1. ROLE: \"You are a [expert type]...\"\n2. TASK: \"I need you to [specific action]...\"\n3. CONTEXT: \"Here's the situation: [background]...\"\n4. FORMAT: \"Give me the answer as [list/email/table/etc.]...\"\n5. CONSTRAINTS: \"Keep it under [X words], don't include [Y], focus on [Z]...\"",
-      },
-      {
-        subtitle: "Copy-Paste Templates",
-        text: "EMAIL: \"Write a [tone] email to [person] about [topic]. Keep it under [X] words. Key points: [list points].\"\n\nSUMMARY: \"Summarize this in [X] bullet points. Focus on [what matters to you]: [paste text]\"\n\nBRAINSTORM: \"Give me [X] ideas for [topic]. I like [preferences]. I don't want [anti-preferences].\"\n\nEXPLAIN: \"Explain [topic] like I'm [age/level]. Use examples from [familiar domain].\"\n\nREVIEW: \"Review this [text/code/plan] for [what to check]. Be honest and specific about what to improve: [paste content]\"",
-      },
-      {
-        subtitle: "Power Moves",
-        text: "- \"Think step by step\" — Makes AI work through problems more carefully\n- \"What am I not thinking about?\" — Catches blind spots\n- \"Give me the pros and cons\" — Gets balanced analysis\n- \"Pretend you're [expert]\" — Gets specialized knowledge\n- \"Before answering, ask me clarifying questions\" — Gets AI to gather info first\n- \"Rate your confidence 1-10\" — Tells you when AI is guessing",
       },
     ],
   },
@@ -284,19 +626,223 @@ const bonusContent = [
       },
     ],
   },
+  {
+    id: "personal-assistant",
+    title: "Build Your Personal AI Assistant (Step-by-Step)",
+    icon: "🤖",
+    content: [
+      {
+        subtitle: "What You're Building",
+        text: `By the end of this section, you'll have a personalized AI assistant that knows your preferences, your work context, your communication style, and your goals. It will feel like talking to someone who genuinely knows you — not a generic chatbot.
+
+This works on both ChatGPT (Custom GPTs) and Claude (Projects). We'll walk through both.`,
+      },
+      {
+        subtitle: "Step 1: Define Your Assistant's Purpose",
+        text: `Before building anything, answer these questions (write your answers down):
+
+1. What will you use this assistant for MOST? Pick 1-3 areas:
+   □ Work emails and communication
+   □ Content creation (social media, blog, marketing)
+   □ Business strategy and decision-making
+   □ Personal productivity and organization
+   □ Learning and research
+   □ Health and fitness planning
+   □ Financial planning and budgeting
+
+2. What's your communication style?
+   □ Direct and concise
+   □ Warm and conversational
+   □ Formal and professional
+   □ Casual and friendly
+
+3. What should the assistant ALWAYS do?
+   (Example: "Always give me action items," "Always consider my budget constraints," "Always push back if my idea has flaws")
+
+4. What should the assistant NEVER do?
+   (Example: "Never use corporate jargon," "Never give me generic advice," "Never sugarcoat bad news")`,
+      },
+      {
+        subtitle: "Step 2: Write Your System Prompt (The Brain)",
+        text: `Here's a template. Fill in the brackets with your actual information:
+
+---
+
+"You are my personal AI assistant. Here's everything you need to know about me:
+
+ABOUT ME:
+- Name: [Your name]
+- Role: [Your job title/role]
+- Company/Industry: [What you do]
+- Key responsibilities: [Top 3-5 things you do at work]
+- Goals this quarter: [What you're trying to achieve]
+- Communication style: [How you write — direct, casual, formal, etc.]
+
+MY PREFERENCES:
+- I prefer [bullet points / paragraphs / tables] for information
+- When I ask for advice, always include [specific next steps / pros and cons / timeline]
+- Keep responses [concise / detailed / somewhere in between]
+- I like when you [push back on bad ideas / ask clarifying questions / give multiple options]
+
+MY CONSTRAINTS:
+- Budget: [typical budget for projects]
+- Time: [how much time you typically have]
+- Team: [team size and capabilities]
+- Tools I already use: [list your main tools]
+
+RULES:
+- Always end responses with a suggested next step
+- If I'm making a decision, give me a clear recommendation (not just options)
+- When writing for me, match this tone: [paste an example of your writing]
+- Be honest. I'd rather hear hard truths than comfortable lies.
+- If you don't know something, say so. Don't make things up."
+
+---
+
+This is your assistant's "personality file." The more specific you are, the better it works.`,
+      },
+      {
+        subtitle: "Step 3A: Set Up on ChatGPT (Custom GPT)",
+        text: `1. Go to chatgpt.com and log in (requires Plus subscription, $20/month)
+
+2. Click your profile icon → "My GPTs" → "Create a GPT"
+
+3. In the "Configure" tab:
+   - Name: Give it a name (e.g., "My Work Assistant" or "Strategy Buddy")
+   - Description: One sentence about what it does
+   - Instructions: Paste your system prompt from Step 2
+
+4. Under "Conversation Starters," add useful quick-prompts:
+   - "Help me draft a response to this email"
+   - "Review my plan and poke holes in it"
+   - "Give me my priorities for today based on [context]"
+   - "Summarize this document and give me action items"
+
+5. Under "Knowledge," you can upload files:
+   - Your company's brand guidelines
+   - Your writing samples (so it matches your voice)
+   - Product documentation
+   - SOPs or process documents
+
+6. Click "Save" → Choose "Only me" for privacy
+
+7. Access it anytime from the GPT sidebar in ChatGPT`,
+      },
+      {
+        subtitle: "Step 3B: Set Up on Claude (Projects)",
+        text: `1. Go to claude.ai and log in (free tier works, Pro is better)
+
+2. Click "Projects" in the sidebar → "Create Project"
+
+3. Name your project (e.g., "Personal Assistant" or "Work Brain")
+
+4. In the project description / custom instructions, paste your system prompt from Step 2
+
+5. Add knowledge to the project:
+   - Click "Add Content" to upload files
+   - You can add PDFs, documents, spreadsheets, code files
+   - Claude can reference these in every conversation within the project
+   - Upload things like: your resume, company docs, meeting notes, strategy docs
+
+6. Start a conversation within the project — Claude will automatically use your custom instructions and uploaded knowledge
+
+Pro tip: Create multiple projects for different purposes:
+   - "Work Assistant" — for professional tasks
+   - "Content Creator" — for writing and social media
+   - "Life Admin" — for personal planning and organization`,
+      },
+      {
+        subtitle: "Step 4: Train It Over Time",
+        text: `Your assistant gets better the more you use it. Here's how to actively improve it:
+
+WEEK 1: Foundation
+- Use it for 3-5 tasks per day
+- When the output isn't quite right, tell it specifically what to change:
+  "This is too formal. I write more casually. Here's an example of how I'd actually say this: [example]"
+- Add these corrections to your system prompt so they stick
+
+WEEK 2: Calibration
+- Start using it for more complex tasks
+- When it nails something, tell it: "This is perfect. Remember this format/style for future [type of task]."
+- Upload more reference documents as you find them useful
+
+WEEK 3: Expansion
+- Try it in new areas you hadn't considered
+- Ask it: "Based on what you know about me, what other tasks could you help me with that I haven't tried yet?"
+- Add new "rules" to your system prompt based on patterns you've noticed
+
+WEEK 4+: Mastery
+- Your assistant now knows your preferences, style, and context
+- You'll find yourself spending 60-90 seconds on tasks that used to take 15-30 minutes
+- Keep refining: your system prompt should be a living document that grows with you`,
+      },
+      {
+        subtitle: "Step 5: Power User Workflows",
+        text: `Once your assistant is set up, here are workflows that will 10x your productivity:
+
+MORNING BRIEFING:
+"Here are my meetings today: [paste calendar]. For each meeting, remind me of the context and suggest 2 things I should prepare."
+
+EMAIL TRIAGE:
+"Here are 15 emails I received this morning: [paste]. Categorize them as: urgent (respond today), important (respond this week), FYI (no response needed). Draft responses for the urgent ones."
+
+WEEKLY REVIEW:
+"Here's what I accomplished this week: [list]. Here's what I planned but didn't finish: [list]. Help me: 1) Identify patterns in what's getting blocked, 2) Prioritize next week, 3) Draft a status update for my manager."
+
+DECISION FRAMEWORK:
+"I need to decide between [Option A] and [Option B]. Here's the context: [situation]. Analyze this using: 1) Short-term impact (next 30 days), 2) Long-term impact (next 12 months), 3) Risk assessment, 4) Your recommendation and why."
+
+CONTENT PIPELINE:
+"Based on my content strategy, suggest 5 pieces of content I should create this week. For each, give me: the topic, the angle that makes it unique, the target audience, and a one-paragraph draft of the opening."
+
+The key insight: your AI assistant isn't replacing your thinking — it's removing the friction between having an idea and executing on it. You still make the decisions. AI just makes sure you have the information, analysis, and first drafts you need to make them well.`,
+      },
+      {
+        subtitle: "Troubleshooting & Common Mistakes",
+        text: `PROBLEM: "My assistant gives generic responses"
+FIX: Your system prompt isn't specific enough. Add more details about your context, preferences, and examples of what "good" looks like.
+
+PROBLEM: "It keeps forgetting my preferences"
+FIX: Make sure your preferences are in the system prompt/custom instructions, not just mentioned in past conversations. System-level instructions persist; conversation details may not.
+
+PROBLEM: "The tone doesn't match how I communicate"
+FIX: Paste 3-5 examples of your actual writing (emails, messages, posts) into the instructions and say "Match this voice exactly."
+
+PROBLEM: "It's too agreeable — it never pushes back"
+FIX: Add explicit rules: "If you think my idea has flaws, say so directly. I value honest feedback over agreement. Rate my ideas on a scale of 1-10."
+
+PROBLEM: "I set it up but barely use it"
+FIX: Start with ONE daily habit. Every morning, paste your calendar and ask for a briefing. Once that's automatic, add more workflows. Don't try to use it for everything on day one.`,
+      },
+    ],
+  },
 ];
+
+/* ────────── PAGE COMPONENT ────────── */
 
 export default function PlaybookPage() {
   return (
     <div className="min-h-screen" style={{ backgroundColor: "var(--cream)" }}>
       {/* Header */}
-      <header className="no-print border-b px-6 py-5" style={{ borderColor: "var(--warm-gray-200)", backgroundColor: "white" }}>
+      <header
+        className="no-print border-b px-6 py-5"
+        style={{
+          borderColor: "var(--warm-gray-200)",
+          backgroundColor: "white",
+        }}
+      >
         <div className="mx-auto flex max-w-5xl items-center justify-between">
           <Link href="/" className="text-2xl font-bold tracking-tight">
             <span className="gradient-text">The AI Playbook</span>
           </Link>
           <div className="flex items-center gap-4">
-            <span className="rounded-lg px-4 py-2 text-base font-medium" style={{ backgroundColor: "var(--teal-light)", color: "var(--teal)" }}>
+            <span
+              className="rounded-lg px-4 py-2 text-base font-medium"
+              style={{
+                backgroundColor: "var(--teal-light)",
+                color: "var(--teal)",
+              }}
+            >
               Full Access
             </span>
             <DownloadPdfButton />
@@ -305,28 +851,100 @@ export default function PlaybookPage() {
       </header>
 
       {/* Table of Contents */}
-      <nav className="no-print border-b px-6 py-8" style={{ borderColor: "var(--warm-gray-200)", backgroundColor: "var(--warm-white)" }}>
+      <nav
+        className="no-print border-b px-6 py-8"
+        style={{
+          borderColor: "var(--warm-gray-200)",
+          backgroundColor: "var(--warm-white)",
+        }}
+      >
         <div className="mx-auto max-w-5xl">
-          <h2 className="mb-5 text-base font-semibold tracking-wide uppercase" style={{ color: "var(--warm-gray-600)" }}>
+          <h2
+            className="mb-5 text-base font-semibold tracking-wide uppercase"
+            style={{ color: "var(--warm-gray-600)" }}
+          >
             Jump to a section
           </h2>
           <div className="flex flex-wrap gap-3">
-            {sections.map((s) => (
+            {/* Foundations */}
+            <span
+              className="rounded-lg px-3 py-2 text-xs font-bold tracking-wider uppercase"
+              style={{ color: "var(--warm-gray-500)" }}
+            >
+              Foundations
+            </span>
+            {foundationSections.map((s) => (
               <a
                 key={s.id}
                 href={`#${s.id}`}
-                className="rounded-lg border bg-white px-5 py-3 text-base font-medium transition-colors"
-                style={{ borderColor: "var(--warm-gray-200)", color: "var(--warm-gray-700)" }}
+                className="rounded-lg border bg-white px-5 py-3 text-base font-medium transition-colors hover:shadow-sm"
+                style={{
+                  borderColor: "var(--warm-gray-200)",
+                  color: "var(--warm-gray-700)",
+                }}
               >
                 {s.icon} {s.title}
               </a>
             ))}
+
+            {/* Prompt Mastery */}
+            <span
+              className="mt-2 w-full rounded-lg px-3 py-2 text-xs font-bold tracking-wider uppercase"
+              style={{ color: "var(--warm-gray-500)" }}
+            >
+              Prompt Mastery
+            </span>
+            {promptMasterySections.map((s) => (
+              <a
+                key={s.id}
+                href={`#${s.id}`}
+                className="rounded-lg border bg-white px-5 py-3 text-base font-medium transition-colors hover:shadow-sm"
+                style={{
+                  borderColor: "var(--warm-gray-200)",
+                  color: "var(--warm-gray-700)",
+                }}
+              >
+                {s.icon} {s.title}
+              </a>
+            ))}
+
+            {/* Applications */}
+            <span
+              className="mt-2 w-full rounded-lg px-3 py-2 text-xs font-bold tracking-wider uppercase"
+              style={{ color: "var(--warm-gray-500)" }}
+            >
+              Applications
+            </span>
+            {applicationSections.map((s) => (
+              <a
+                key={s.id}
+                href={`#${s.id}`}
+                className="rounded-lg border bg-white px-5 py-3 text-base font-medium transition-colors hover:shadow-sm"
+                style={{
+                  borderColor: "var(--warm-gray-200)",
+                  color: "var(--warm-gray-700)",
+                }}
+              >
+                {s.icon} {s.title}
+              </a>
+            ))}
+
+            {/* Bonus */}
+            <span
+              className="mt-2 w-full rounded-lg px-3 py-2 text-xs font-bold tracking-wider uppercase"
+              style={{ color: "var(--warm-gray-500)" }}
+            >
+              Bonus
+            </span>
             {bonusContent.map((b) => (
               <a
                 key={b.id}
                 href={`#${b.id}`}
-                className="rounded-lg border bg-white px-5 py-3 text-base font-medium transition-colors"
-                style={{ borderColor: "var(--warm-gray-200)", color: "var(--warm-gray-700)" }}
+                className="rounded-lg border bg-white px-5 py-3 text-base font-medium transition-colors hover:shadow-sm"
+                style={{
+                  borderColor: "var(--warm-gray-200)",
+                  color: "var(--warm-gray-700)",
+                }}
               >
                 {b.icon} {b.title}
               </a>
@@ -340,19 +958,64 @@ export default function PlaybookPage() {
         {/* Welcome */}
         <section className="px-6 py-16">
           <div className="mx-auto max-w-3xl text-center">
-            <h1 className="mb-6 text-3xl font-bold tracking-tight sm:text-4xl" style={{ color: "var(--warm-gray-900)" }}>
-              Welcome to Your AI Playbook
+            <h1
+              className="mb-6 text-3xl font-bold tracking-tight sm:text-4xl"
+              style={{ color: "var(--warm-gray-900)" }}
+            >
+              The Complete AI Playbook: Novice to Master
             </h1>
-            <p className="text-xl leading-relaxed" style={{ color: "var(--warm-gray-600)" }}>
-              Everything below is a step-by-step guide with real prompts you can
-              copy and paste. Each guide tells you which tool to use, why it works,
-              and pro tips to get even better results. Pick a section and dive in.
+            <p
+              className="mb-4 text-xl leading-relaxed"
+              style={{ color: "var(--warm-gray-600)" }}
+            >
+              This isn&apos;t a surface-level overview. This is the comprehensive
+              guide that takes you from &quot;I&apos;ve heard of ChatGPT&quot; to
+              &quot;I have a personal AI assistant that saves me 10+ hours a
+              week.&quot;
+            </p>
+            <p
+              className="text-lg leading-relaxed"
+              style={{ color: "var(--warm-gray-500)" }}
+            >
+              Start from the beginning or jump to any section. Every guide
+              includes real prompts you can copy and paste, the best tool for the
+              job, and pro tips from power users.
             </p>
           </div>
         </section>
 
-        {/* Main Sections */}
-        {sections.map((section) => (
+        {/* ─── PART 1: FOUNDATIONS ─── */}
+        <div
+          className="border-t px-6 py-10"
+          style={{
+            borderColor: "var(--warm-gray-200)",
+            backgroundColor: "var(--warm-white)",
+          }}
+        >
+          <div className="mx-auto max-w-4xl">
+            <p
+              className="text-center text-sm font-bold tracking-widest uppercase"
+              style={{ color: "var(--teal)" }}
+            >
+              Part 1
+            </p>
+            <h2
+              className="mt-2 text-center text-3xl font-bold"
+              style={{ color: "var(--warm-gray-900)" }}
+            >
+              Foundations: Understanding AI
+            </h2>
+            <p
+              className="mt-3 text-center text-lg"
+              style={{ color: "var(--warm-gray-500)" }}
+            >
+              Before you master the tools, understand what you&apos;re working
+              with and why it matters.
+            </p>
+          </div>
+        </div>
+
+        {foundationSections.map((section) => (
           <section
             key={section.id}
             id={section.id}
@@ -366,7 +1029,168 @@ export default function PlaybookPage() {
                 >
                   {section.icon}
                 </span>
-                <h2 className="text-3xl font-bold" style={{ color: "var(--warm-gray-900)" }}>
+                <h2
+                  className="text-3xl font-bold"
+                  style={{ color: "var(--warm-gray-900)" }}
+                >
+                  {section.title}
+                </h2>
+              </div>
+
+              <div className="space-y-8">
+                {section.blocks.map((block) => (
+                  <div
+                    key={block.subtitle}
+                    className="rounded-xl bg-white p-8 shadow-sm sm:p-10"
+                    style={{ border: "1px solid var(--warm-gray-200)" }}
+                  >
+                    <h3
+                      className="mb-4 text-xl font-bold"
+                      style={{ color: "var(--warm-gray-900)" }}
+                    >
+                      {block.subtitle}
+                    </h3>
+                    <div
+                      className="whitespace-pre-line text-base leading-relaxed"
+                      style={{ color: "var(--warm-gray-600)" }}
+                    >
+                      {block.text}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </section>
+        ))}
+
+        {/* ─── PART 2: PROMPT MASTERY ─── */}
+        <div
+          className="border-t px-6 py-10"
+          style={{
+            borderColor: "var(--warm-gray-200)",
+            backgroundColor: "var(--warm-white)",
+          }}
+        >
+          <div className="mx-auto max-w-4xl">
+            <p
+              className="text-center text-sm font-bold tracking-widest uppercase"
+              style={{ color: "var(--teal)" }}
+            >
+              Part 2
+            </p>
+            <h2
+              className="mt-2 text-center text-3xl font-bold"
+              style={{ color: "var(--warm-gray-900)" }}
+            >
+              Prompt Mastery: How to Speak to AI
+            </h2>
+            <p
+              className="mt-3 text-center text-lg"
+              style={{ color: "var(--warm-gray-500)" }}
+            >
+              The difference between a beginner and an expert isn&apos;t the tool
+              — it&apos;s how they communicate with it.
+            </p>
+          </div>
+        </div>
+
+        {promptMasterySections.map((section) => (
+          <section
+            key={section.id}
+            id={section.id}
+            className="border-t px-6 py-20"
+            style={{ borderColor: "var(--warm-gray-200)" }}
+          >
+            <div className="mx-auto max-w-4xl">
+              <div className="mb-12 flex items-center gap-4">
+                <span
+                  className={`flex h-12 w-12 items-center justify-center rounded-lg text-2xl text-white ${section.color}`}
+                >
+                  {section.icon}
+                </span>
+                <h2
+                  className="text-3xl font-bold"
+                  style={{ color: "var(--warm-gray-900)" }}
+                >
+                  {section.title}
+                </h2>
+              </div>
+
+              <div className="space-y-8">
+                {section.blocks.map((block) => (
+                  <div
+                    key={block.subtitle}
+                    className="rounded-xl bg-white p-8 shadow-sm sm:p-10"
+                    style={{ border: "1px solid var(--warm-gray-200)" }}
+                  >
+                    <h3
+                      className="mb-4 text-xl font-bold"
+                      style={{ color: "var(--warm-gray-900)" }}
+                    >
+                      {block.subtitle}
+                    </h3>
+                    <div
+                      className="whitespace-pre-line text-base leading-relaxed"
+                      style={{ color: "var(--warm-gray-600)" }}
+                    >
+                      {block.text}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </section>
+        ))}
+
+        {/* ─── PART 3: APPLICATIONS ─── */}
+        <div
+          className="border-t px-6 py-10"
+          style={{
+            borderColor: "var(--warm-gray-200)",
+            backgroundColor: "var(--warm-white)",
+          }}
+        >
+          <div className="mx-auto max-w-4xl">
+            <p
+              className="text-center text-sm font-bold tracking-widest uppercase"
+              style={{ color: "var(--teal)" }}
+            >
+              Part 3
+            </p>
+            <h2
+              className="mt-2 text-center text-3xl font-bold"
+              style={{ color: "var(--warm-gray-900)" }}
+            >
+              Real-World Applications
+            </h2>
+            <p
+              className="mt-3 text-center text-lg"
+              style={{ color: "var(--warm-gray-500)" }}
+            >
+              Copy-paste prompts for every area of your life — personal, work,
+              and fun.
+            </p>
+          </div>
+        </div>
+
+        {applicationSections.map((section) => (
+          <section
+            key={section.id}
+            id={section.id}
+            className="border-t px-6 py-20"
+            style={{ borderColor: "var(--warm-gray-200)" }}
+          >
+            <div className="mx-auto max-w-4xl">
+              <div className="mb-12 flex items-center gap-4">
+                <span
+                  className={`flex h-12 w-12 items-center justify-center rounded-lg text-2xl text-white ${section.color}`}
+                >
+                  {section.icon}
+                </span>
+                <h2
+                  className="text-3xl font-bold"
+                  style={{ color: "var(--warm-gray-900)" }}
+                >
                   {section.title}
                 </h2>
               </div>
@@ -378,40 +1202,84 @@ export default function PlaybookPage() {
                     className="rounded-xl bg-white p-8 shadow-sm sm:p-10"
                     style={{ border: "1px solid var(--warm-gray-200)" }}
                   >
-                    <h3 className="mb-6 text-2xl font-bold" style={{ color: "var(--warm-gray-900)" }}>
+                    <h3
+                      className="mb-6 text-2xl font-bold"
+                      style={{ color: "var(--warm-gray-900)" }}
+                    >
                       {guide.title}
                     </h3>
 
                     <div className="mb-6">
-                      <div className="mb-3 text-sm font-semibold tracking-wide uppercase" style={{ color: "var(--teal)" }}>
-                        Copy & paste this prompt
+                      <div
+                        className="mb-3 text-sm font-semibold tracking-wide uppercase"
+                        style={{ color: "var(--teal)" }}
+                      >
+                        Copy &amp; paste this prompt
                       </div>
-                      <div className="rounded-lg p-5 font-mono text-base leading-relaxed whitespace-pre-wrap" style={{ backgroundColor: "var(--warm-gray-50)", color: "var(--warm-gray-700)", border: "1px solid var(--warm-gray-200)" }}>
+                      <div
+                        className="rounded-lg p-5 font-mono text-base leading-relaxed whitespace-pre-wrap"
+                        style={{
+                          backgroundColor: "var(--warm-gray-50)",
+                          color: "var(--warm-gray-700)",
+                          border: "1px solid var(--warm-gray-200)",
+                        }}
+                      >
                         {guide.prompt}
                       </div>
                     </div>
 
                     <div className="mb-4 flex items-center gap-3 text-base">
-                      <span className="font-medium" style={{ color: "var(--warm-gray-600)" }}>
+                      <span
+                        className="font-medium"
+                        style={{ color: "var(--warm-gray-600)" }}
+                      >
                         Best tool:
                       </span>
-                      <span className="rounded-lg px-4 py-1.5 text-base font-medium" style={{ backgroundColor: "var(--teal-light)", color: "var(--teal)" }}>
+                      <span
+                        className="rounded-lg px-4 py-1.5 text-base font-medium"
+                        style={{
+                          backgroundColor: "var(--teal-light)",
+                          color: "var(--teal)",
+                        }}
+                      >
                         {guide.tool}
                       </span>
                     </div>
 
                     <div className="mb-5">
-                      <div className="mb-2 text-base font-semibold" style={{ color: "var(--warm-gray-700)" }}>
+                      <div
+                        className="mb-2 text-base font-semibold"
+                        style={{ color: "var(--warm-gray-700)" }}
+                      >
                         Why this works:
                       </div>
-                      <p className="text-base leading-relaxed" style={{ color: "var(--warm-gray-600)" }}>{guide.why}</p>
+                      <p
+                        className="text-base leading-relaxed"
+                        style={{ color: "var(--warm-gray-600)" }}
+                      >
+                        {guide.why}
+                      </p>
                     </div>
 
-                    <div className="rounded-lg p-5" style={{ backgroundColor: "var(--gold-light)", border: "1px solid #e8d5a0" }}>
-                      <div className="mb-2 text-base font-semibold" style={{ color: "#8b6914" }}>
+                    <div
+                      className="rounded-lg p-5"
+                      style={{
+                        backgroundColor: "var(--gold-light)",
+                        border: "1px solid #e8d5a0",
+                      }}
+                    >
+                      <div
+                        className="mb-2 text-base font-semibold"
+                        style={{ color: "#8b6914" }}
+                      >
                         Pro Tip
                       </div>
-                      <p className="text-base leading-relaxed" style={{ color: "#7a5c12" }}>{guide.proTip}</p>
+                      <p
+                        className="text-base leading-relaxed"
+                        style={{ color: "#7a5c12" }}
+                      >
+                        {guide.proTip}
+                      </p>
                     </div>
                   </article>
                 ))}
@@ -420,18 +1288,54 @@ export default function PlaybookPage() {
           </section>
         ))}
 
-        {/* Bonus Content */}
+        {/* ─── PART 4: BONUS ─── */}
+        <div
+          className="border-t px-6 py-10"
+          style={{
+            borderColor: "var(--warm-gray-200)",
+            backgroundColor: "var(--warm-white)",
+          }}
+        >
+          <div className="mx-auto max-w-4xl">
+            <p
+              className="text-center text-sm font-bold tracking-widest uppercase"
+              style={{ color: "var(--teal)" }}
+            >
+              Part 4
+            </p>
+            <h2
+              className="mt-2 text-center text-3xl font-bold"
+              style={{ color: "var(--warm-gray-900)" }}
+            >
+              Bonus: Level Up
+            </h2>
+            <p
+              className="mt-3 text-center text-lg"
+              style={{ color: "var(--warm-gray-500)" }}
+            >
+              Build apps without code, compare the top AI tools, and set up your
+              own personal AI assistant.
+            </p>
+          </div>
+        </div>
+
         {bonusContent.map((bonus) => (
           <section
             key={bonus.id}
             id={bonus.id}
             className="border-t px-6 py-20"
-            style={{ borderColor: "var(--warm-gray-200)", backgroundColor: "var(--warm-white)" }}
+            style={{
+              borderColor: "var(--warm-gray-200)",
+              backgroundColor: "var(--warm-white)",
+            }}
           >
             <div className="mx-auto max-w-4xl">
               <div className="mb-12 flex items-center gap-4">
                 <span className="text-3xl">{bonus.icon}</span>
-                <h2 className="text-3xl font-bold" style={{ color: "var(--warm-gray-900)" }}>
+                <h2
+                  className="text-3xl font-bold"
+                  style={{ color: "var(--warm-gray-900)" }}
+                >
                   {bonus.title}
                 </h2>
               </div>
@@ -443,10 +1347,16 @@ export default function PlaybookPage() {
                     className="rounded-xl bg-white p-8 shadow-sm sm:p-10"
                     style={{ border: "1px solid var(--warm-gray-200)" }}
                   >
-                    <h3 className="mb-4 text-xl font-bold" style={{ color: "var(--warm-gray-900)" }}>
+                    <h3
+                      className="mb-4 text-xl font-bold"
+                      style={{ color: "var(--warm-gray-900)" }}
+                    >
                       {block.subtitle}
                     </h3>
-                    <div className="whitespace-pre-line text-base leading-relaxed" style={{ color: "var(--warm-gray-600)" }}>
+                    <div
+                      className="whitespace-pre-line text-base leading-relaxed"
+                      style={{ color: "var(--warm-gray-600)" }}
+                    >
                       {block.text}
                     </div>
                   </div>
@@ -458,15 +1368,25 @@ export default function PlaybookPage() {
       </div>
 
       {/* Footer */}
-      <footer className="no-print border-t px-6 py-16" style={{ borderColor: "var(--warm-gray-200)", backgroundColor: "white" }}>
+      <footer
+        className="no-print border-t px-6 py-16"
+        style={{ borderColor: "var(--warm-gray-200)", backgroundColor: "white" }}
+      >
         <div className="mx-auto max-w-3xl text-center">
-          <h2 className="mb-5 text-2xl font-bold" style={{ color: "var(--warm-gray-900)" }}>
-            That&apos;s your AI Playbook.
+          <h2
+            className="mb-5 text-2xl font-bold"
+            style={{ color: "var(--warm-gray-900)" }}
+          >
+            You&apos;ve completed the AI Playbook.
           </h2>
-          <p className="mb-4 text-lg leading-relaxed" style={{ color: "var(--warm-gray-600)" }}>
-            Bookmark this page and come back whenever you need a prompt or want to
-            try something new. We update this playbook as AI evolves — so you
-            always have the latest techniques.
+          <p
+            className="mb-4 text-lg leading-relaxed"
+            style={{ color: "var(--warm-gray-600)" }}
+          >
+            You went from understanding what AI is, to mastering how to
+            communicate with it, to building your own personal assistant. Bookmark
+            this page and come back whenever you need a prompt or want to try
+            something new. We update this playbook as AI evolves.
           </p>
           <div className="mb-8">
             <DownloadPdfButton />
