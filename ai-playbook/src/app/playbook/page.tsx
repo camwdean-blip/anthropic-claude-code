@@ -1,5 +1,6 @@
 import Link from "next/link";
 import DownloadPdfButton from "./DownloadPdfButton";
+import LogoutButton from "./LogoutButton";
 
 /* ───────────────────────────────────────────
    PART 1 — FOUNDATIONS: Origin & History of AI
@@ -846,6 +847,7 @@ export default function PlaybookPage() {
               Full Access
             </span>
             <DownloadPdfButton />
+            <LogoutButton />
           </div>
         </div>
       </header>

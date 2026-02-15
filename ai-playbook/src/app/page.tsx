@@ -146,6 +146,13 @@ export default function Home() {
             >
               Full Playbook
             </a>
+            <Link
+              href="/login"
+              className="hidden text-base font-medium hover:underline sm:block"
+              style={{ color: "var(--warm-gray-600)" }}
+            >
+              Log In
+            </Link>
             <a
               href="#pricing"
               className="btn-primary rounded-lg px-6 py-3 text-base font-semibold text-white"
