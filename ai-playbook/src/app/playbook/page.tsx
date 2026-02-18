@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { Icons } from "../icons";
 import DownloadPdfButton from "./DownloadPdfButton";
 import LogoutButton from "./LogoutButton";
 
@@ -9,7 +10,7 @@ const foundationSections = [
   {
     id: "origins",
     title: "The Origin of AI: How We Got Here",
-    icon: "🧠",
+    icon: Icons.brain,
     color: "bg-[#4a2c6e]",
     blocks: [
       {
@@ -56,7 +57,7 @@ We are now in the era of "foundation models" — AI systems like GPT-4, Claude, 
   {
     id: "how-ai-works",
     title: "How AI Actually Works (No Jargon)",
-    icon: "⚙️",
+    icon: Icons.gear,
     color: "bg-[#2d4a3e]",
     blocks: [
       {
@@ -74,14 +75,14 @@ It's not "thinking" the way you do. It's making extremely sophisticated predicti
         subtitle: "Why This Matters for You",
         text: `Understanding that AI is a pattern-prediction engine helps you use it better:
 
-✅ AI is great at: Anything where patterns exist — writing, analysis, coding, brainstorming, summarizing, translating, planning
-✅ AI is great at: Combining knowledge from multiple fields in ways humans rarely do
-✅ AI is great at: Doing in 30 seconds what would take you 30 minutes
+[+] AI is great at: Anything where patterns exist — writing, analysis, coding, brainstorming, summarizing, translating, planning
+[+] AI is great at: Combining knowledge from multiple fields in ways humans rarely do
+[+] AI is great at: Doing in 30 seconds what would take you 30 minutes
 
-❌ AI is NOT great at: Facts about very recent events (it has a training cutoff)
-❌ AI is NOT great at: Niche topics with very little written about them
-❌ AI is NOT great at: Tasks that require physical-world interaction
-❌ AI is NOT great at: Being 100% accurate every single time — always verify important facts
+[-] AI is NOT great at: Facts about very recent events (it has a training cutoff)
+[-] AI is NOT great at: Niche topics with very little written about them
+[-] AI is NOT great at: Tasks that require physical-world interaction
+[-] AI is NOT great at: Being 100% accurate every single time — always verify important facts
 
 The golden rule: AI is your brilliant, fast, sometimes overconfident colleague. Use it for the first draft, the brainstorm, the heavy lifting — then apply your own judgment.`,
       },
@@ -110,7 +111,7 @@ const promptMasterySections = [
   {
     id: "prompt-fundamentals",
     title: "Level 1: Prompt Fundamentals",
-    icon: "🎯",
+    icon: Icons.target,
     color: "bg-[#8b6914]",
     blocks: [
       {
@@ -175,7 +176,7 @@ LEARNING TEMPLATE:
   {
     id: "prompt-intermediate",
     title: "Level 2: Intermediate Prompt Techniques",
-    icon: "🔧",
+    icon: Icons.wrench,
     color: "bg-[#1e3a5f]",
     blocks: [
       {
@@ -255,7 +256,7 @@ This technique produces dramatically richer analysis than a single-perspective p
   {
     id: "prompt-advanced",
     title: "Level 3: Advanced Prompt Mastery",
-    icon: "🏆",
+    icon: Icons.trophy,
     color: "bg-[#6b1d1d]",
     blocks: [
       {
@@ -368,7 +369,7 @@ const applicationSections = [
   {
     id: "personal",
     title: "Personal Life",
-    icon: "🏠",
+    icon: Icons.home,
     color: "bg-[#1e3a5f]",
     guides: [
       {
@@ -430,7 +431,7 @@ const applicationSections = [
   {
     id: "work",
     title: "AI at Work",
-    icon: "💼",
+    icon: Icons.briefcase,
     color: "bg-[#1a7a6d]",
     guides: [
       {
@@ -492,7 +493,7 @@ const applicationSections = [
   {
     id: "recreation",
     title: "AI for Fun",
-    icon: "🎮",
+    icon: Icons.gamepad,
     color: "bg-[#8b6914]",
     guides: [
       {
@@ -560,7 +561,7 @@ const bonusContent = [
   {
     id: "vibe-coding",
     title: "Vibe Coding: Build Apps Without Being a Programmer",
-    icon: "💻",
+    icon: Icons.terminal,
     content: [
       {
         subtitle: "What Is Vibe Coding?",
@@ -583,7 +584,7 @@ const bonusContent = [
   {
     id: "top-tools",
     title: "Top 10 AI Tools Ranked & Compared",
-    icon: "🏆",
+    icon: Icons.trophy,
     content: [
       {
         subtitle: "1. ChatGPT (OpenAI)",
@@ -630,7 +631,7 @@ const bonusContent = [
   {
     id: "personal-assistant",
     title: "Build Your Personal AI Assistant (Step-by-Step)",
-    icon: "🤖",
+    icon: Icons.bot,
     content: [
       {
         subtitle: "What You're Building",

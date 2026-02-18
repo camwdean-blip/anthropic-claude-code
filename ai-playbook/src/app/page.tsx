@@ -1,9 +1,10 @@
 import Link from "next/link";
+import { Icons } from "./icons";
 
 const freePreview = [
   {
     category: "Personal Life",
-    icon: "🏠",
+    icon: Icons.home,
     color: "bg-[#1e3a5f]",
     tip: "Plan Your Entire Week of Meals in 30 Seconds",
     description:
@@ -12,7 +13,7 @@ const freePreview = [
   },
   {
     category: "Work",
-    icon: "💼",
+    icon: Icons.briefcase,
     color: "bg-[#1a7a6d]",
     tip: "Write Emails That Actually Sound Like You — in Half the Time",
     description:
@@ -21,7 +22,7 @@ const freePreview = [
   },
   {
     category: "Recreation",
-    icon: "🎯",
+    icon: Icons.target,
     color: "bg-[#8b6914]",
     tip: "Plan a Trip That Actually Fits Your Style",
     description:
@@ -33,7 +34,7 @@ const freePreview = [
 const fullPlaybookFeatures = [
   {
     title: "Personal AI Mastery",
-    icon: "🏠",
+    icon: Icons.home,
     items: [
       "Meal planning & grocery optimization",
       "AI-powered budgeting & finance tracking",
@@ -45,7 +46,7 @@ const fullPlaybookFeatures = [
   },
   {
     title: "AI at Work",
-    icon: "💼",
+    icon: Icons.briefcase,
     items: [
       "Email writing that saves hours per week",
       "Meeting notes & action items on autopilot",
@@ -57,7 +58,7 @@ const fullPlaybookFeatures = [
   },
   {
     title: "AI for Fun",
-    icon: "🎯",
+    icon: Icons.target,
     items: [
       "Trip planning that actually works",
       "Movie, book & music recommendations",
@@ -69,7 +70,7 @@ const fullPlaybookFeatures = [
   },
   {
     title: "Bonus Content",
-    icon: "🎁",
+    icon: Icons.gift,
     items: [
       "Vibe Coding: build apps without being a programmer",
       "Prompt Engineering Cheat Sheet (copy & paste templates)",
@@ -216,19 +217,19 @@ export default function Home() {
           </p>
           <div className="grid gap-6 sm:grid-cols-3">
             <div className="rounded-xl bg-white p-8 shadow-sm" style={{ border: "1px solid var(--warm-gray-200)" }}>
-              <div className="mb-4 text-4xl">😩</div>
+              <div className="mb-4 text-4xl" style={{ color: "var(--navy)" }}>{Icons.helpCircle}</div>
               <p className="text-lg font-medium" style={{ color: "var(--warm-gray-800)" }}>
                 &quot;I tried ChatGPT but didn&apos;t know what to ask&quot;
               </p>
             </div>
             <div className="rounded-xl bg-white p-8 shadow-sm" style={{ border: "1px solid var(--warm-gray-200)" }}>
-              <div className="mb-4 text-4xl">😤</div>
+              <div className="mb-4 text-4xl" style={{ color: "var(--navy)" }}>{Icons.xCircle}</div>
               <p className="text-lg font-medium" style={{ color: "var(--warm-gray-800)" }}>
                 &quot;It gave me generic answers that weren&apos;t helpful&quot;
               </p>
             </div>
             <div className="rounded-xl bg-white p-8 shadow-sm" style={{ border: "1px solid var(--warm-gray-200)" }}>
-              <div className="mb-4 text-4xl">😰</div>
+              <div className="mb-4 text-4xl" style={{ color: "var(--navy)" }}>{Icons.clock}</div>
               <p className="text-lg font-medium" style={{ color: "var(--warm-gray-800)" }}>
                 &quot;I feel like I&apos;m falling behind everyone else&quot;
               </p>
