@@ -27,9 +27,12 @@
                 <label class="form-label">MLS Sheet PDF</label>
                 <input type="file" name="mls_file" class="form-control form-control-sm" accept=".pdf">
             </div>
-            <div class="col-md-2 d-flex align-items-end">
-                <button type="submit" class="btn btn-primary btn-sm w-100" id="extract-btn">
-                    <i class="bi bi-magic me-1"></i>Extract & Fill
+            <div class="col-md-2 d-flex align-items-end gap-1">
+                <button type="submit" class="btn btn-primary btn-sm w-100" id="extract-btn" data-mode="regex">
+                    <i class="bi bi-magic me-1"></i>Extract
+                </button>
+                <button type="button" class="btn btn-outline-primary btn-sm w-100" id="ai-extract-btn" title="Uses Claude AI for smarter extraction">
+                    <i class="bi bi-stars me-1"></i>AI Extract
                 </button>
             </div>
         </div>
@@ -72,42 +75,37 @@
 
 {% block scripts %}
 <script>
-document.getElementById('extract-form').addEventListener('submit', async function(e) {
-    e.preventDefault();
-
-    const btn = document.getElementById('extract-btn');
+async function runExtraction(url, triggerBtn) {
+    const form = document.getElementById('extract-form');
     const status = document.getElementById('extract-status');
-    const originalBtn = btn.innerHTML;
+    const extractBtn = document.getElementById('extract-btn');
+    const aiBtn = document.getElementById('ai-extract-btn');
+    const originalBtn = triggerBtn.innerHTML;
 
-    btn.disabled = true;
-    btn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span>Extracting...';
+    extractBtn.disabled = true;
+    aiBtn.disabled = true;
+    triggerBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span>Extracting...';
     status.style.display = 'block';
     status.className = 'mt-2 text-muted';
     status.innerHTML = '<i class="bi bi-hourglass-split me-1"></i>Reading PDFs and extracting fields...';
 
-    const formData = new FormData(this);
+    const formData = new FormData(form);
 
     try {
-        const resp = await fetch('{{ url_for("main.extract_pdf_fields") }}', {
-            method: 'POST',
-            body: formData,
-        });
+        const resp = await fetch(url, { method: 'POST', body: formData });
         const data = await resp.json();
 
         if (data.error) {
             status.className = 'mt-2 text-danger';
             status.innerHTML = '<i class="bi bi-exclamation-triangle me-1"></i>' + data.error;
         } else {
-            // Pre-fill the form
             const fields = data.fields;
             let filledCount = 0;
             for (const [key, value] of Object.entries(fields)) {
                 const input = document.querySelector(`[name="${key}"]`);
                 if (input && value) {
-                    // Only fill if the field is currently empty
                     if (!input.value) {
                         input.value = value;
-                        // Briefly highlight the filled field
                         input.style.backgroundColor = '#d4edda';
                         setTimeout(() => { input.style.backgroundColor = ''; }, 2000);
                         filledCount++;
@@ -115,7 +113,6 @@ document.getElementById('extract-form').addEventListener('submit', async functio
                 }
             }
 
-            // Store uploaded file references
             if (data.uploaded_files) {
                 for (const [key, value] of Object.entries(data.uploaded_files)) {
                     const hidden = document.getElementById('uploaded_' + key);
@@ -136,8 +133,20 @@ document.getElementById('extract-form').addEventListener('submit', async functio
         status.innerHTML = '<i class="bi bi-exclamation-triangle me-1"></i>Something went wrong: ' + err.message;
     }
 
-    btn.disabled = false;
-    btn.innerHTML = originalBtn;
+    extractBtn.disabled = false;
+    aiBtn.disabled = false;
+    triggerBtn.innerHTML = originalBtn;
+}
+
+// Regex extraction (original)
+document.getElementById('extract-form').addEventListener('submit', function(e) {
+    e.preventDefault();
+    runExtraction('{{ url_for("main.extract_pdf_fields") }}', document.getElementById('extract-btn'));
+});
+
+// AI extraction
+document.getElementById('ai-extract-btn').addEventListener('click', function() {
+    runExtraction('{{ url_for("agent.ai_extract") }}', this);
 });
 </script>
 {% endblock %}
