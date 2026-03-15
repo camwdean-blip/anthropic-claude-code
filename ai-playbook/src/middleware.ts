@@ -7,6 +7,11 @@ const JWT_SECRET = new TextEncoder().encode(
 );
 
 export async function middleware(request: NextRequest) {
+  // Skip auth in development mode
+  if (process.env.NODE_ENV === "development") {
+    return NextResponse.next();
+  }
+
   const token = request.cookies.get("ai_playbook_session")?.value;
 
   if (!token) {
