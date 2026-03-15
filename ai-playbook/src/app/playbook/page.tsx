@@ -500,6 +500,22 @@ Where to find it:
 This is like training a new assistant on your preferences on Day 1 so you don't have to repeat yourself in every email. Set it once, benefit forever.`,
       },
       {
+        subtitle: "Pick One Chatbot and Stick With It",
+        text: `Once you've tried a few AI chatbots — ChatGPT, Claude, Gemini, Perplexity — pick one as your primary and commit to it. Here's why: every conversation you have teaches the AI more about you. Your preferences, your writing style, your job, your recurring projects, your pet peeves — it all builds up over time.
+
+If you bounce between three different chatbots every week, none of them ever really get to know you. You're starting from scratch every time, re-explaining your context, your preferences, and your goals. It's like rotating between three different assistants who each only work one day a week — none of them ever learn your rhythm.
+
+When you stick with one:
+• Your custom instructions compound — the AI remembers how you like things
+• Your conversation history becomes a searchable knowledge base of YOUR projects and ideas
+• The AI gets better at anticipating what you need (especially tools with memory features like ChatGPT and Claude)
+• You stop wasting time re-explaining your situation in every new tool
+
+This doesn't mean you should NEVER use other tools. Perplexity is great for research even if Claude is your daily driver. Midjourney is the best for images regardless of which chatbot you prefer. But for your core, day-to-day AI conversations — the ones where you brainstorm, draft, plan, and think — pick one and build that relationship.
+
+Think of it like choosing a bank. Sure, you could spread your money across five banks, but having everything in one place is simpler, builds better rewards, and the bank actually understands your financial picture. Same logic applies to your AI chatbot.`,
+      },
+      {
         subtitle: "Know When to Start Fresh",
         text: `Sometimes a conversation goes off the rails. The AI is stuck in a pattern, giving you the same type of answer no matter how you rephrase. Or the chat has gotten so long that the AI is losing track of earlier context.
 
