@@ -1,6 +1,6 @@
 import { Resend } from "resend";
 
-const FROM_EMAIL = process.env.EMAIL_FROM || "hello@knowledgeai.com";
+const FROM_EMAIL = process.env.EMAIL_FROM || "hello@theaiplaybook.com";
 
 function getResendClient() {
   const key = process.env.RESEND_API_KEY;
@@ -33,7 +33,7 @@ export async function sendPurchaseConfirmation(to: string, loginUrl: string) {
             </a>
           </div>
           <p style="color: #6b6560; font-size: 14px; line-height: 1.7;">
-            Questions? Reply to this email or contact us at support@knowledgeai.com.
+            Questions? Reply to this email or contact us at support@theaiplaybook.com.
           </p>
           <hr style="border: none; border-top: 1px solid #e0dbd3; margin: 32px 0;" />
           <p style="color: #6b6560; font-size: 12px;">

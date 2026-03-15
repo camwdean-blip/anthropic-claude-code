@@ -51,11 +51,11 @@ export default function SuccessPage() {
         <p className="mt-8 text-sm" style={{ color: "var(--warm-gray-500)" }}>
           A confirmation email has been sent to your inbox. Questions?{" "}
           <a
-            href="mailto:support@knowledgeai.com"
+            href="mailto:support@theaiplaybook.com"
             className="underline"
             style={{ color: "var(--teal)" }}
           >
-            support@knowledgeai.com
+            support@theaiplaybook.com
           </a>
         </p>
       </div>
