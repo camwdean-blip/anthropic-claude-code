@@ -96,10 +96,29 @@ h1, h2, h3, h4, h5, h6 {
   background-color: #1a8a7a;
 }
 
+/* Personalized PDF header — hidden on screen, shown in print */
+.pdf-personalized-header {
+  display: none;
+}
+
 /* Print styles for PDF */
 @media print {
   nav, header, footer, .no-print {
     display: none !important;
+  }
+
+  .pdf-personalized-header {
+    display: block !important;
+    text-align: center;
+    padding: 2rem 1rem 1rem;
+    font-size: 14px;
+    color: #4a4540;
+    border-bottom: 2px solid #2a9d8f;
+    margin-bottom: 0.5rem;
+  }
+
+  .pdf-personalized-header strong {
+    color: #1a1816;
   }
 
   html, body {

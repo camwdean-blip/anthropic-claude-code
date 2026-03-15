@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Icons } from "../icons";
 import DownloadPdfButton from "./DownloadPdfButton";
 import LogoutButton from "./LogoutButton";
+import { getSession } from "@/lib/auth";
 
 /* ───────────────────────────────────────────
    PART 1 — FOUNDATIONS: Origin & History of AI
@@ -991,7 +992,9 @@ FIX: Start with ONE daily habit. Every morning, paste your calendar and ask for 
 
 /* ────────── PAGE COMPONENT ────────── */
 
-export default function PlaybookPage() {
+export default async function PlaybookPage() {
+  const session = await getSession();
+  const userDisplayName = session?.email ?? "Valued Reader";
   return (
     <div className="min-h-screen" style={{ backgroundColor: "var(--cream)" }}>
       {/* Header */}
@@ -1154,6 +1157,11 @@ export default function PlaybookPage() {
 
       {/* PDF content wrapper */}
       <div id="playbook-content">
+        {/* Personalized PDF header — visible only in print */}
+        <div className="pdf-personalized-header">
+          <p>This report has been prepared for <strong>{userDisplayName}</strong></p>
+        </div>
+
         {/* Welcome */}
         <section className="px-6 py-16">
           <div className="mx-auto max-w-3xl text-center">
