@@ -1159,7 +1159,8 @@ export default async function PlaybookPage() {
       <div id="playbook-content">
         {/* Personalized PDF header — visible only in print */}
         <div className="pdf-personalized-header">
-          <p>This report has been prepared for <strong>{userDisplayName}</strong></p>
+          <p className="pdf-prepared-for">This report has been prepared for <strong>{userDisplayName}</strong></p>
+          <p className="pdf-disclaimer">CONFIDENTIAL — This document is licensed for personal use only. Redistribution, sharing, or reproduction in any form is strictly prohibited. This PDF contains personally identifiable information tied to your account. Unauthorized sharing may expose your personal data to third parties. By downloading, you agree to these terms.</p>
         </div>
 
         {/* Welcome */}
