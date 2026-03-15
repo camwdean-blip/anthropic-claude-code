@@ -347,6 +347,175 @@ Repeat steps 2-5 for each topic, and you have a complete course with marketing m
 ];
 
 /* ───────────────────────────────────────────
+   PART 2.5 — BEST PRACTICES: Getting the Most from AI
+   ─────────────────────────────────────────── */
+const bestPracticesSections = [
+  {
+    id: "chat-management",
+    title: "Managing Your Chats (The Basics Nobody Teaches You)",
+    icon: Icons.layers,
+    color: "bg-[#5b4a8a]",
+    blocks: [
+      {
+        subtitle: "Your Chats Are Already Saved — You Just Didn't Know",
+        text: `Here's something that surprises a lot of new users: every conversation you have with ChatGPT, Claude, Gemini, or most other AI tools is automatically saved. You don't need to hit "Save." There is no Save button.
+
+Look at the left side panel of your screen (or the menu icon on mobile). That's your chat history. Every conversation you've ever had is right there, listed by title. You can scroll back days, weeks, or months and pick up right where you left off.
+
+This is fundamentally different from a Google search, where you type something and the results disappear when you close the tab. AI chats are persistent — think of them more like text message threads. The conversation lives there until you delete it.
+
+Why this matters:
+• You can return to an old chat and say "continue where we left off" — the AI remembers the full context
+• You can reference work the AI did for you weeks ago without starting over
+• You don't need to copy-paste everything into a document "just in case" — it's already saved`,
+      },
+      {
+        subtitle: "Rename Your Chats (Your Future Self Will Thank You)",
+        text: `By default, AI tools auto-generate chat titles based on your first message. So your sidebar ends up looking like this:
+
+"Help me with an email"
+"Can you write something"
+"I have a question"
+"Untitled chat"
+
+Good luck finding anything.
+
+Here's the fix — rename your chats:
+• ChatGPT: Click the chat title in the sidebar → click the pencil icon → type a new name
+• Claude: Click the chat title in the sidebar → rename it
+• Gemini: Click the three dots next to a chat → Rename
+
+Use descriptive names like:
+✓ "Q2 Marketing Plan — Draft"
+✓ "Kid's Birthday Party Ideas"
+✓ "Resume — Software Engineer v3"
+✓ "Weekly Meal Plans — March"
+✓ "Tax Questions 2025"
+
+Think of it like naming files on your computer. "Document1.docx" is useless. "2025-Tax-Return-Notes.docx" is findable. Same principle.`,
+      },
+      {
+        subtitle: "Finding Old Chats",
+        text: `Most AI tools have a search function in the sidebar — use it. In ChatGPT, there's a search bar at the top of the left panel. Claude has one too. Type a keyword from your conversation and it'll pull it up.
+
+If you can't find something:
+• Try different keywords — search for a specific phrase you remember using, not the general topic
+• Scroll through your history — chats are listed by date, most recent first
+• Check if you were logged in — if you used AI without an account, those chats may not have been saved
+
+Pro tip: If you're working on an ongoing project, use ONE chat for the whole thing instead of starting new ones each time. The AI builds context over the conversation, so chat #15 about your business plan will give much better answers than a brand new chat where you have to re-explain everything.`,
+      },
+      {
+        subtitle: "Think Threads, Not Documents",
+        text: `People coming from Microsoft Word or Google Docs have a "save my work" instinct. They want to copy-paste AI responses into a document immediately. You can do that — but you don't have to.
+
+Instead, think of each chat as a living thread:
+• One thread for your business plan — keep refining it over time
+• One thread for recipe ideas — add to it whenever you need meal inspiration
+• One thread for a work project — keep all the brainstorming, drafts, and revisions in one place
+• One thread per class or subject if you're a student
+
+When you DO want to save something outside of the AI:
+• Copy the final version (not every draft) into your document
+• Use "Give me the final version with all my revisions incorporated" before copying
+• Some tools (Claude, ChatGPT) let you download or share conversations directly
+
+The chat IS your workspace. The document is just where the finished product goes.`,
+      },
+    ],
+  },
+  {
+    id: "workflow-habits",
+    title: "Workflow Habits That 10x Your Results",
+    icon: Icons.compass,
+    color: "bg-[#2d6a4f]",
+    blocks: [
+      {
+        subtitle: "One Chat Per Project, New Chat for New Topics",
+        text: `The most common mistake: using one endless chat for everything. Monday it's a resume, Tuesday it's recipe ideas, Wednesday it's a work email. The AI gets confused, and so do you.
+
+The rule is simple:
+• Same project? Same chat. Keep the context building.
+• New topic? New chat. Give the AI a fresh start.
+
+Why: AI uses the entire conversation as context for its next response. If your chat is about 15 different topics, it's juggling all of them. If your chat is focused on one thing, every response gets better because the AI understands the full picture.
+
+Think of it like meetings — you wouldn't discuss your marketing strategy, your tax return, and your vacation plans in the same meeting. Give each topic its own space.`,
+      },
+      {
+        subtitle: "Always Review, Never Blindly Trust",
+        text: `AI is confident. It will give you an answer that sounds authoritative even when it's wrong. This isn't a bug — it's how the technology works. It generates the most likely response, not the most accurate one.
+
+The review checklist:
+• FACTS — Did it get the numbers, dates, and names right? Verify anything important.
+• TONE — Does it sound like you, or like a robot? Edit to match your voice.
+• COMPLETENESS — Did it miss anything you care about? Ask it to add what's missing.
+• COMMON SENSE — Does the answer actually make sense for your situation?
+
+For low-stakes tasks (brainstorming, first drafts, casual messages), a quick skim is fine. For high-stakes tasks (legal, medical, financial, anything going to a client), verify every claim independently.
+
+AI is your first draft machine, not your fact-checker.`,
+      },
+      {
+        subtitle: "Iterate, Don't Start Over",
+        text: `You got an AI response and it's not quite right. What most people do: delete the chat and try again from scratch with a "better" prompt.
+
+What you should do: tell the AI what to fix.
+
+• "Make it shorter — half this length."
+• "Too formal. Make it conversational, like I'm texting a friend."
+• "Good structure, but replace the first example with something about healthcare."
+• "I like points 2 and 4. Expand those and drop the rest."
+
+Every follow-up makes the output better because the AI now understands what you want AND what you don't want. Starting over throws away all that context.
+
+Think of it like working with a human assistant. You wouldn't fire them and hire someone new every time they didn't nail the first draft. You'd give feedback. Same with AI.`,
+      },
+      {
+        subtitle: "Use AI to Check AI",
+        text: `This is a power-user move that most people never think of: use a second AI to review the first one's work.
+
+Examples:
+• Write an email in ChatGPT → paste it into Claude and say "Review this email. What could be improved? Is anything unclear or awkward?"
+• Get a business plan from one AI → ask another "Poke holes in this plan. What am I missing? What are the biggest risks?"
+• Have AI write code → paste it into another AI and say "Review this for bugs, security issues, and edge cases"
+
+Different AI models have different strengths and blind spots. Using two gives you a built-in peer review system. It takes 30 seconds and catches issues you'd miss.`,
+      },
+      {
+        subtitle: "Set Up Your Context Once, Reuse It Forever",
+        text: `Most AI tools now have a "custom instructions" or "memory" feature. Use it. This is where you tell the AI about yourself once, and it remembers for every future conversation.
+
+What to include in your custom instructions:
+• Your job title and industry
+• How you prefer responses (concise vs. detailed, formal vs. casual)
+• Things AI should always or never do ("never use bullet points" or "always include sources")
+• Your skill level ("I'm a beginner at coding" or "I'm a senior developer — skip the basics")
+
+Where to find it:
+• ChatGPT: Settings → Personalization → Custom Instructions
+• Claude: Your profile → set your communication preferences
+• Gemini: Settings → Extensions and preferences
+
+This is like training a new assistant on your preferences on Day 1 so you don't have to repeat yourself in every email. Set it once, benefit forever.`,
+      },
+      {
+        subtitle: "Know When to Start Fresh",
+        text: `Sometimes a conversation goes off the rails. The AI is stuck in a pattern, giving you the same type of answer no matter how you rephrase. Or the chat has gotten so long that the AI is losing track of earlier context.
+
+Signs you need a new chat:
+• You've asked the same question 3+ different ways and keep getting similar unhelpful answers
+• The AI is contradicting something it said earlier in the conversation
+• The chat is extremely long (50+ messages) and responses are getting less coherent
+• You've changed direction so many times the AI doesn't know what you actually want
+
+Starting fresh isn't failure — it's strategy. Take what you learned from the first conversation and write a better opening prompt for the new one. You'll get to a better answer faster than trying to salvage a confused thread.`,
+      },
+    ],
+  },
+];
+
+/* ───────────────────────────────────────────
    PART 3 — APPLICATIONS: Personal, Work, Fun
    ─────────────────────────────────────────── */
 const applicationSections = [
@@ -901,6 +1070,27 @@ export default function PlaybookPage() {
               </a>
             ))}
 
+            {/* Best Practices */}
+            <span
+              className="mt-2 w-full rounded-lg px-3 py-2 text-xs font-bold tracking-wider uppercase"
+              style={{ color: "var(--warm-gray-500)" }}
+            >
+              Best Practices
+            </span>
+            {bestPracticesSections.map((s) => (
+              <a
+                key={s.id}
+                href={`#${s.id}`}
+                className="rounded-lg border bg-white px-5 py-3 text-base font-medium transition-colors hover:shadow-sm"
+                style={{
+                  borderColor: "var(--warm-gray-200)",
+                  color: "var(--warm-gray-700)",
+                }}
+              >
+                {s.icon} {s.title}
+              </a>
+            ))}
+
             {/* Applications */}
             <span
               className="mt-2 w-full rounded-lg px-3 py-2 text-xs font-bold tracking-wider uppercase"
@@ -1071,6 +1261,85 @@ export default function PlaybookPage() {
         </div>
 
         {promptMasterySections.map((section) => (
+          <section
+            key={section.id}
+            id={section.id}
+            className="border-t px-6 py-20"
+            style={{ borderColor: "var(--warm-gray-200)" }}
+          >
+            <div className="mx-auto max-w-4xl">
+              <div className="mb-12 flex items-center gap-4">
+                <span
+                  className={`flex h-12 w-12 items-center justify-center rounded-lg text-2xl text-white ${section.color}`}
+                >
+                  {section.icon}
+                </span>
+                <h2
+                  className="text-3xl font-bold"
+                  style={{ color: "var(--warm-gray-900)" }}
+                >
+                  {section.title}
+                </h2>
+              </div>
+
+              <div className="space-y-8">
+                {section.blocks.map((block) => (
+                  <div
+                    key={block.subtitle}
+                    className="rounded-xl bg-white p-8 shadow-sm sm:p-10"
+                    style={{ border: "1px solid var(--warm-gray-200)" }}
+                  >
+                    <h3
+                      className="mb-4 text-xl font-bold"
+                      style={{ color: "var(--warm-gray-900)" }}
+                    >
+                      {block.subtitle}
+                    </h3>
+                    <div
+                      className="whitespace-pre-line text-base leading-relaxed"
+                      style={{ color: "var(--warm-gray-600)" }}
+                    >
+                      {block.text}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </section>
+        ))}
+
+        {/* ─── BEST PRACTICES ─── */}
+        <div
+          className="border-t px-6 py-10"
+          style={{
+            borderColor: "var(--warm-gray-200)",
+            backgroundColor: "var(--warm-white)",
+          }}
+        >
+          <div className="mx-auto max-w-4xl">
+            <p
+              className="text-center text-sm font-bold tracking-widest uppercase"
+              style={{ color: "var(--teal)" }}
+            >
+              Best Practices
+            </p>
+            <h2
+              className="mt-2 text-center text-3xl font-bold"
+              style={{ color: "var(--warm-gray-900)" }}
+            >
+              Getting the Most from AI
+            </h2>
+            <p
+              className="mt-3 text-center text-lg"
+              style={{ color: "var(--warm-gray-500)" }}
+            >
+              The habits, workflows, and tricks that separate casual users from
+              power users.
+            </p>
+          </div>
+        </div>
+
+        {bestPracticesSections.map((section) => (
           <section
             key={section.id}
             id={section.id}
