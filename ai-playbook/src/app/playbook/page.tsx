@@ -109,6 +109,80 @@ Each has free and paid tiers. The paid versions ($20/month typically) are signif
    ─────────────────────────────────────────── */
 const promptMasterySections = [
   {
+    id: "talking-to-computers",
+    title: "How to Talk to a Computer (It's Not What You Think)",
+    icon: Icons.messageSquare,
+    color: "bg-[#2d6a4f]",
+    blocks: [
+      {
+        subtitle: "Forget Everything You Learned About Being Polite",
+        text: `Here's the secret nobody tells you: AI doesn't care about pleasantries, grammar, or complete sentences. It's not a person. It's a pattern-matching engine that's trying to figure out what you need.
+
+You don't need to say: "Hello, I was wondering if you could possibly help me write an email to my boss about requesting time off next Friday? I'd really appreciate it if you could make it sound professional but friendly. Thank you so much!"
+
+You can just say: "Write email to boss. Need Friday off. Professional but friendly."
+
+Same result. A fraction of the effort. The computer doesn't have feelings to hurt — it just needs the core information.`,
+      },
+      {
+        subtitle: "Think Instructions, Not Conversation",
+        text: `When you talk to a person, you use context, tone, and social cues. With AI, think of it more like writing a search query or filling out a form — just with plain language.
+
+The most efficient AI input has three things:
+• WHAT you want (the task)
+• WHO it's for or HOW it should sound (the context)
+• Any CONSTRAINTS (length, format, things to include or avoid)
+
+That's it. No "please" required. No backstory. No throat-clearing.
+
+Inefficient: "So I've been thinking about starting a vegetable garden and I live in zone 7b. I've never really gardened before but my neighbor has a great one. Could you maybe suggest some easy vegetables I could start with this spring?"
+
+Efficient: "Easy spring vegetables for zone 7b beginner. Top 5, with planting dates."
+
+Both work. The second one gets you a more focused answer, faster.`,
+      },
+      {
+        subtitle: "You Can Always Add More — Start Lean",
+        text: `A lot of people over-explain on the first message because they're afraid of getting a bad answer. But AI is iterative — you can always follow up.
+
+Start with the simplest version of your ask. If the answer isn't quite right, add one more detail. Then another. You'll zero in on exactly what you want in 2-3 short messages instead of one long paragraph.
+
+Think of it like GPS: you type in the destination, not the life story of why you're going there.
+
+First message: "Workout plan, 3 days a week, dumbbells only"
+Follow-up: "Make it 30 minutes max per session"
+Follow-up: "Add a warm-up and cool-down"
+
+Three short lines gave you a better result than a single wall of text would have.`,
+      },
+      {
+        subtitle: "The Shorthand Cheat Sheet",
+        text: `Here are patterns that work every time — no fluff needed:
+
+LISTS: "10 ideas for [topic]" — just say the number and topic
+REWRITES: "Rewrite this: [paste text]. Make it [shorter/funnier/formal]."
+COMPARISONS: "[Thing A] vs [Thing B]. Pros and cons. Table format."
+EXPLANATIONS: "Explain [concept] like I'm [audience]. 3 sentences."
+BRAINSTORMING: "[Topic]. Give me 5 angles I haven't considered."
+FORMATS: "As a bullet list" / "As a table" / "In 100 words or less"
+
+Notice the pattern: short, direct, specific. The computer cuts through all the noise and grabs exactly what it needs. Your job is to give it signal, not sentences.`,
+      },
+      {
+        subtitle: "When to Use More Words (Yes, Sometimes You Should)",
+        text: `Being concise is the default. But there are times when more detail genuinely helps:
+
+• CREATIVE WORK — If you want a specific tone, style, or voice, give an example: "Write like a sarcastic sports commentator"
+• COMPLEX TASKS — Multi-step projects benefit from numbering your requirements: "1. Research phase 2. Outline 3. First draft"
+• PERSONAL CONTEXT — Things AI can't guess: your budget, your skill level, dietary restrictions, your audience
+
+The rule of thumb: if the detail changes what the AI would produce, include it. If it's just filler or context you'd give a human out of politeness, skip it.
+
+You're not being rude. You're being efficient. And the AI actually performs better when you are.`,
+      },
+    ],
+  },
+  {
     id: "prompt-fundamentals",
     title: "Level 1: Prompt Fundamentals",
     icon: Icons.target,
