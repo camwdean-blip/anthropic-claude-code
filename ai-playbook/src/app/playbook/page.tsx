@@ -533,6 +533,994 @@ Starting fresh isn't failure — it's strategy. Take what you learned from the f
 ];
 
 /* ───────────────────────────────────────────
+   PART 2.75 — ESSENTIAL KNOWLEDGE
+   ─────────────────────────────────────────── */
+const essentialKnowledgeSections: {
+  id: string;
+  title: string;
+  icon: React.ReactNode;
+  color: string;
+  blocks: { subtitle: string; text: string }[];
+}[] = [
+  {
+    id: "privacy-safety",
+    title: "Privacy & Data Safety When Using AI",
+    icon: Icons.shield,
+    color: "bg-[#6b1d1d]",
+    blocks: [
+      {
+        subtitle: "What Happens to the Stuff You Type?",
+        text: `This is the question most people never think to ask — and it's the most important one. When you type something into ChatGPT, Claude, Gemini, or any AI tool, where does that text go?
+
+Here's the honest answer:
+
+FREE TIERS — Most free AI tools use your conversations to improve their models. That means your text may be read by human reviewers or used as training data. OpenAI's ChatGPT (free tier), Google Gemini, and others have this in their terms of service.
+
+PAID TIERS — Most paid plans offer better privacy. OpenAI's ChatGPT Plus and Claude Pro both state they don't use your conversations for training by default. But read the fine print — policies change.
+
+ENTERPRISE TIERS — If your company uses an enterprise AI plan, your data is typically isolated and never used for training. This is the gold standard for privacy.
+
+The rule of thumb: treat any AI tool like a public bulletin board unless you've verified otherwise. Don't paste anything you wouldn't want a stranger to see.`,
+      },
+      {
+        subtitle: "What You Should NEVER Put Into AI",
+        text: `This list is non-negotiable. Never paste or type these into any AI chatbot:
+
+• Social Security numbers, government IDs, or passport numbers
+• Full credit card or bank account numbers
+• Passwords, PINs, or security codes
+• Medical records with your name attached
+• Legal documents with sensitive case details
+• Trade secrets or proprietary source code (unless using an enterprise plan)
+• Private photos of other people (especially children)
+• Confidential client information
+
+If you need AI help with something sensitive, anonymize it first:
+• Replace real names with "Person A" and "Person B"
+• Change specific dollar amounts to ranges ("around $50K" instead of "$52,347")
+• Remove identifying details (company names, addresses, case numbers)
+• Describe the situation generically: "I received a medical diagnosis" vs. pasting the full report
+
+The AI doesn't need your real data to help you. It needs the pattern and context.`,
+      },
+      {
+        subtitle: "How to Check a Tool's Privacy Policy (Without Being a Lawyer)",
+        text: `You don't need to read 40 pages of legalese. Here's what to look for:
+
+SEARCH FOR THESE PHRASES:
+• "training data" — Does the company use your inputs to train models?
+• "data retention" — How long do they keep your conversations?
+• "third parties" — Do they share your data with anyone else?
+• "opt out" — Can you prevent your data from being used for training?
+
+WHERE TO FIND IT:
+• ChatGPT: Settings → Data Controls → toggle off "Improve the model for everyone"
+• Claude: By default, Anthropic doesn't train on your conversations (Pro plan)
+• Gemini: Google AI settings in your Google account
+• Perplexity: Check their privacy page — search queries may be stored
+
+QUICK PRIVACY RANKING (as of 2025):
+• Most private: Claude (Pro/Enterprise), ChatGPT (Enterprise)
+• Good privacy: ChatGPT Plus (with training toggle off)
+• Less private: Free tiers of most tools, Google Gemini (connected to your Google account)
+
+When in doubt: use the paid version with training disabled, and never paste anything that could identify a real person.`,
+      },
+      {
+        subtitle: "Protecting Yourself on Shared Devices",
+        text: `If you use AI on a shared computer, a work laptop, or a family device:
+
+• Always log out when you're done — your chat history is visible to anyone who opens the app
+• Use incognito/private browsing if you don't want chats saved to the account
+• Don't save your AI tool passwords in the shared browser
+• Remember that IT departments can often see what websites you visit, including AI tools
+• If you use AI at work, assume your employer can see your conversations (especially on work devices or networks)
+
+For extra security:
+• Enable two-factor authentication on your AI accounts
+• Use a unique, strong password (not the same one as your email)
+• Periodically review and delete old conversations that contain sensitive topics
+• Check if your AI tool offers "temporary chats" that auto-delete (ChatGPT has this feature)`,
+      },
+    ],
+  },
+  {
+    id: "ai-limitations",
+    title: "AI Limitations, Hallucinations & Knowledge Cutoffs",
+    icon: Icons.alertTriangle,
+    color: "bg-[#8b6914]",
+    blocks: [
+      {
+        subtitle: "AI Is Confidently Wrong — A Lot",
+        text: `Here's the most important thing to understand about AI: it doesn't know what it knows. It generates text based on patterns, not understanding. This means it will state something completely false with the same confidence as something completely true.
+
+This is called a "hallucination" — the AI invents facts, cites sources that don't exist, or gives you outdated information as if it's current.
+
+REAL EXAMPLES OF AI HALLUCINATIONS:
+• Citing court cases that never happened (lawyers have been fined for this)
+• Inventing statistics and attributing them to real organizations
+• Generating fake book titles and authors that sound plausible
+• Providing medical dosages that are dangerously incorrect
+• Listing features of products that don't exist
+
+The danger isn't that AI lies — it's that it doesn't know it's lying. There's no "I'm not sure" flag built in. Every answer comes out sounding authoritative.`,
+      },
+      {
+        subtitle: "Knowledge Cutoffs: AI Doesn't Know What Happened Yesterday",
+        text: `Every AI model has a "knowledge cutoff" — a date beyond which it has no information. It's like talking to someone who was frozen in time.
+
+CURRENT CUTOFFS (approximate, as of 2025):
+• ChatGPT (GPT-4): Training data up to late 2024 (but can browse the web with Bing)
+• Claude: Training data up to early 2025
+• Gemini: Has real-time Google Search integration
+• Perplexity: Always searches the web in real-time
+
+What this means in practice:
+• Ask ChatGPT about an event from last week and it may not know
+• Ask about a new law, product, or person and it might hallucinate an answer instead of saying "I don't know"
+• Prices, statistics, and "current" data may be years out of date
+
+THE FIX: For anything time-sensitive, use Perplexity (built for real-time research) or ask ChatGPT/Gemini to search the web. Always verify dates and numbers independently.`,
+      },
+      {
+        subtitle: "The Verification Checklist",
+        text: `Use this checklist before trusting any AI output for important decisions:
+
+FACTS & NUMBERS:
+• Did I verify statistics with the original source?
+• Are the dates and timelines accurate?
+• Do the names of people, places, and organizations check out?
+• If AI cited a source, does that source actually exist?
+
+ADVICE & RECOMMENDATIONS:
+• Does this make common sense for my specific situation?
+• Would I get similar advice from a qualified human professional?
+• Am I relying on AI for something that requires professional certification (legal, medical, financial)?
+
+CONTENT & WRITING:
+• Are the claims in this content verifiable?
+• Is the tone appropriate for my audience?
+• Did I fact-check any quotes or attributions?
+
+QUICK RULE: The higher the stakes, the more you verify. AI brainstorming ideas for a birthday party? Trust away. AI advising on a legal contract? Verify every word.`,
+      },
+    ],
+  },
+  {
+    id: "when-not-to-use",
+    title: "When NOT to Use AI",
+    icon: Icons.slashCircle,
+    color: "bg-[#5b4a8a]",
+    blocks: [
+      {
+        subtitle: "The Hard Lines: Where AI Should Never Be Your Primary Source",
+        text: `AI is an incredible tool. But there are areas where relying on it can be genuinely dangerous:
+
+MEDICAL DECISIONS:
+• Never use AI to diagnose a medical condition
+• Don't change medications, dosages, or treatments based on AI advice
+• AI can help you understand medical terms or prepare questions for your doctor — but it is NOT a doctor
+• "ChatGPT said I might have..." is not a diagnosis. See a professional.
+
+LEGAL MATTERS:
+• AI-generated legal advice is not legal advice. It's pattern matching.
+• Don't draft contracts, wills, or legal filings using AI alone — lawyers have been sanctioned for submitting AI-generated briefs with fake case citations
+• AI can help you understand legal concepts, but a lawyer must review anything with real consequences
+
+FINANCIAL DECISIONS:
+• Don't make investment decisions based on AI recommendations
+• AI doesn't know your complete financial picture, risk tolerance, or tax situation
+• It can help you budget, organize, and brainstorm — but a financial advisor should guide major decisions
+• Be especially careful with tax advice — tax law is complex and jurisdiction-specific`,
+      },
+      {
+        subtitle: "Situations Where AI Falls Short",
+        text: `Beyond the big three (medical, legal, financial), here are other scenarios where AI isn't the right tool:
+
+EMOTIONAL SUPPORT:
+• AI can simulate empathy, but it doesn't feel anything. If you're in crisis, contact a real person.
+• National Suicide Prevention Lifeline: 988 (call or text)
+• Crisis Text Line: Text HOME to 741741
+• AI is fine for journaling prompts or processing thoughts — but it's not therapy.
+
+RELATIONSHIP DECISIONS:
+• "Should I break up with my partner?" — AI doesn't know your partner, your history, or the nuances
+• It can help you organize your thoughts, but the decision must be yours
+
+PARENTING CRITICAL MOMENTS:
+• AI can suggest activities and help with homework — but for behavioral concerns, developmental questions, or discipline strategies, talk to a pediatrician or child psychologist
+
+BREAKING NEWS & EMERGENCIES:
+• AI models may not have real-time information
+• For emergencies, call 911 or your local emergency services
+• For breaking news, use established news outlets — not AI`,
+      },
+      {
+        subtitle: "The 'AI-Assisted' Sweet Spot",
+        text: `The best approach isn't "never use AI" or "always use AI" — it's knowing where AI adds value and where humans must lead.
+
+AI LEADS (you review):
+• First drafts of emails, content, and documents
+• Brainstorming and idea generation
+• Data organization and formatting
+• Research starting points
+• Routine scheduling and planning
+
+AI ASSISTS (human leads):
+• Medical research (you + your doctor decide)
+• Legal document review (you + your lawyer decide)
+• Financial planning (you + your advisor decide)
+• Job interviews and negotiations (AI helps you prepare, you perform)
+• Important relationship communication (AI helps you draft, you personalize)
+
+HUMAN ONLY:
+• Final decision-making on life-changing choices
+• Emergency situations
+• Anything requiring professional licensure or certification
+• Situations involving vulnerable people (children, elderly, people in crisis)
+• Creative work where authenticity and originality are essential`,
+      },
+    ],
+  },
+  {
+    id: "ai-ethics",
+    title: "AI Ethics, Bias & Copyright",
+    icon: Icons.scale,
+    color: "bg-[#1e3a5f]",
+    blocks: [
+      {
+        subtitle: "AI Has Biases — And So Does Its Training Data",
+        text: `AI models learn from the internet. And the internet has biases — lots of them. This means AI can:
+
+• Reflect stereotypes about gender, race, age, and culture
+• Default to Western (often American) perspectives
+• Generate content that favors certain viewpoints over others
+• Underrepresent minority perspectives and experiences
+• Associate certain professions with certain demographics
+
+EXAMPLES YOU MIGHT NOTICE:
+• Ask AI to "write about a CEO" and it may default to male pronouns
+• Ask for "a family dinner recipe" and you'll likely get Western cuisine
+• Ask about history and it may center European/American narratives
+• Image generators may default to lighter skin tones
+
+WHAT YOU CAN DO:
+• Be specific about representation in your prompts: "Include diverse perspectives"
+• Question AI outputs that seem to make assumptions about demographics
+• Use AI outputs as starting points, then add your own perspective and knowledge
+• If something feels off or stereotypical, push back: "Revise this without gender assumptions"`,
+      },
+      {
+        subtitle: "Copyright: Who Owns What AI Creates?",
+        text: `This is one of the most debated topics in AI right now, and the law is still catching up:
+
+AI-GENERATED TEXT:
+• In most jurisdictions, purely AI-generated content cannot be copyrighted (you can't own it exclusively)
+• However, if you substantially edit and transform AI output, your version may be copyrightable
+• The US Copyright Office has ruled that AI-generated works without human authorship are not copyrightable
+
+AI-GENERATED IMAGES:
+• Similar rules apply — pure AI art is generally not copyrightable
+• Midjourney, DALL-E, and other tools have their own terms about commercial use
+• Some artists have sued AI companies for training on their work without permission
+
+PRACTICAL GUIDELINES:
+• Don't claim AI-generated work as entirely your own in professional or academic contexts
+• Always disclose AI assistance when required (job applications, academic papers, professional work)
+• Edit and personalize AI outputs — don't just copy-paste
+• Check your industry's rules: journalism, academia, and legal professions have specific AI disclosure requirements
+• If you're using AI for commercial content, add your own creative elements to strengthen your ownership claim`,
+      },
+      {
+        subtitle: "Academic Integrity & AI in Schools",
+        text: `If you're a student (or the parent of one), this section is critical:
+
+THE CURRENT LANDSCAPE:
+• Most schools and universities now have AI use policies — check yours
+• Using AI to complete assignments without disclosure is generally considered academic dishonesty
+• Penalties range from failing grades to expulsion
+• AI detection tools exist (Turnitin, GPTZero) but are not perfectly reliable
+
+HOW TO USE AI ETHICALLY IN SCHOOL:
+• Use AI as a tutor: "Explain this concept to me" (learning from AI = good)
+• Use AI for brainstorming: "Help me think of essay topics" (getting started = good)
+• Don't use AI to write your assignments for you (bypassing learning = bad)
+• If you use AI to help edit or improve your work, disclose it
+• When in doubt, ask your teacher or professor about their AI policy
+
+FOR PARENTS:
+• Talk to your kids about AI use — they're almost certainly using it
+• Frame it as a tool (like a calculator) with rules about when it's appropriate
+• Help them understand the difference between learning WITH AI and having AI do the work FOR them`,
+      },
+      {
+        subtitle: "Responsible AI Use: A Personal Code of Ethics",
+        text: `You don't need to be a philosopher to use AI ethically. Here's a simple framework:
+
+THE 5-QUESTION TEST — before using AI for something, ask yourself:
+1. Am I being honest about how this was created? (Transparency)
+2. Could this output hurt someone if it's wrong? (Harm prevention)
+3. Am I using this to learn or to bypass learning? (Integrity)
+4. Would I be comfortable if people knew I used AI for this? (Accountability)
+5. Am I reviewing the output before sharing it? (Responsibility)
+
+If you can answer "yes" to all five, you're using AI responsibly.
+
+GOOD AI USE:
+✓ Using AI to learn faster and understand complex topics
+✓ Using AI to draft content you then review and personalize
+✓ Using AI to automate tedious tasks so you can focus on meaningful work
+✓ Disclosing AI use when transparency is expected
+
+QUESTIONABLE AI USE:
+✗ Submitting AI work as entirely your own in professional or academic settings
+✗ Using AI to generate fake reviews, testimonials, or credentials
+✗ Relying on AI for decisions that require human expertise and judgment
+✗ Blindly trusting AI output without verification`,
+      },
+    ],
+  },
+  {
+    id: "mobile-desktop",
+    title: "Mobile vs. Desktop: Getting the Best Experience",
+    icon: Icons.smartphone,
+    color: "bg-[#2d6a4f]",
+    blocks: [
+      {
+        subtitle: "Desktop: Your Power Workstation",
+        text: `Desktop is where AI shines brightest for serious work:
+
+WHY DESKTOP IS BETTER FOR SERIOUS WORK:
+• Larger screen = easier to read, compare, and edit long outputs
+• Full keyboard = faster, more detailed prompts
+• Easy copy-paste between AI and other apps (docs, spreadsheets, email)
+• Multiple tabs open = reference materials alongside your AI conversation
+• File upload is smoother (drag and drop documents, images, spreadsheets)
+
+DESKTOP TIPS:
+• Use split-screen: AI chat on one side, your document on the other
+• Keep commonly used prompts in a text file for quick copy-paste
+• Use browser extensions like "ChatGPT Writer" for Gmail integration
+• Bookmark your most-used AI tools for one-click access
+• If you use multiple AI tools, keep them in separate browser tabs
+
+KEYBOARD SHORTCUTS WORTH KNOWING:
+• Shift + Enter = new line without sending (in most AI chat tools)
+• Ctrl/Cmd + A = select all text in the input box
+• Ctrl/Cmd + C / V = copy and paste (obvious but essential)
+• Up arrow = recall your last message (works in ChatGPT)`,
+      },
+      {
+        subtitle: "Mobile: Your AI in Your Pocket",
+        text: `Mobile AI isn't just a smaller version of desktop — it has unique advantages:
+
+WHEN MOBILE AI WINS:
+• Voice input — talk to AI instead of typing (especially useful while walking, driving, or cooking)
+• Quick questions on the go — "What's a good restaurant near me that's quiet for a business lunch?"
+• Photo + AI — snap a photo and ask AI about it (ChatGPT and Claude support this)
+• Commute time — use dead time to brainstorm, plan, or learn
+• Grocery store — "I have chicken, broccoli, and rice. What can I make?"
+
+MOBILE APP TIPS:
+• Download the official apps: ChatGPT (iOS/Android), Claude (iOS/Android), Gemini (Android, or via Google app on iOS)
+• Enable voice input — it's faster than typing on a phone and most AI apps support it natively
+• Use the share sheet — many AI apps let you share text or images directly from other apps
+• Widget support — ChatGPT and Gemini offer home screen widgets for instant access
+
+VOICE INPUT IS A GAME CHANGER:
+Instead of typing a long prompt, just say it:
+"Hey, I need five dinner ideas for tonight. I have salmon in the fridge, we don't eat dairy, and I want something ready in 30 minutes."
+
+Voice input captures natural language beautifully, and AI handles conversational prompts just as well as typed ones. This is especially powerful for people who find typing difficult.`,
+      },
+      {
+        subtitle: "Syncing Across Devices",
+        text: `Your AI conversations follow you — if you set it up right:
+
+CHATGPT: Log in with the same account on desktop and mobile. All conversations sync automatically. Custom GPTs and custom instructions carry over.
+
+CLAUDE: Same — log into claude.ai on desktop and use the Claude app on mobile. Projects and conversations are synced.
+
+GEMINI: Tied to your Google account. Access on any device where you're logged into Google.
+
+PERPLEXITY: Log in on any device. Your search history and collections sync.
+
+TIPS FOR SEAMLESS SWITCHING:
+• Start a complex project on desktop (where you can type detailed prompts)
+• Continue the conversation on mobile when you're away from your desk
+• Use the "rename chat" trick: give conversations clear names so you can find them on any device
+• Custom instructions set on one device apply everywhere — set them up once on desktop`,
+      },
+    ],
+  },
+  {
+    id: "cost-comparison",
+    title: "AI Tools: Free vs. Paid (Is It Worth It?)",
+    icon: Icons.dollarSign,
+    color: "bg-[#8b6914]",
+    blocks: [
+      {
+        subtitle: "The Honest Free vs. Paid Breakdown",
+        text: `Every major AI tool has a free tier. But free comes with trade-offs:
+
+CHATGPT:
+• Free: GPT-3.5 (older, less capable model), limited GPT-4 access, basic features
+• Plus ($20/month): GPT-4 (smarter), image generation (DALL-E), file uploads, web browsing, Custom GPTs, voice mode
+• Worth it? YES if you use AI daily. The jump from GPT-3.5 to GPT-4 is massive.
+
+CLAUDE:
+• Free: Claude Sonnet (capable model), limited daily messages
+• Pro ($20/month): More messages, Claude Opus (most capable), Projects, longer conversations, priority access
+• Worth it? YES if you do a lot of writing or work with long documents.
+
+GOOGLE GEMINI:
+• Free: Basic Gemini model, integration with Google services
+• Advanced ($20/month, bundled with Google One AI Premium): Gemini Ultra, 2TB Google storage, deep Gmail/Docs/Sheets integration
+• Worth it? YES if you're deep in the Google ecosystem.
+
+PERPLEXITY:
+• Free: Limited searches per day, basic model
+• Pro ($20/month): Unlimited searches, better models, file uploads, dedicated research features
+• Worth it? YES if you do a lot of research. It replaces hours of Googling.`,
+      },
+      {
+        subtitle: "The Real ROI: What $20/Month Actually Saves You",
+        text: `People hesitate to pay for AI because it feels like paying for a search engine. But the math tells a different story:
+
+TIME SAVED PER WEEK (CONSERVATIVE):
+• Email writing and editing: 2-3 hours saved
+• Research and fact-finding: 1-2 hours saved
+• Content creation and brainstorming: 2-4 hours saved
+• Document summarization and analysis: 1-2 hours saved
+• Planning and organization: 1 hour saved
+
+TOTAL: 7-12 hours saved per week
+
+If your time is worth $25/hour, that's $175-300/week in value for $20/month. Even if AI only saves you 2 hours per week, that's $200/month in time value for a $20 investment.
+
+SERVICES AI REPLACES OR REDUCES:
+• Grammar checker (Grammarly Premium: $12/month) — AI does this built-in
+• Research assistant — used to cost $20-50/hour
+• First-draft copywriter — $50-150/article
+• Personal tutor — $30-100/hour
+• Travel planning service — $100-500 per trip
+• Resume writer — $100-500 one-time
+
+You don't need to pay for every tool. Pick ONE primary chatbot, pay for it, and use free tiers of specialized tools for supplementary tasks.`,
+      },
+      {
+        subtitle: "The Smart Spending Strategy",
+        text: `You don't need to spend $100/month on AI tools. Here's the optimal setup for different budgets:
+
+$0/MONTH (FREE TIER ONLY):
+• ChatGPT Free for general tasks
+• Perplexity Free for research
+• Canva Free for design
+• Limitation: Slower models, usage caps, less privacy
+
+$20/MONTH (SWEET SPOT):
+• ChatGPT Plus OR Claude Pro as your primary tool (pick one and stick with it)
+• Everything else on free tiers
+• This covers 90% of what most people need
+
+$40/MONTH (POWER USER):
+• ChatGPT Plus ($20) for general tasks + image generation
+• Claude Pro ($20) for writing and long documents
+• Free tiers for Perplexity, Canva, etc.
+
+$60+/MONTH (PROFESSIONAL):
+• Primary chatbot ($20)
+• Perplexity Pro ($20) for research-heavy work
+• Midjourney ($10) if you need AI images regularly
+• Canva Pro ($13) for design work
+• Only if these tools directly support your income
+
+MONEY-SAVING TIP: Most paid AI tools offer monthly subscriptions with no contracts. Subscribe when you need it, cancel when you don't. Use it heavily for a month-long project, then cancel until the next one.`,
+      },
+    ],
+  },
+  {
+    id: "audience-advice",
+    title: "AI for Every Audience",
+    icon: Icons.users,
+    color: "bg-[#1a7a6d]",
+    blocks: [
+      {
+        subtitle: "AI for Seniors & Late Adopters",
+        text: `If you didn't grow up with computers, AI might feel intimidating. But here's the good news: AI is actually EASIER to use than most technology because you just talk to it in plain English.
+
+GETTING STARTED — THE SIMPLEST PATH:
+1. Go to chatgpt.com on your computer or phone
+2. Create a free account (just needs an email)
+3. Type a question like you'd ask a friend: "What's a good recipe for chicken soup?"
+4. Read the answer. If you want more detail, just say "Tell me more about step 3"
+
+THAT'S IT. You're now using AI.
+
+GREAT FIRST USES FOR SENIORS:
+• "Explain [medical term] in simple language" — understand what your doctor said
+• "Help me write an email to [person] about [topic]" — AI writes, you review and send
+• "What does this error message on my computer mean?" — tech support in plain English
+• "Tell me about [destination] for someone who walks with a cane" — accessible travel planning
+• "I'm turning 70. What are the best exercises for balance and joint health?"
+
+TIPS:
+• You don't need perfect spelling or grammar — AI understands imperfect input
+• You can't break it — there's no wrong button to press
+• If the answer is confusing, say "Explain that more simply"
+• Try the voice feature — just talk to your phone like you're calling a friend`,
+      },
+      {
+        subtitle: "AI for Students (K-12 through College)",
+        text: `AI is the best study tool ever invented — if you use it correctly.
+
+THE GOLDEN RULE: Use AI to LEARN, not to CHEAT.
+
+GOOD USES:
+• "Explain photosynthesis like I'm in 8th grade" — personalized tutoring
+• "I got this math problem wrong. Here's my work: [paste]. Where did I make a mistake?" — instant tutor
+• "Quiz me on Chapter 5 of US History. Ask 10 questions, then grade my answers." — study tool
+• "I'm writing an essay about climate change. Help me brainstorm three thesis statements." — starting point
+• "I don't understand this passage: [paste]. Break it down for me." — reading comprehension
+
+BAD USES (DON'T DO THESE):
+• Having AI write your essay and submitting it as your own
+• Copying AI-generated answers on homework without understanding them
+• Using AI during exams (unless explicitly allowed)
+• Hiding your AI use when your school requires disclosure
+
+STUDY TECHNIQUES THAT WORK:
+• The Feynman Method: Explain a concept to AI, then ask it to point out what you got wrong
+• Spaced Repetition: Ask AI to create flashcards, then quiz yourself over several days
+• Practice Problems: "Give me 5 problems similar to this one but slightly harder each time"
+• Essay Prep: Use AI to debate your thesis — it'll help you find weaknesses before your teacher does`,
+      },
+      {
+        subtitle: "AI for Small Business Owners",
+        text: `If you run a small business, AI is like hiring a part-time assistant who works 24/7 and costs $20/month:
+
+MARKETING (SAVE 5-10 HOURS/WEEK):
+• Social media content: "Write 5 Instagram captions for my bakery. Tone: warm, community-focused. Include a call to action."
+• Email newsletters: "Draft this month's newsletter. Highlight: new seasonal menu, upcoming event, and a customer spotlight."
+• Ad copy: "Write 3 Facebook ad variations for my plumbing business targeting homeowners in [city]."
+• SEO: "What are the top 10 keywords my local bakery should target?"
+
+OPERATIONS (SAVE 3-5 HOURS/WEEK):
+• Customer email responses: Paste the customer's message and say "Write a professional, empathetic response"
+• Job postings: "Write a job listing for a part-time barista. We value personality over experience."
+• SOPs: "Create a step-by-step procedure for closing the shop at night. Include a checklist."
+• Inventory: "Here are my sales from last month: [paste]. What items should I restock first?"
+
+STRATEGY (SAVE THOUSANDS IN CONSULTING FEES):
+• "I run a [type] business in [location] with [X] employees. Revenue is [Y]. What are 3 things I should focus on this quarter to grow?"
+• "Analyze my pricing: [list your prices]. How do I compare to competitors?"
+• "I'm thinking about [expansion idea]. Walk me through the risks, costs, and a realistic timeline."
+
+START HERE: Pick the ONE task that takes the most time each week. Try doing it with AI. If it saves you even 30 minutes, the $20/month subscription pays for itself on day one.`,
+      },
+    ],
+  },
+  {
+    id: "voice-multimodal",
+    title: "Voice Assistants & Multimodal AI",
+    icon: Icons.mic,
+    color: "bg-[#5b4a8a]",
+    blocks: [
+      {
+        subtitle: "Beyond Text: AI That Sees, Hears, and Speaks",
+        text: `AI isn't just text boxes anymore. Modern AI tools can process images, audio, and even video. This is called "multimodal AI."
+
+WHAT'S AVAILABLE NOW:
+
+VISION (AI that sees):
+• ChatGPT: Upload a photo and ask "What's in this image?" or "How do I fix this?"
+• Claude: Upload screenshots, documents, diagrams — it can read and analyze them
+• Google Lens + Gemini: Point your phone camera at anything and get information
+• Use cases: identifying plants, reading foreign text, getting recipe ideas from a photo of your fridge, debugging error messages from screenshots
+
+VOICE (AI that listens and speaks):
+• ChatGPT Voice Mode: Have a real-time conversation with AI — it speaks back naturally
+• Claude: Voice input available on mobile
+• Gemini Live: Real-time voice conversations with Google's AI
+• Use cases: hands-free cooking help, brainstorming while walking, accessibility for people who can't type
+
+DOCUMENT PROCESSING:
+• Upload PDFs, spreadsheets, presentations — AI reads and summarizes them
+• "Summarize this 50-page report in 5 bullet points"
+• "Find every mention of budget in this document and list the amounts"
+• Works on ChatGPT, Claude, and Gemini`,
+      },
+      {
+        subtitle: "Siri, Alexa, and Google Assistant vs. AI Chatbots",
+        text: `You might be wondering: "I already have Siri/Alexa/Google Assistant. How is this different?"
+
+The difference is massive:
+
+TRADITIONAL VOICE ASSISTANTS (Siri, Alexa, Google Assistant):
+• Good at: Setting timers, playing music, checking weather, smart home control
+• Bad at: Nuanced questions, creative tasks, multi-step reasoning
+• They find information. They don't think.
+
+AI CHATBOTS (ChatGPT, Claude, Gemini):
+• Good at: Complex questions, writing, analysis, brainstorming, learning
+• Bad at: Real-time device control, playing music, making phone calls
+• They reason and create. They don't just search.
+
+THE CONVERGENCE (happening now):
+• Apple is integrating AI into Siri (Apple Intelligence)
+• Google Assistant is merging with Gemini
+• Amazon is upgrading Alexa with more AI capabilities
+• Soon, your voice assistant and your AI chatbot will be the same thing
+
+WHAT TO DO NOW:
+• Use traditional voice assistants for quick device tasks (timers, reminders, music)
+• Use AI chatbots for anything requiring thought (writing, planning, learning)
+• Try ChatGPT's voice mode for the best preview of where everything is heading`,
+      },
+      {
+        subtitle: "Practical Voice AI Workflows",
+        text: `Voice AI isn't a gimmick — it's genuinely useful in specific situations:
+
+WHILE DRIVING:
+• "I just had an idea for my presentation tomorrow. The main point is... [speak freely]. Save this as organized bullet points."
+• "I have a meeting at 3 PM with Sarah about the Q2 numbers. Give me 3 good questions to ask."
+• Note: Use hands-free mode and prioritize safety.
+
+WHILE COOKING:
+• "I'm making the chicken recipe from earlier. What temperature does the oven need to be?"
+• "I added too much salt. How do I fix it?"
+• "Convert 2 cups to milliliters"
+
+WHILE EXERCISING:
+• "Give me a motivational pep talk to finish this run"
+• "Plan tomorrow's workout — upper body, 30 minutes, dumbbells only"
+
+FOR BRAINSTORMING:
+• Voice is faster than typing for unstructured thoughts
+• "I'm thinking through my business plan. Let me talk it out and then you organize my thoughts."
+• "I need to make a decision about X. Let me list the pros and cons out loud, then you analyze them."
+
+ACCESSIBILITY:
+• Voice AI makes the full power of AI available to people with mobility limitations, visual impairments, or anyone who finds typing difficult
+• Combined with screen readers and text-to-speech, AI becomes significantly more accessible than traditional software`,
+      },
+    ],
+  },
+  {
+    id: "future-trends",
+    title: "Where AI Is Heading (2025 and Beyond)",
+    icon: Icons.zap,
+    color: "bg-[#6b1d1d]",
+    blocks: [
+      {
+        subtitle: "What's Coming in the Next 1-2 Years",
+        text: `AI is evolving faster than any technology in history. Here's what's already in development:
+
+AI AGENTS — AI THAT DOES THINGS FOR YOU:
+• Today: You ask AI a question and it gives you an answer
+• Soon: You'll tell AI a goal and it will complete multi-step tasks automatically
+• Example: "Book me a flight to Denver next Friday, find a hotel near downtown under $200, and add both to my calendar" — AI does all of it
+• Companies working on this: OpenAI, Anthropic, Google, Microsoft
+
+PERSONALIZED AI THAT TRULY KNOWS YOU:
+• AI will remember every conversation you've ever had (with your permission)
+• It will understand your preferences, habits, writing style, and goals without you repeating yourself
+• Think of it as a personal assistant that actually gets better every day
+
+AI IN EVERY APP:
+• Email will auto-draft responses in your voice
+• Spreadsheets will analyze themselves
+• Presentations will generate from a single paragraph description
+• Photo editing will be as simple as describing what you want changed
+• This is already starting with Microsoft Copilot, Google Workspace AI, and Apple Intelligence`,
+      },
+      {
+        subtitle: "What's Coming in 3-5 Years",
+        text: `These predictions are more speculative but grounded in current research:
+
+AI TUTORS FOR EVERYONE:
+• Personalized education that adapts to each student's pace and style
+• Every child could have a private tutor available 24/7
+• This could fundamentally change how schools work
+
+AI HEALTHCARE ASSISTANTS:
+• AI that monitors your health data and flags concerns before you notice symptoms
+• AI that helps doctors diagnose faster and more accurately
+• Personalized treatment plans based on your specific genetics and health history
+• Note: AI will assist doctors, not replace them
+
+AI-POWERED WORK:
+• Many routine knowledge-work tasks will be heavily automated
+• New jobs will emerge around managing and directing AI
+• The skills that matter most: creativity, judgment, emotional intelligence, and knowing how to work WITH AI
+
+THE PHYSICAL WORLD:
+• Self-driving vehicles will become more common
+• Robots with AI will handle more household and industrial tasks
+• AI will optimize energy grids, supply chains, and city infrastructure`,
+      },
+      {
+        subtitle: "How to Stay Ahead (Without Being Overwhelmed)",
+        text: `The pace of AI change can feel overwhelming. Here's how to stay informed without making it a full-time job:
+
+THE 15-MINUTE WEEKLY ROUTINE:
+1. Follow 2-3 AI news sources (The Verge, Ars Technica, or Ben's Bites newsletter)
+2. Spend 15 minutes each Monday skimming headlines
+3. If something seems relevant to YOUR life or work, dig deeper. If not, skip it.
+
+THE MONTHLY EXPERIMENT:
+• Once a month, try ONE new AI feature or tool you haven't used before
+• It could be voice mode, image generation, a new tool like Perplexity, or a feature you overlooked
+• Small, consistent experiments compound into expertise over time
+
+WHAT NOT TO WORRY ABOUT:
+• You don't need to learn to code
+• You don't need to understand how neural networks work
+• You don't need to try every new AI tool that launches
+• You don't need to read research papers
+• You DO need to: use AI regularly, stay curious, and adapt when something clearly better comes along
+
+THE SINGLE BEST STRATEGY: Just keep using AI. The people who will thrive in an AI-powered world aren't the ones with the most technical knowledge — they're the ones who've built the habit of using AI effectively in their daily life. And that's exactly what this playbook taught you to do.`,
+      },
+    ],
+  },
+  {
+    id: "workflow-automation",
+    title: "Workflow Automation: Connecting AI to Everything",
+    icon: Icons.link,
+    color: "bg-[#1e3a5f]",
+    blocks: [
+      {
+        subtitle: "What Is Workflow Automation (And Why Should You Care)?",
+        text: `Workflow automation means connecting different apps and services so they work together automatically — without you doing anything manually.
+
+SIMPLE EXAMPLE:
+• Trigger: You receive an email with an attachment
+• Automation: AI summarizes the attachment and saves the summary to your notes app
+• Result: By the time you check your notes, the summary is already there
+
+This isn't science fiction. It's available right now, and you don't need to know how to code.
+
+THE BIG THREE AUTOMATION PLATFORMS:
+1. Zapier (zapier.com) — The most popular. Connects 6,000+ apps. Has a free tier.
+2. Make (make.com, formerly Integromat) — More powerful, more visual. Better for complex workflows.
+3. IFTTT (ifttt.com) — Simpler, best for personal automations (smart home, social media).
+
+All three now have AI built in, which means your automations can do intelligent things — not just move data from A to B, but analyze, summarize, and decide.`,
+      },
+      {
+        subtitle: "10 Automations You Can Set Up Today",
+        text: `These require no coding. Just a Zapier or Make account (free tier works for most):
+
+1. EMAIL → SUMMARY: New emails from VIPs get summarized by AI and sent to Slack/Teams
+2. FORM SUBMISSION → RESPONSE: Customer inquiry form automatically generates a personalized reply draft
+3. SOCIAL MEDIA → CONTENT: Monitor mentions of your brand and get AI-generated response suggestions
+4. CALENDAR → PREP: 30 minutes before each meeting, AI sends you a briefing based on the attendee and agenda
+5. RSS → DIGEST: AI reads your favorite blogs/news and sends you a daily summary of what matters
+6. INVOICE → TRACKING: New invoices emailed to you are automatically categorized and logged in a spreadsheet
+7. MEETING NOTES → ACTION ITEMS: After each Zoom call, transcription is sent to AI which extracts action items
+8. NEW HIRE → ONBOARDING: When someone is added to your HR tool, AI generates a personalized welcome message
+9. SUPPORT TICKET → DRAFT: Customer support tickets get an AI-drafted response for your review
+10. CONTENT → DISTRIBUTION: Write one blog post, AI generates social media posts for 5 platforms
+
+START WITH #1 OR #5 — they take 10 minutes to set up and save hours per week.`,
+      },
+      {
+        subtitle: "Setting Up Your First Automation (Step by Step)",
+        text: `Let's build automation #5 (daily AI news digest) as a walkthrough:
+
+STEP 1: Go to zapier.com and create a free account
+
+STEP 2: Click "Create Zap" (a "Zap" is an automation)
+
+STEP 3: Set your trigger:
+• App: RSS by Zapier
+• Trigger: New Item in Feed
+• Paste the RSS feed URL of a blog you follow
+
+STEP 4: Add an AI step:
+• App: ChatGPT (Zapier has a built-in integration)
+• Action: Conversation
+• Prompt: "Summarize this article in 3 bullet points. Then tell me if this is relevant to [your industry/interests]. Article: [insert RSS content from Step 3]"
+
+STEP 5: Add your delivery step:
+• App: Gmail (or Slack, or Notion)
+• Action: Send Email
+• To: Your email address
+• Subject: "Daily AI Digest: [article title]"
+• Body: The AI summary from Step 4
+
+STEP 6: Turn it on. Now every time that blog publishes a new article, you'll get an AI-powered summary delivered automatically.
+
+TOTAL SETUP TIME: 10-15 minutes
+TIME SAVED: 30+ minutes per day of reading and filtering
+
+Once you've built one automation, you'll start seeing opportunities everywhere.`,
+      },
+    ],
+  },
+  {
+    id: "creative-workflows",
+    title: "Deep-Dive: Creative Workflows with AI",
+    icon: Icons.palette,
+    color: "bg-[#8b6914]",
+    blocks: [
+      {
+        subtitle: "AI as a Creative Collaborator (Not a Replacement)",
+        text: `The best creative work with AI happens when you treat it as a collaborator — not a vending machine:
+
+VENDING MACHINE APPROACH (mediocre results):
+• "Write me a blog post about productivity"
+• AI gives you a generic 800-word article
+• You publish it. It sounds like everyone else's content.
+
+COLLABORATOR APPROACH (excellent results):
+• "I want to write about productivity, but from the angle that most productivity advice is toxic. My audience is burned-out millennials who've tried everything."
+• AI gives you a draft with that specific angle
+• "Good start. The intro is too generic. Start with a provocative statement."
+• AI revises with your direction
+• "Now make the conclusion more personal. I want to end with my own experience."
+• Final version sounds like YOU, not like AI.
+
+THE CREATIVE PROCESS WITH AI:
+1. YOU bring the vision, voice, and perspective
+2. AI brings speed, options, and structure
+3. YOU direct and refine
+4. AI iterates and expands
+5. YOU make the final decisions
+
+This applies to writing, art, music, video — any creative field.`,
+      },
+      {
+        subtitle: "Writing Workflows: From Blank Page to Final Draft",
+        text: `Here's a complete creative writing workflow for blog posts, essays, newsletters, or any long-form content:
+
+PHASE 1 — IDEATION (5 minutes):
+Prompt: "I write about [topic] for [audience]. Give me 10 article ideas that haven't been overdone. For each, give me a one-line hook that would make someone stop scrolling."
+Pick your favorite. Or combine two ideas.
+
+PHASE 2 — OUTLINE (5 minutes):
+Prompt: "Here's my article idea: [paste]. Create a detailed outline with: a compelling intro approach, 4-6 main sections, key points under each, and a strong conclusion."
+Edit the outline — add your own ideas, remove sections that don't fit.
+
+PHASE 3 — FIRST DRAFT (10 minutes):
+Prompt: "Write the full article based on this outline: [paste]. Write in a [conversational/authoritative/humorous] tone. Use short paragraphs. Include at least 2 specific examples. Length: [target word count]."
+Don't expect perfection. This is raw material.
+
+PHASE 4 — REVISION (15 minutes):
+• Read through and mark what works and what doesn't
+• "Rewrite section 3. It's too generic. Add a specific example from [industry/experience]."
+• "The intro doesn't hook me. Start with a question or a bold statement."
+• "Cut 200 words. Remove anything that doesn't add new information."
+
+PHASE 5 — YOUR VOICE (10 minutes):
+• This is the step most people skip, and it's the most important
+• Read the draft out loud. Does it sound like you?
+• Add your personal anecdotes, opinions, and experiences
+• Remove any phrase that feels "AI-ish" (e.g., "In today's fast-paced world...")
+
+TOTAL TIME: ~45 minutes for an article that would normally take 3-4 hours.`,
+      },
+      {
+        subtitle: "Visual & Design Workflows",
+        text: `AI image generation is incredible for people who can't draw, design, or afford a graphic designer:
+
+FOR SOCIAL MEDIA:
+• Use ChatGPT (DALL-E): "Create a clean, minimalist Instagram graphic about [topic]. White background, modern typography, professional feel."
+• Use Canva AI: Open Canva, describe what you want, and it generates templates you can customize
+• Tip: Always specify a style ("minimalist," "vintage," "corporate," "playful") for consistent results
+
+FOR PRESENTATIONS:
+• Use AI to generate custom illustrations for slides instead of generic stock photos
+• Prompt: "Create a simple, professional illustration showing [concept]. Style: flat design, blue and white color scheme, no text."
+• Tools: DALL-E (via ChatGPT), Midjourney, or Canva's AI image generator
+
+FOR PERSONAL PROJECTS:
+• Custom invitations: "Design a birthday party invitation for a 7-year-old's dinosaur theme party."
+• Home decor: "Show me how a mid-century modern bookshelf would look in a room with sage green walls"
+• Gift ideas: "Create a watercolor-style illustration of a golden retriever named Max for a custom print"
+
+FOR PHOTO EDITING:
+• ChatGPT can now edit photos: "Remove the background" or "Make this look like a professional headshot"
+• "Extend this image to make it wider" (outpainting)
+• "Change the color of the shirt in this photo to navy blue"
+
+IMPORTANT: AI-generated images may not be copyrightable. If you're using them commercially, add your own creative elements or use them as inspiration for human-created designs.`,
+      },
+    ],
+  },
+  {
+    id: "accessibility",
+    title: "AI & Accessibility: AI for Everyone",
+    icon: Icons.eye,
+    color: "bg-[#2d6a4f]",
+    blocks: [
+      {
+        subtitle: "How AI Is Making Technology More Accessible",
+        text: `AI is one of the most transformative technologies for people with disabilities:
+
+FOR VISUAL IMPAIRMENTS:
+• AI can describe images in detail: upload a photo and ask "Describe everything in this image"
+• Screen readers work with AI chatbots — most major tools (ChatGPT, Claude) are screen-reader compatible
+• AI can read and summarize documents, making information accessible without needing to visually scan pages
+• "Be My Eyes" app uses ChatGPT to describe the world through your phone camera in real time
+
+FOR HEARING IMPAIRMENTS:
+• AI transcription tools (Otter.ai, Google Live Caption) convert speech to text in real-time
+• AI can summarize audio content (podcasts, meetings, videos) in text form
+• ChatGPT and Claude are entirely text-based, making them fully accessible to deaf and hard-of-hearing users
+
+FOR MOTOR/MOBILITY LIMITATIONS:
+• Voice input means you don't need to type — just speak your prompts
+• AI can reduce the number of interactions needed: one prompt can replace dozens of clicks and keystrokes
+• Automation (Zapier, Make) can handle repetitive tasks that require many manual steps
+
+FOR COGNITIVE/LEARNING DIFFERENCES:
+• AI can explain complex topics in simpler language: "Explain this like I'm 10"
+• It can reformat information into more accessible structures (bullet points, step-by-step)
+• For people with ADHD: AI can break large tasks into small, manageable steps with deadlines
+• For people with dyslexia: AI can clean up written text, suggest clearer phrasing, and read content aloud`,
+      },
+      {
+        subtitle: "Making Your AI Experience More Accessible",
+        text: `If you or someone you help has accessibility needs, here are specific settings and techniques:
+
+INCREASE READABILITY:
+• Ask AI to "use short sentences and simple words"
+• Request bullet points instead of paragraphs
+• Ask for step-by-step instructions with numbered lists
+• Say "Explain this without technical jargon"
+
+USE VOICE FEATURES:
+• ChatGPT mobile app: Tap the headphone icon for voice mode
+• Google Gemini: "Hey Google" activates voice on Android
+• Most phones have built-in voice-to-text (dictation) that works in any AI chat
+• Tip: Voice input is often more natural than typing for people who struggle with keyboards
+
+CUSTOMIZE YOUR EXPERIENCE:
+• In your Custom Instructions, add: "I have [specific need]. Please always [accommodation]."
+• Examples:
+  - "I have low vision. Please use large, clear formatting with lots of white space between sections."
+  - "I have ADHD. Keep answers short, use bullet points, and highlight the most important action item."
+  - "I'm learning English as a second language. Use simple vocabulary and short sentences."
+  - "I use a screen reader. Avoid emojis and describe any images or tables in plain text."
+
+These instructions persist across every conversation, so you set them once.`,
+      },
+      {
+        subtitle: "AI Tools Specifically Designed for Accessibility",
+        text: `Beyond the major chatbots, these AI-powered tools are designed with accessibility in mind:
+
+BE MY EYES (Free):
+• Uses AI + volunteers to help blind and low-vision users
+• Point your camera at anything — a menu, a product label, a street sign — and AI describes it
+• Recently integrated ChatGPT for instant, detailed image descriptions
+
+OTTER.AI ($17/month):
+• Real-time meeting transcription
+• Essential for deaf and hard-of-hearing professionals
+• Creates searchable transcripts of every meeting
+
+SPEECHIFY (Free + $12/month):
+• Text-to-speech that reads any document, website, or PDF aloud
+• Multiple natural-sounding voices
+• Great for people with dyslexia or visual impairments
+
+GOOGLE LOOKOUT (Free, Android):
+• Identifies objects, reads text, and describes scenes through your phone camera
+• Designed for blind and low-vision users
+
+MICROSOFT IMMERSIVE READER (Free, built into Microsoft apps):
+• Reads text aloud, adjusts spacing and font size, translates in real-time
+• Available in Word, OneNote, Teams, and Edge browser
+
+THE BOTTOM LINE: AI's natural language interface is inherently more accessible than traditional software. You don't need to navigate menus, remember keyboard shortcuts, or click tiny buttons. You just describe what you need in your own words. This is why AI adoption among people with disabilities is growing faster than in the general population — it genuinely removes barriers.`,
+      },
+    ],
+  },
+];
+
+/* ───────────────────────────────────────────
    PART 3 — APPLICATIONS: Personal, Work, Fun
    ─────────────────────────────────────────── */
 const applicationSections = [
@@ -1110,6 +2098,27 @@ export default async function PlaybookPage() {
               </a>
             ))}
 
+            {/* Essential Knowledge */}
+            <span
+              className="mt-2 w-full rounded-lg px-3 py-2 text-xs font-bold tracking-wider uppercase"
+              style={{ color: "var(--warm-gray-500)" }}
+            >
+              Essential Knowledge
+            </span>
+            {essentialKnowledgeSections.map((s) => (
+              <a
+                key={s.id}
+                href={`#${s.id}`}
+                className="rounded-lg border bg-white px-5 py-3 text-base font-medium transition-colors hover:shadow-sm"
+                style={{
+                  borderColor: "var(--warm-gray-200)",
+                  color: "var(--warm-gray-700)",
+                }}
+              >
+                {s.icon} {s.title}
+              </a>
+            ))}
+
             {/* Applications */}
             <span
               className="mt-2 w-full rounded-lg px-3 py-2 text-xs font-bold tracking-wider uppercase"
@@ -1161,6 +2170,51 @@ export default async function PlaybookPage() {
         <div className="pdf-personalized-header">
           <p className="pdf-prepared-for">This report has been prepared for <strong>{userDisplayName}</strong></p>
           <p className="pdf-disclaimer">CONFIDENTIAL — This document is licensed for personal use only. Redistribution, sharing, or reproduction in any form is strictly prohibited. This PDF contains personally identifiable information tied to your account. Unauthorized sharing may expose your personal data to third parties. By downloading, you agree to these terms.</p>
+        </div>
+
+        {/* PDF Table of Contents — visible only in print */}
+        <div className="pdf-toc">
+          <h2 className="pdf-toc-title">Table of Contents</h2>
+
+          <div className="pdf-toc-group">
+            <p className="pdf-toc-label">Part 1 — Foundations</p>
+            <p className="pdf-toc-item">The History &amp; Science of AI (Coming soon)</p>
+          </div>
+
+          <div className="pdf-toc-group">
+            <p className="pdf-toc-label">Part 2 — Prompt Mastery</p>
+            {promptMasterySections.map((s) => (
+              <p key={s.id} className="pdf-toc-item">{s.title}</p>
+            ))}
+          </div>
+
+          <div className="pdf-toc-group">
+            <p className="pdf-toc-label">Best Practices</p>
+            {bestPracticesSections.map((s) => (
+              <p key={s.id} className="pdf-toc-item">{s.title}</p>
+            ))}
+          </div>
+
+          <div className="pdf-toc-group">
+            <p className="pdf-toc-label">Essential Knowledge</p>
+            {essentialKnowledgeSections.map((s) => (
+              <p key={s.id} className="pdf-toc-item">{s.title}</p>
+            ))}
+          </div>
+
+          <div className="pdf-toc-group">
+            <p className="pdf-toc-label">Part 3 — Real-World Applications</p>
+            {applicationSections.map((s) => (
+              <p key={s.id} className="pdf-toc-item">{s.title}</p>
+            ))}
+          </div>
+
+          <div className="pdf-toc-group">
+            <p className="pdf-toc-label">Part 4 — Bonus</p>
+            {bonusContent.map((b) => (
+              <p key={b.id} className="pdf-toc-item">{b.title}</p>
+            ))}
+          </div>
         </div>
 
         {/* Welcome */}
@@ -1365,6 +2419,85 @@ export default async function PlaybookPage() {
         </div>
 
         {bestPracticesSections.map((section) => (
+          <section
+            key={section.id}
+            id={section.id}
+            className="border-t px-6 py-20"
+            style={{ borderColor: "var(--warm-gray-200)" }}
+          >
+            <div className="mx-auto max-w-4xl">
+              <div className="mb-12 flex items-center gap-4">
+                <span
+                  className={`flex h-12 w-12 items-center justify-center rounded-lg text-2xl text-white ${section.color}`}
+                >
+                  {section.icon}
+                </span>
+                <h2
+                  className="text-3xl font-bold"
+                  style={{ color: "var(--warm-gray-900)" }}
+                >
+                  {section.title}
+                </h2>
+              </div>
+
+              <div className="space-y-8">
+                {section.blocks.map((block) => (
+                  <div
+                    key={block.subtitle}
+                    className="rounded-xl bg-white p-8 shadow-sm sm:p-10"
+                    style={{ border: "1px solid var(--warm-gray-200)" }}
+                  >
+                    <h3
+                      className="mb-4 text-xl font-bold"
+                      style={{ color: "var(--warm-gray-900)" }}
+                    >
+                      {block.subtitle}
+                    </h3>
+                    <div
+                      className="whitespace-pre-line text-base leading-relaxed"
+                      style={{ color: "var(--warm-gray-600)" }}
+                    >
+                      {block.text}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </section>
+        ))}
+
+        {/* ─── ESSENTIAL KNOWLEDGE ─── */}
+        <div
+          className="border-t px-6 py-10"
+          style={{
+            borderColor: "var(--warm-gray-200)",
+            backgroundColor: "var(--warm-white)",
+          }}
+        >
+          <div className="mx-auto max-w-4xl">
+            <p
+              className="text-center text-sm font-bold tracking-widest uppercase"
+              style={{ color: "var(--teal)" }}
+            >
+              Essential Knowledge
+            </p>
+            <h2
+              className="mt-2 text-center text-3xl font-bold"
+              style={{ color: "var(--warm-gray-900)" }}
+            >
+              What Every AI User Needs to Know
+            </h2>
+            <p
+              className="mt-3 text-center text-lg"
+              style={{ color: "var(--warm-gray-500)" }}
+            >
+              Privacy, limitations, ethics, accessibility, and the future of AI
+              — the knowledge that keeps you safe and informed.
+            </p>
+          </div>
+        </div>
+
+        {essentialKnowledgeSections.map((section) => (
           <section
             key={section.id}
             id={section.id}
