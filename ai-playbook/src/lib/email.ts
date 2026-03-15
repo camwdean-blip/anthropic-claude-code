@@ -1,10 +1,18 @@
 import { Resend } from "resend";
 
-const resend = new Resend(process.env.RESEND_API_KEY);
 const FROM_EMAIL = process.env.EMAIL_FROM || "hello@knowledgeai.com";
+
+function getResendClient() {
+  const key = process.env.RESEND_API_KEY;
+  if (!key) {
+    throw new Error("RESEND_API_KEY is not configured");
+  }
+  return new Resend(key);
+}
 
 export async function sendPurchaseConfirmation(to: string, loginUrl: string) {
   try {
+    const resend = getResendClient();
     await resend.emails.send({
       from: `The AI Playbook <${FROM_EMAIL}>`,
       to,
