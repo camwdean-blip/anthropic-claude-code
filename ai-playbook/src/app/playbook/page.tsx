@@ -6,103 +6,13 @@ import LogoutButton from "./LogoutButton";
 /* ───────────────────────────────────────────
    PART 1 — FOUNDATIONS: Origin & History of AI
    ─────────────────────────────────────────── */
-const foundationSections = [
-  {
-    id: "origins",
-    title: "The Origin of AI: How We Got Here",
-    icon: Icons.brain,
-    color: "bg-[#4a2c6e]",
-    blocks: [
-      {
-        subtitle: "The Dream (1940s–1960s): Machines That Think",
-        text: `In 1950, mathematician Alan Turing asked a simple question: "Can machines think?" He proposed the Turing Test — if a machine could fool a human into thinking it was also human through conversation, it could be considered "intelligent."
-
-By 1956, a group of scientists at Dartmouth College coined the term "Artificial Intelligence" and predicted that machines would match human intelligence within a generation. They were wildly optimistic about the timeline — but they were right about the direction.
-
-Early AI could solve math proofs and play checkers. But it couldn't do anything that required common sense, context, or understanding the messy real world.`,
-      },
-      {
-        subtitle: "The Winters (1970s–1990s): Hype, Crash, Repeat",
-        text: `AI went through two major "winters" — periods where funding dried up because the technology couldn't deliver on its promises. Computers were too slow. Data was too scarce. The algorithms were too primitive.
-
-But quietly, important breakthroughs happened:
-• Expert systems (1980s) — AI that could diagnose diseases and configure computers by following hand-coded rules
-• Machine learning (1990s) — Instead of coding rules, let the machine LEARN patterns from data
-• Deep Blue (1997) — IBM's chess computer beat world champion Garry Kasparov, proving machines could outperform humans at specific tasks`,
-      },
-      {
-        subtitle: "The Deep Learning Revolution (2010s)",
-        text: `Three things converged to change everything:
-
-1. Massive data — The internet generated more text, images, and video than ever before
-2. Powerful GPUs — Graphics cards designed for video games turned out to be perfect for training AI
-3. Neural networks — Algorithms inspired by the human brain that get better with more data
-
-In 2012, a neural network crushed the ImageNet competition (image recognition) by a huge margin. Google, Facebook, and others started pouring billions into AI. Self-driving cars, voice assistants (Siri, Alexa), and recommendation algorithms transformed daily life.`,
-      },
-      {
-        subtitle: "The ChatGPT Moment (2022–Present): AI for Everyone",
-        text: `On November 30, 2022, OpenAI released ChatGPT. It reached 100 million users in 2 months — the fastest-growing app in history. For the first time, anyone could have a conversation with AI and get genuinely useful results.
-
-What makes modern AI different from everything before:
-• It understands context and nuance, not just keywords
-• It can write, analyze, create, and reason across virtually any domain
-• It gets dramatically better every few months
-• It's accessible to everyone — no programming required
-
-We are now in the era of "foundation models" — AI systems like GPT-4, Claude, and Gemini that are trained on vast amounts of human knowledge and can be applied to almost any task. This playbook teaches you how to use them like a pro.`,
-      },
-    ],
-  },
-  {
-    id: "how-ai-works",
-    title: "How AI Actually Works (No Jargon)",
-    icon: Icons.gear,
-    color: "bg-[#2d4a3e]",
-    blocks: [
-      {
-        subtitle: "The Core Idea: Pattern Prediction",
-        text: `Modern AI (specifically "Large Language Models" or LLMs) works by predicting what comes next. That's it.
-
-It read billions of web pages, books, articles, and conversations during training. From all of that, it learned patterns:
-• After "The capital of France is" → "Paris" is very likely
-• After "Dear Hiring Manager, I am writing to" → a job application usually follows
-• After seeing a coding problem → the solution pattern usually looks like X
-
-It's not "thinking" the way you do. It's making extremely sophisticated predictions based on patterns in human knowledge. But the result often looks like understanding — and that's what makes it useful.`,
-      },
-      {
-        subtitle: "Why This Matters for You",
-        text: `Understanding that AI is a pattern-prediction engine helps you use it better:
-
-[+] AI is great at: Anything where patterns exist — writing, analysis, coding, brainstorming, summarizing, translating, planning
-[+] AI is great at: Combining knowledge from multiple fields in ways humans rarely do
-[+] AI is great at: Doing in 30 seconds what would take you 30 minutes
-
-[-] AI is NOT great at: Facts about very recent events (it has a training cutoff)
-[-] AI is NOT great at: Niche topics with very little written about them
-[-] AI is NOT great at: Tasks that require physical-world interaction
-[-] AI is NOT great at: Being 100% accurate every single time — always verify important facts
-
-The golden rule: AI is your brilliant, fast, sometimes overconfident colleague. Use it for the first draft, the brainstorm, the heavy lifting — then apply your own judgment.`,
-      },
-      {
-        subtitle: "The Key AI Models You Should Know",
-        text: `Think of these as different "brains" you can choose from:
-
-ChatGPT (by OpenAI) — The most popular. Great all-around. Best for: general tasks, image generation, voice conversations.
-
-Claude (by Anthropic) — Known for nuance, safety, and long-document analysis. Best for: writing, research, careful reasoning, and handling large amounts of text.
-
-Gemini (by Google) — Deeply integrated with Google services. Best for: anything tied to Gmail, Docs, Search, or YouTube.
-
-Perplexity — An AI-powered search engine. Best for: research with real-time sources and citations.
-
-Each has free and paid tiers. The paid versions ($20/month typically) are significantly better — longer conversations, smarter models, and more features. This playbook will tell you which tool is best for each task.`,
-      },
-    ],
-  },
-];
+const foundationSections: {
+  id: string;
+  title: string;
+  icon: React.ReactNode;
+  color: string;
+  blocks: { subtitle: string; text: string }[];
+}[] = [];
 
 /* ───────────────────────────────────────────
    PART 2 — MASTERING PROMPTS: How to Speak to AI
@@ -950,19 +860,25 @@ export default function PlaybookPage() {
             >
               Foundations
             </span>
-            {foundationSections.map((s) => (
-              <a
-                key={s.id}
-                href={`#${s.id}`}
-                className="rounded-lg border bg-white px-5 py-3 text-base font-medium transition-colors hover:shadow-sm"
+            <a
+              href="#foundations"
+              className="rounded-lg border bg-white px-5 py-3 text-base font-medium transition-colors hover:shadow-sm"
+              style={{
+                borderColor: "var(--warm-gray-200)",
+                color: "var(--warm-gray-700)",
+              }}
+            >
+              {Icons.brain} The History &amp; Science of AI
+              <span
+                className="ml-2 rounded-full px-2 py-0.5 text-xs font-semibold"
                 style={{
-                  borderColor: "var(--warm-gray-200)",
-                  color: "var(--warm-gray-700)",
+                  backgroundColor: "var(--warm-gray-100)",
+                  color: "var(--warm-gray-400)",
                 }}
               >
-                {s.icon} {s.title}
-              </a>
-            ))}
+                Coming soon
+              </span>
+            </a>
 
             {/* Prompt Mastery */}
             <span
@@ -1063,6 +979,7 @@ export default function PlaybookPage() {
 
         {/* ─── PART 1: FOUNDATIONS ─── */}
         <div
+          id="foundations"
           className="border-t px-6 py-10"
           style={{
             borderColor: "var(--warm-gray-200)",
@@ -1086,59 +1003,41 @@ export default function PlaybookPage() {
               className="mt-3 text-center text-lg"
               style={{ color: "var(--warm-gray-500)" }}
             >
-              Before you master the tools, understand what you&apos;re working
-              with and why it matters.
+              Curious about how AI actually works and how we got here?
             </p>
+            <div
+              className="mx-auto mt-8 max-w-xl rounded-xl bg-white p-8 text-center shadow-sm"
+              style={{ border: "1px solid var(--warm-gray-200)" }}
+            >
+              <span className="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-lg bg-[#4a2c6e] text-2xl text-white">
+                {Icons.brain}
+              </span>
+              <h3
+                className="mt-4 text-xl font-bold"
+                style={{ color: "var(--warm-gray-900)" }}
+              >
+                The History &amp; Science of AI
+              </h3>
+              <p
+                className="mt-2 text-base leading-relaxed"
+                style={{ color: "var(--warm-gray-500)" }}
+              >
+                From the 1950s dream of thinking machines, through AI winters
+                and deep learning breakthroughs, to the ChatGPT moment — learn
+                how we got here and how modern AI actually works under the hood.
+              </p>
+              <p
+                className="mt-6 inline-block cursor-default rounded-lg px-6 py-3 text-sm font-semibold"
+                style={{
+                  backgroundColor: "var(--warm-gray-100)",
+                  color: "var(--warm-gray-400)",
+                }}
+              >
+                Coming soon
+              </p>
+            </div>
           </div>
         </div>
-
-        {foundationSections.map((section) => (
-          <section
-            key={section.id}
-            id={section.id}
-            className="border-t px-6 py-20"
-            style={{ borderColor: "var(--warm-gray-200)" }}
-          >
-            <div className="mx-auto max-w-4xl">
-              <div className="mb-12 flex items-center gap-4">
-                <span
-                  className={`flex h-12 w-12 items-center justify-center rounded-lg text-2xl text-white ${section.color}`}
-                >
-                  {section.icon}
-                </span>
-                <h2
-                  className="text-3xl font-bold"
-                  style={{ color: "var(--warm-gray-900)" }}
-                >
-                  {section.title}
-                </h2>
-              </div>
-
-              <div className="space-y-8">
-                {section.blocks.map((block) => (
-                  <div
-                    key={block.subtitle}
-                    className="rounded-xl bg-white p-8 shadow-sm sm:p-10"
-                    style={{ border: "1px solid var(--warm-gray-200)" }}
-                  >
-                    <h3
-                      className="mb-4 text-xl font-bold"
-                      style={{ color: "var(--warm-gray-900)" }}
-                    >
-                      {block.subtitle}
-                    </h3>
-                    <div
-                      className="whitespace-pre-line text-base leading-relaxed"
-                      style={{ color: "var(--warm-gray-600)" }}
-                    >
-                      {block.text}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </section>
-        ))}
 
         {/* ─── PART 2: PROMPT MASTERY ─── */}
         <div
