@@ -1,12 +1,19 @@
-import { createClient } from "@libsql/client";
+import { type Client, createClient } from "@libsql/client";
 
-const db = createClient({
-  url: process.env.TURSO_DATABASE_URL!,
-  authToken: process.env.TURSO_AUTH_TOKEN,
-});
+let db: Client;
+
+function getDb(): Client {
+  if (!db) {
+    db = createClient({
+      url: process.env.TURSO_DATABASE_URL!,
+      authToken: process.env.TURSO_AUTH_TOKEN,
+    });
+  }
+  return db;
+}
 
 export async function initDb() {
-  await db.execute(`
+  await getDb().execute(`
     CREATE TABLE IF NOT EXISTS users (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       email TEXT UNIQUE NOT NULL,
@@ -34,7 +41,7 @@ export async function createUser(
   stripeSessionId?: string
 ): Promise<User> {
   await initDb();
-  await db.execute({
+  await getDb().execute({
     sql: `INSERT INTO users (email, password_hash, stripe_customer_id, stripe_session_id)
           VALUES (?, ?, ?, ?)`,
     args: [email, passwordHash, stripeCustomerId || null, stripeSessionId || null],
