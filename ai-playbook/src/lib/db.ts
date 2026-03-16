@@ -1,26 +1,21 @@
-import Database from "better-sqlite3";
-import path from "path";
+import { createClient } from "@libsql/client";
 
-const DB_PATH = path.join(process.cwd(), "data", "users.db");
+const db = createClient({
+  url: process.env.TURSO_DATABASE_URL!,
+  authToken: process.env.TURSO_AUTH_TOKEN,
+});
 
-let db: Database.Database;
-
-function getDb(): Database.Database {
-  if (!db) {
-    db = new Database(DB_PATH);
-    db.pragma("journal_mode = WAL");
-    db.exec(`
-      CREATE TABLE IF NOT EXISTS users (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        email TEXT UNIQUE NOT NULL,
-        password_hash TEXT NOT NULL,
-        stripe_customer_id TEXT,
-        stripe_session_id TEXT,
-        created_at TEXT DEFAULT (datetime('now'))
-      )
-    `);
-  }
-  return db;
+export async function initDb() {
+  await db.execute(`
+    CREATE TABLE IF NOT EXISTS users (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      email TEXT UNIQUE NOT NULL,
+      password_hash TEXT NOT NULL,
+      stripe_customer_id TEXT,
+      stripe_session_id TEXT,
+      created_at TEXT DEFAULT (datetime('now'))
+    )
+  `);
 }
 
 export interface User {
@@ -32,28 +27,37 @@ export interface User {
   created_at: string;
 }
 
-export function createUser(
+export async function createUser(
   email: string,
   passwordHash: string,
   stripeCustomerId?: string,
   stripeSessionId?: string
-): User {
-  const stmt = getDb().prepare(
-    `INSERT INTO users (email, password_hash, stripe_customer_id, stripe_session_id)
-     VALUES (?, ?, ?, ?)`
-  );
-  const result = stmt.run(email, passwordHash, stripeCustomerId || null, stripeSessionId || null);
-  return getUserById(result.lastInsertRowid as number)!;
+): Promise<User> {
+  await initDb();
+  await db.execute({
+    sql: `INSERT INTO users (email, password_hash, stripe_customer_id, stripe_session_id)
+          VALUES (?, ?, ?, ?)`,
+    args: [email, passwordHash, stripeCustomerId || null, stripeSessionId || null],
+  });
+  return (await getUserByEmail(email))!;
 }
 
-export function getUserByEmail(email: string): User | undefined {
-  return getDb()
-    .prepare("SELECT * FROM users WHERE email = ?")
-    .get(email) as User | undefined;
+export async function getUserByEmail(email: string): Promise<User | undefined> {
+  await initDb();
+  const result = await db.execute({
+    sql: "SELECT * FROM users WHERE email = ?",
+    args: [email],
+  });
+  if (result.rows.length === 0) return undefined;
+  return result.rows[0] as unknown as User;
 }
 
-export function getUserById(id: number): User | undefined {
-  return getDb()
-    .prepare("SELECT * FROM users WHERE id = ?")
-    .get(id) as User | undefined;
+export async function getUserById(id: number): Promise<User | undefined> {
+  await initDb();
+  const result = await db.execute({
+    sql: "SELECT * FROM users WHERE id = ?",
+    args: [id],
+  });
+  if (result.rows.length === 0) return undefined;
+  return result.rows[0] as unknown as User;
 }

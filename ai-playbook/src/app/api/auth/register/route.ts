@@ -21,7 +21,7 @@ export async function POST(request: Request) {
       );
     }
 
-    const existing = getUserByEmail(email);
+    const existing = await getUserByEmail(email);
     if (existing) {
       return NextResponse.json(
         { error: "An account with this email already exists. Please log in instead." },
@@ -30,7 +30,7 @@ export async function POST(request: Request) {
     }
 
     const passwordHash = await bcrypt.hash(password, 12);
-    const user = createUser(email, passwordHash);
+    const user = await createUser(email, passwordHash);
 
     await createSession(user.id, user.email);
 
