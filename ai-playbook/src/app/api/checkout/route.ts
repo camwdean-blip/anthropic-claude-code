@@ -5,14 +5,6 @@ export async function POST() {
   const stripeKey = process.env.STRIPE_SECRET_KEY;
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
 
-  // In development, skip Stripe and redirect straight to success page
-  if (process.env.NODE_ENV === "development") {
-    return NextResponse.redirect(
-      `${baseUrl}/success?session_id=dev_test_session`,
-      303
-    );
-  }
-
   if (!stripeKey) {
     return NextResponse.json(
       { error: "Stripe is not configured. Add STRIPE_SECRET_KEY to your environment variables." },
